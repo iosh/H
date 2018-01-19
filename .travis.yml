@@ -9,6 +9,7 @@ cache:
 
 before_install:
     - export TZ='Asia/Shanghai' # 更改时区
+    - npm install -g gulp
 
 install:
   - npm install  #安装hexo及插件

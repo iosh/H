@@ -1,5 +1,5 @@
 ---
-title: C语言基本函数练习测试啦啦啦啦
+title: C语言基本函数练习
 date: 2018-01-16 19:41:30
 tags: C
 categories: 
