@@ -2,33 +2,29 @@ language: node_js  #设置语言
 
 node_js: stable  #设置相应的版本
 
-# Travis-CI Caching  缓存
+# 缓存，可以节省集成的时间，这里我用了yarn，如果不用可以删除
 cache:
-    directories:
-        - node_modules
-
+  apt: true
+  yarn: true
+  directories:
+    - node_modules
 before_install:
     - export TZ='Asia/Shanghai' # 更改时区
-    - npm install -g gulp
-
+    - git config --global user.name "{GH_Name}" # 设置全局用户名
+    - git config --global user.email "{GH_EMAIL}" # 设置全局邮箱
+    - npm install -g hexo-cli
 install:
   - npm install  #安装hexo及插件
 
 script:
   - hexo clean  #清除
-  - hexo g && gulp  #生成
+  - hexo g #生成
 
 after_script:
-  - git clone https://${GH_REF} .deploy_git  # GH_REF是最下面配置的仓库地址
-  - cd .deploy_git
-  - git checkout master
-  - cd ../
-  - mv .deploy_git/.git/ ./public/   # 这一步之前的操作是为了保留master分支的提交记录，不然每次git init的话只有1条commit
   - cd ./public
-  - git config user.name "{GH_Name}"  #修改name
-  - git config user.email "{GH_Name}"  #修改email
-  - git add .
-  - git commit -m "Travis CI Auto Builder at `date +"%Y-%m-%d %H:%M"`"  # 提交记录包含时间 跟上面更改时区配合
+  - git init
+  - git add --all .
+  - git commit -m "Travis CI 自动生成 于 `date +"%Y-%m-%d %H:%M"`"  # 提交记录包含时间 跟上面更改时区配合
   - git push --force --quiet "https://${GH_Token}@${GH_REF}" master:${GH_fz}
 
 branches:
