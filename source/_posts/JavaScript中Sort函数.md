@@ -4,7 +4,7 @@ date: 2017-12-12 18:51:15
 tags: JavaScript
 ---
 由于昨天看了几个排序，又想到JavaScript常用`Array.sort`进行排序，所以搜索了一下JavaScript中sort函数使用了那种排序方法。
-
+<!-- more -->
 > sort() 方法在适当的位置对数组进行排序，并返回数组，同时sort排序不一定是稳定的 -- MDN文档
 
 语法

@@ -8,7 +8,7 @@ categories:
 ### Router4
 ## 参考至[精读Router4](https://zhuanlan.zhihu.com/p/31178105)
 > 入门学习的时候，本着学新不学旧的原则，啃了Router4，这里感谢大佬将官网翻译了一下。(有幸还和参与翻译的大佬聊了两句。)
-
+<!-- more -->
 #### 代码分割
 在Router3中有函数钩子，可以做到代码分割，而Router4中的Router本身只是一个普通组件，没有钩子，这里我们用到`react-loadable`，可以做到路由甚至组件化的动态加载(按需加载)。
 

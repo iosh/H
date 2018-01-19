@@ -11,7 +11,7 @@ tags: JavaScript
 1.	window 的 resize(浏览器窗口或者HTML对象改变大小)、scroll(滚动条事件）
 2.	mousedown(鼠标在元素上按下事执行事件)、onmousemove(鼠标指针移动到元素上触发)
 3.	keyup(按键被释放触发)、keydown(按键被按下触发)
-
+<!-- more -->
 举例
 
 ```HTML
