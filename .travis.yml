@@ -13,6 +13,7 @@ before_install:
     - git config --global user.name "{GH_Name}" # 设置全局用户名
     - git config --global user.email "{GH_EMAIL}" # 设置全局邮箱
     - npm install -g hexo-cli
+    - npm install -g gulp
 install:
   - npm install  #安装hexo及插件
 
