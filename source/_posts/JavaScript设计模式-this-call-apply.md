@@ -16,7 +16,7 @@ categories:
 2. 作为普通函数调用
 3. 构造器调用
 4. Function.prototype.call和Function.prototype.apply调用
-
+<!-- more -->
 **作为对象的方法调用**
 
 作为对象的方法调用this指向该对象

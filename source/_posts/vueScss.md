@@ -7,7 +7,7 @@ categories:
 ---
 ##  在Vue CLI脚手架中使用scss
 今天学习vue当中遇到了如何配置scss的问题经过查证，写出记录。
-
+<!-- more -->
 `第一步`
 		npm install sass-loader node-sass
 	或者

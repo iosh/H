@@ -7,7 +7,7 @@ tags: JavaScript
 ###  队列
 
 队列是一种*先进先出* 的数据结构，类似于排队点餐，排在第一个的就可以第一个点餐，而后面的只能按照队列顺序等待执行。
-
+<!-- more -->
 ```js
 function Queue() {
 	let items = [];
