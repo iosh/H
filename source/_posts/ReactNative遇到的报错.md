@@ -4,9 +4,9 @@ date: 2018-02-14 19:22:19
 tags: ReactNative
 ---
 
-##最近在学习ReactNative开发,上来就遇到报错,所以写个博客吧自己遇到的报错都总结一下
-
-###报错一error in opening zip file
+## 最近在学习ReactNative开发,上来就遇到报错,所以写个博客吧自己遇到的报错都总结一下
+<!-- more -->
+### 报错一error in opening zip file
 ```
 Scanning folders for symlinks in E:\练习项目\HAPP\node_modules (22ms)
 JS server already running.
@@ -32,12 +32,12 @@ Exception in thread "main" java.util.zip.ZipException: error in opening zip file
 删除dists目录下的所有文件(其实就是gradle-2.14.1-all)多数是因为网络原因gradle的压缩包没下载完全
 导致解压失败,删掉之后他会重新下载解压.
 
-###报错二Your project path contains non-ASCII characters.
+### 报错二Your project path contains non-ASCII characters.
 具体报错内容忘了复制,报错内容机翻都能看懂.
 就是路径中不能有中文.换个目录就好了
 
 
-###报错三Could not find tools.jar
+### 报错三Could not find tools.jar
 
 ```
 * What went wrong:
@@ -49,7 +49,7 @@ Execution failed for task ':app:compileDebugJavaWithJavac'.
 解决办法:
 是java jdk安装问题或者环境变量问题,如果安装了就控制面板卸载java系列,重新安装一路下一步不要更改安装路径.重新安装一下就好了
 
-###报错四No connected devices!
+### 报错四No connected devices!
 
 ```
 
