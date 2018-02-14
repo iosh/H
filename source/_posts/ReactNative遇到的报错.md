@@ -1,3 +1,8 @@
+---
+title: ReactNative遇到的报错
+date: 2018-02-14 19:22:19
+tags: ReactNative
+---
 
 ##最近在学习ReactNative开发,上来就遇到报错,所以写个博客吧自己遇到的报错都总结一下
 
@@ -59,5 +64,3 @@ Execution failed for task ':app:installDebug'.
 https://www.genymotion.com/fun-zone/
 
 这里可以下载个人版本genymotion比as自带的启动快好用
-
-
