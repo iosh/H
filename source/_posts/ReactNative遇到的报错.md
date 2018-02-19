@@ -85,7 +85,10 @@ react-native版本是0.52
 
 最后经多方查询找到解决方案
 linux/macos系统在终端至工程目录输入一下命令
-> rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json
+```
+rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json
+
+```
 
 windows系统只能手动打开上面那个路径然后删掉最后面的那个package.json
 
