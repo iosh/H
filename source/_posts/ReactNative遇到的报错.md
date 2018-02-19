@@ -64,3 +64,29 @@ Execution failed for task ':app:installDebug'.
 https://www.genymotion.com/fun-zone/
 
 这里可以下载个人版本genymotion比as自带的启动快好用
+
+### 报错五Unsupported top level event type "topTouchStart" dispatched
+
+```
+Unsupported top level event type "topTouchStart" dispatched
+
+```
+出现这个报错的时候,我是从react-navigation网站上复制了一段代码,然后保存然后报错了,
+我谷歌搜索发现很多人遇到了这个问题,说react-native一直有这个问题,只能降级才能解决,后来经我测试重新react-native run-android 一下就可以了,报错一次重新编译一下.这个错就会被解决
+
+### 报错六While resolving module `react-native-vector-icons
+
+今天在使用react-native-vector-icons这个库的时候,运行程序之后报错了
+```
+While resolving module `react-native-vector-icons/这里是你具体引入的名称`, the Haste package `react-native-vector-icons` was found.
+```
+react版本是16.2
+react-native版本是0.52
+
+最后经多方查询找到解决方案
+linux/macos系统在终端至工程目录输入一下命令
+> rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json
+
+windows系统只能手动打开上面那个路径然后删掉最后面的那个package.json
+
+然后重新编译并运行即可
