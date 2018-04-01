@@ -8,10 +8,7 @@ tags: 数据结构
 
 <!-- more -->
 
-> 为什么买一本JavaScript的书呢，其实因为C语言的有点难，想从这本书里面学到点东西，然后学习c语言版本的数据结构不是那么难，而且想知道在JavaScript中如何运用到数据结构和算法里面的知识，毕竟在很久一段时间JavaScript都是自己的吃饭工具。
-
-
-> 数据结构和算法的目的是为了搞笑解决常见问题，并且对日后的代码质量起比较大的作用
+> 为什么买一本JavaScript的书呢，其实因为C语言的有点难，想从这本书里面学到点东西，然后学习c语言版本的数据结构不是那么难，而且想知道在JavaScript中如何运用到数据结构和算法里面的知识，毕竟在很久一段时间JavaScript都是自己的吃饭工具。数据结构和算法的目的是为了搞笑解决常见问题，并且对日后的代码质量起比较大的作用
 
 # JavaScript基础
 
@@ -513,3 +510,734 @@ const winner = hotPotato(name, 7)
 console.log(winner)
 ```
 
+# 链表
+
+数组（可以刻称为列表）是一种非常简单的存储数据序列的数据结构。接下来需要学习如何使用链表和动态的数据结构这意味着可以从中任意添加或者移除向，它会按需进行扩容。
+
+要储存多个元素，数组或者列表可能是最常见的数据结构，这种数据结构非常方便，然而这种结构有一个缺点，在大多数语言中数组的大小是固定的，，从数组中的起点或者中间插入和移除项的成本很高，因为这意味着要移动其他的元素，尽管JavaScript中Array类方法提供了方法，但是背后的情况是一样的。这种成本有时候的代价是高昂的，不可以接受的。
+
+链表储存有序的元素集合，但是不同于数组，链表中的元素在内存中并不是连续放置的，每个元素由一个储存元素本身的节点和一个指向下一个元素的引用（c语言中的指针）组成，相对于数组，链表的一个好处在于，添加或者移除元素的时候不需要移动其他的元素，然而，链表需要使用指针，因此实现链表时，需要额外注意，数组的另一个细节是可以`直接访问任何位置的元素`，然而想访问链表中的一个元素，`需要从七点开始迭代链表直到找到位置`。
+
+## 创建一个链表
+
+使用JavaScript实现一个链表
+
+```JavaScript
+class Node {
+    constructor(element) {
+        this.element = element;
+        this.next = null;
+    }
+}
+class LinkedList {
+    constructor() {
+        // 储存列表项的数量length属性
+        this.length = 0;
+        // 储存第一个节点的引用
+        this.head = null;
+    }
+
+    // 向链表尾部添加一个新的元素 （实现第一步）
+    append (element) {
+      const node = new Node(element);
+      let current;
+      if (this.head === null) {
+        // 如果链表的第一个元素为空
+        this.head = node;
+      } else {
+        // 如果链表不为空
+        current = this.head; // 储存链表第一个元素
+        while (current.next) { // 迭代链表直到找到链表的结尾
+          current = current.next;
+        }
+        current.next = node;
+      }
+      this.length++; // 更新链表长度
+      // 此时链表的最后一个元素的next会指向空因为Node类预先赋值为noll
+    }
+    // 向链表指定位置插入一个新的项
+    insert (position, element) {}
+    // 从链表的特定位置移除一项
+    removeAt (position) {}
+    // 从链表中移除一项
+    remove (element) {}
+    // 返回元素在链表中的索引
+    indexOf (element) {}
+    // 如果链表中不包含任何元素返回true否则返回false
+    isEmpty () {}
+    // 返回链表包含的元素个数
+    size () {}
+    // 由于链表项使用了Node类，就需要重写集成于JavaScript对象默认的toString方法，让他只输出元素的值
+    toString () {}
+}
+const list = new LinkedList();
+list.append(15)
+list.append(18)
+console.log(list) // 这个时候测试刚刚实现的append方法会在谷歌控制台
+// 得到我们的list实例
+// 大概长这个样子
+/**
+list = LinkedList {
+    head: {
+        element: 15,
+        next: {
+            element: 18,
+            next: null
+        }
+    }
+    length: 2
+}
+
+// 大概就是上面这种结构
+*/
+
+```
+
+appemd 方法实现了，接下来实现其他方法
+
+```JavaScript
+// 实现 removeAt 方法
+class Node {
+    constructor(element) {
+        this.element = element;
+        this.next = null;
+    }
+}
+class LinkedList {
+    constructor() {
+        // 储存列表项的数量length属性
+        this.length = 0;
+        // 储存第一个节点的引用
+        this.head = null;
+    }
+
+    // 向链表尾部添加一个新的元素
+    append (element) {
+      const node = new Node(element);
+      let current;
+      if (this.head === null) {
+        // 如果链表的第一个元素为空
+        this.head = node;
+      } else {
+        // 如果链表不为空
+        current = this.head; // 储存链表第一个元素
+        while (current.next) { // 迭代链表直到找到链表的结尾
+          current = current.next;
+        }
+        current.next = node;
+      }
+      this.length++; // 更新链表长度
+      // 此时链表的最后一个元素的next会指向空因为Node类预先赋值为noll
+    }
+    // 向链表指定位置插入一个新的项
+    insert (position, element) {}
+
+    // 从链表的特定位置移除一项
+    removeAt (position) {
+      if(position > -1 && position < this.length){ // 检查是否越界
+        // 判断指定位置是大于-1 和小于链表长度
+        let current = this.head, previous, index = 0;
+        // 如果制定项是第一项
+        if (position === 0){
+          this.head = current.next; // 直接让头指针指向第二位
+        } else {
+          while(index ++ < position) { // 迭代链表
+            // 储存要被删除的前一个元素
+            previous = current;
+            // 储存要被删除的后一个匀速
+            current = current.next;
+          }
+          // 链接前后，被删除的元素被丢弃在内存中等待垃圾回收。
+          previous.next = current.next;
+          this.length --;
+        }
+      }
+    }
+    // 从链表中移除一项
+    remove (element) {}
+    // 返回元素在链表中的索引
+    indexOf (element) {}
+    // 如果链表中不包含任何元素返回true否则返回false
+    isEmpty () {}
+    // 返回链表包含的元素个数
+    size () {}
+    // 由于链表项使用了Node类，就需要重写集成于JavaScript对象默认的toString方法，让他只输出元素的值
+    toString () {}
+}
+const list = new LinkedList();
+list.append(10)
+list.append(20)
+list.append(30)
+list.append(40)
+console.log(list) // length 4
+list.removeAt(3)
+console.log(list) // length 3
+```
+
+实现insert方法，任意位置插入一个元素
+
+```JavaScript
+class Node {
+    constructor(element) {
+        this.element = element;
+        this.next = null;
+    }
+}
+class LinkedList {
+    constructor() {
+        // 储存列表项的数量length属性
+        this.length = 0;
+        // 储存第一个节点的引用
+        this.head = null;
+    }
+
+    // 向链表尾部添加一个新的元素
+    append (element) {
+      const node = new Node(element);
+      let current;
+      if (this.head === null) {
+        // 如果链表的第一个元素为空
+        this.head = node;
+      } else {
+        // 如果链表不为空
+        current = this.head; // 储存链表第一个元素
+        while (current.next) { // 迭代链表直到找到链表的结尾
+          current = current.next;
+        }
+        current.next = node;
+      }
+      this.length++; // 更新链表长度
+      // 此时链表的最后一个元素的next会指向空因为Node类预先赋值为noll
+    }
+    // 向链表指定位置插入一个新的项
+    insert (position, element) {
+      if (position >= 0 && position <= this.length) { // 越界检查保证位置合理
+        const node = new Node(element);
+        let current = this.head, previous, index = 0;
+
+        if (position === 0) {
+          // 在第一个位置添加
+          node.netx = current; // 将原有链表添加在他后面
+          head = node; // 并将头指向这个元素
+        } else {
+          while (index ++ < position) {
+            previous = current;
+            current = current.next;
+          }
+          node.next = current;
+          previous.next = node;
+        }
+        this.length ++
+        return true
+      } else {
+        return false;
+      }
+    }
+
+    // 从链表的特定位置移除一项
+    removeAt (position) {
+      if(position > -1 && position < this.length){ // 检查是否越界
+        // 判断指定位置是大于-1 和小于链表长度
+        let current = this.head, previous, index = 0;
+        // 如果制定项是第一项
+        if (position === 0){
+          this.head = current.next; // 直接让头指针指向第二位
+        } else {
+          while(index ++ < position) { // 迭代链表
+            // 储存要被删除的前一个元素
+            previous = current;
+            // 储存要被删除的后一个匀速
+            current = current.next;
+          }
+          // 链接前后，被删除的元素被丢弃在内存中等待垃圾回收。
+          previous.next = current.next;
+          this.length --;
+        }
+      }
+    }
+    // 从链表中移除一项
+    remove (element) {}
+    // 返回元素在链表中的索引
+    indexOf (element) {}
+    // 如果链表中不包含任何元素返回true否则返回false
+    isEmpty () {}
+    // 返回链表包含的元素个数
+    size () {}
+    // 由于链表项使用了Node类，就需要重写集成于JavaScript对象默认的toString方法，让他只输出元素的值
+    toString () {}
+}
+const list = new LinkedList();
+list.append(10)
+list.append(20)
+list.append(30)
+list.append(40)
+console.log(list)
+list.removeAt(3)
+console.log(list)
+list.insert(2, 100)
+console.log(list)
+
+```
+
+接下来思路差不多了，一口气写完
+
+```JavaScript
+
+class Node {
+    constructor(element) {
+        this.element = element;
+        this.next = null;
+    }
+}
+class LinkedList {
+    constructor() {
+        // 储存列表项的数量length属性
+        this.length = 0;
+        // 储存第一个节点的引用
+        this.head = null;
+    }
+
+    // 向链表尾部添加一个新的元素
+    append (element) {
+      const node = new Node(element);
+      let current;
+      if (this.head === null) {
+        // 如果链表的第一个元素为空
+        this.head = node;
+      } else {
+        // 如果链表不为空
+        current = this.head; // 储存链表第一个元素
+        while (current.next) { // 迭代链表直到找到链表的结尾
+          current = current.next;
+        }
+        current.next = node;
+      }
+      this.length++; // 更新链表长度
+      // 此时链表的最后一个元素的next会指向空因为Node类预先赋值为noll
+    }
+    // 向链表指定位置插入一个新的项
+    insert (position, element) {
+      if (position >= 0 && position <= this.length) { // 越界检查保证位置合理
+        const node = new Node(element);
+        let current = this.head, previous, index = 0;
+
+        if (position === 0) {
+          // 在第一个位置添加
+          node.netx = current; // 将原有链表添加在他后面
+          head = node; // 并将头指向这个元素
+        } else {
+          while (index ++ < position) {
+            previous = current;
+            current = current.next;
+          }
+          node.next = current;
+          previous.next = node;
+        }
+        this.length ++
+        return true
+      } else {
+        return false;
+      }
+    }
+
+    // 从链表的特定位置移除一项
+    removeAt (position) {
+      if(position > -1 && position < this.length){ // 检查是否越界
+        // 判断指定位置是大于-1 和小于链表长度
+        let current = this.head, previous, index = 0;
+        return this.head.element; // 修复删除0返回值不正确
+        // 如果制定项是第一项
+        if (position === 0){
+          this.head = current.next; // 直接让头指针指向第二位
+        } else {
+          while(index ++ < position) { // 迭代链表
+            // 储存要被删除的前一个元素
+            previous = current;
+            // 储存要被删除的后一个匀速
+            current = current.next;
+          }
+          // 链表前后，被删除的元素被丢弃在内存中等待垃圾回收。
+          previous.next = current.next;
+          this.length --;
+          return current.element
+        }
+      } else {
+        return null
+      }
+    }
+    // 从链表中移除一项
+    remove (element) {
+      const index = this.indexOf(element);
+      return this.removeAt(index);
+    }
+    // 返回元素在链表中的索引
+    indexOf (element) {
+      // 如果找到元素就返回index 如果找不到就返回-1
+      let current = this.head,index = 0;
+      while(current) {
+        if (element === current.element) {
+          return index;
+        }
+        index ++;
+        current = current.next;
+      }
+      return -1;
+    }
+    // 如果链表中不包含任何元素返回true否则返回false
+    isEmpty () {
+      return this.length === 0
+    }
+    // 返回链表包含的元素个数
+    size () {
+      return this.length
+    }
+    // 由于链表项使用了Node类，就需要重写集成于JavaScript对象默认的toString方法，让他只输出元素的值
+    toString () {
+      let current = this.head, string = '';
+      while (current) {
+        string += ` ${current.element}`; // 带点空格好看
+        current = current.next;
+      }
+      return string;
+    }
+    // 打印链表元素
+    getHead () {
+      return this.head;
+    }
+}
+
+```
+
+## 双向链表
+
+链表有很多不同的类型，上面的叫做`单项链表`对应的就有双向链表，在双向链表中，链接是双向的，一个链向下一个链向上
+
+```JavaScript
+class Node {
+    constructor(element){
+        this.element = element;
+        this.next = null;
+        this.preve = null;
+    }
+}
+
+class DoublyLinkedList {
+    constructor() {
+        this.length = 0;
+        this.head = null;
+        this.tail = null;
+    }
+}
+// 结构改成这个样子
+```
+
+那么大体和上面的例子差不多就不单独举例了
+
+```JavaScript
+
+class Node {
+    constructor(element){
+        this.element = element;
+        this.next = null;
+        this.prev = null;
+    }
+}
+
+class DoublyLinkedList {
+    constructor() {
+        this.length = 0;
+        this.head = null;
+        this.tail = null;
+    }
+  insert(position, element){
+
+    //检查是否越界
+     if(position >= 0 && position <= this.length){
+            var node = new Node(element),
+                    current = this.head,
+                    previous,
+                    index = 0;
+            if(position === 0){ // 链表为空直接赋值
+                if(!this.head){
+                    this.head = node;
+                    this.tail = node;
+                }else{
+                    node.next = current;
+                    current.prev = node;
+                    this.head = node;
+                }
+            }else if(position === this.length){ // 链表末尾
+                current = this.tail;
+                current.next = node;
+                node.prev = current;
+                this.tail = node;
+            }else{
+                while(index++ < position){ // 查找链表位置插入
+                    previous = current;
+                    current = current.next;
+                }
+                node.next = current;
+                previous.next = node;
+
+                current.prev = node;
+                node.prev = previous;
+            }
+            this.length++;
+            return true;
+        }else{
+            return false;
+     }
+  }
+  removeAt (position) {
+    if(position > -1 && position < this.length) {
+      let current = this.head, previous, index = 0;
+
+      if (position === 0) {
+        // 如果是第一项
+        this.head = current.next;
+        if (this.length === 1) {
+          this.tail = null;
+        } else {
+          this.prev = null;
+        }
+      } else if (position === this.length -1) {
+        current = this.tail;
+        this.tail = current.prev;
+        this.tail.next = null;
+      } else {
+        while (index ++ < position) {
+          previous = current;
+          current - current.next;
+        }
+        previous.next = current.next;
+        current.next.prev = previous;
+      }
+      this.length --;
+      return current.element;
+    } else {
+      return null
+    }
+  }
+}
+const list = new DoublyLinkedList()
+list.insert(0, 100)
+
+console.log(list)
+
+```
+
+# 集合
+
+> 集合是一种由无需且唯一（即不能重复）的项组成的，这个数据结构使用了有限集合相同的数学概念。
+
+JavaScript在2015年发布了ECMAscript2015即ES6，其中就包含了set类的实现。
+
+```JavaScript
+class Set {
+    constructor(){
+        this.items = {};
+    }
+}
+
+/*
+这里items使用了对象而不是数组表示集合，但是可以以使用数组
+在JavaScript中的对象不允许一个键指向两个不同的属性，这也就保证了
+集合里面的元素都是唯一的
+*/
+```
+
+接下来在class中添加方法
+
+```JavaScript
+class Set {
+    constructor(){
+        this.items = {};
+    }
+
+    // 返回布尔值
+    has(value) {
+        return this.items.hasOwnProperty(value);
+    }
+    add(value) {
+      if(!this.has(value)) {
+        this.items[value] = value;
+        return true;
+      }
+      return false;
+    }
+    remove(value) {
+      if(this.has(value)) {
+        delete this.items[value]
+        return true;
+      }
+      return false;
+    }
+    clear() {
+      this.items = {}
+    }
+    size() {
+      return Object.keys(this.items).length
+    }
+    values() {
+      return Object.keys(this.items)
+    }
+}
+// 这段代码没什么难度，注释都不需要，思想挺好的，以前都没想到过
+
+```
+
+## 集合操作
+
+对于集合可以进行如下操作
+
+1. 并集：对于给定的两个集合，返回一个包含两个集合中所有元素的新集合
+
+2. 交集：对于给定的两个集合， 返回一个包含两个集合中共有的新集合
+
+3. 差集：对于给定的两个集合， 返回一个包含所有存在第一个集合并且不存在第二个集合的新集合
+
+4. 子集：验证一个给定集合是否是另一个集合的子集
+
+并集：并集的数学概念是集合A和B的并集
+
+```JavaScript
+// 实现set 类的并集方法
+
+class SetUnion extends Set {
+    union (otherSet) {
+        const unionSet = new Set();
+        let values = this.values()
+        for (let i = 0; i < values.length; i++) {
+            unionSet.add(values[i])
+        }
+        values = otherSet.value()
+        for (let i = 0; i < values.length; i++) {
+            unionSet.add(values[i])
+        }
+        return unionSet
+    }
+}
+const setA = new SetUnion()
+setA.add(1)
+setA.add(2)
+setA.add(3)
+
+const setB = new SetUnion()
+
+setB.add(3)
+setB.add(4)
+setB.add(5)
+
+const unionAB = setA.union(setB)
+console.log(unionAB.values())
+
+```
+
+交集： 交集的数学概念是集合A和集合B的交集
+
+实现以下Set类的intersection方法
+
+```JavaScript
+class Intersection extends Set {
+    intersection (otherSet) {
+        const intersectionSet = new Set();
+        let values = this.values();
+        for (let i = 0; i < values.length; i++) {
+            if (otherSet.has(values[i])){
+                instersectionSet.add(values[i])
+            }
+        }
+        return instersectionSet;
+    }
+}
+class Intersection extends Set {
+    intersection (otherSet) {
+        const intersectionSet = new Set();
+        let values = this.values();
+        for (let i = 0; i < values.length; i++) {
+            if (otherSet.has(values[i])){
+                intersectionSet.add(values[i])
+            }
+        }
+        return intersectionSet;
+    }
+}
+const setA = new Intersection()
+setA.add(1)
+setA.add(2)
+setA.add(3)
+
+const setB = new Intersection()
+
+setB.add(3)
+setB.add(4)
+setB.add(5)
+
+const unionAB = setA.intersection(setB)
+console.log(unionAB.values())// ['3']
+```
+
+差集：差集的数学概念，集合A和集合B的差集，表示A—B
+
+```JavaScript
+class Difference extends Set {
+    difference (otherSet) {
+        const differenceSet = new Set()
+        let values = this.values()
+        for (let i = 0; i < values.length; i++) {
+            if(!otherSet.has(values[i])){
+                differenceSet.add(values[i])
+            }
+        }
+        return differenceSet
+    }
+}
+const setA = new Difference()
+setA.add(1)
+setA.add(2)
+setA.add(3)
+
+const setB = new Difference()
+
+setB.add(3)
+setB.add(4)
+setB.add(5)
+
+const unionAB = setA.difference(setB)
+console.log(unionAB.values()) // ['1','2']
+
+```
+
+子集：子集的数学概念，集合A是集合B的子集就是说B包含了A的所有元素
+
+```JavaScript
+class Subset extends Set {
+    subset (otherSet) {
+        if (this.size() > otherSet.size()) {
+            return false;
+        } else {
+            const values = this.values();
+            for (let i = 0; i < values.length; i++) {
+                if (!otherSet.has(values[i])){
+                    return false
+                }
+            }
+            return true;
+        }
+    }
+}
+const setA = new Subset()
+setA.add(1)
+setA.add(2)
+setA.add(3)
+
+const setB = new Subset()
+
+setB.add(3)
+setB.add(4)
+setB.add(5)
+const setC = new Subset()
+setA.add(1)
+setA.add(2)
+console.log(setC.subset(setA)) // true
+```
