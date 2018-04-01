@@ -1241,3 +1241,87 @@ setA.add(1)
 setA.add(2)
 console.log(setC.subset(setA)) // true
 ```
+
+# 字典和散列表
+
+## 字典
+
+集合、字典和散列表可以表示一组互不相同的元素(不重复)的值，在集合中重要的是每个值本身，并把他当做主要元素， 在字典中使用[键，值]的形式储存数据，在散列表中也是一样，但是两种数据的结构实现方式略有不同。
+
+### 创建一个字典
+
+和set类似，ES6也已经实现了Map结构，这就是所说的字典结构。
+实现一个比Map简单的。
+
+```JavaScript
+class Dictionary {
+    constructor() {
+        this.items = {}
+    }
+    has (key) {
+        return this.items.hasOwnProperty(key)
+    }
+    set (key, value) {
+        this.items[key] = value
+    }
+    remove (key) {
+        if (this.has(key)){
+            delete this.items[key];
+            return true
+        }
+        return false
+    }
+    get (key) {
+        return this.has(key) ? this.items[key] : undefinde
+    }
+}
+const dictionary = new Dictionary()
+dictionary.set('gandalf','gandelf@qq.com')
+dictionary.set('john','john@qq.com')
+dictionary.set('tyrion','tyrion@qq.com')
+console.log(dictionary)
+// es6的Map数据结构，是真正的值-值，因为普通对象的键只能是字符串，而es6的Map
+// 键可以是任何内容，数字啊，字符串啊，甚至dom都可以
+```
+
+### 散列表
+
+`散列算法`的作用是尽可能快的在数据结构中找到一个值，上面的类中需要找到一个值，需要遍历整个数据结构来找到他，如果使用`散列函数`就知道值的具体位置，因此能够快速检索到该值，散列函数的作用是给定一个键值，然后返回值在表中的地址。
+
+### 创建一个散列表
+
+```JavaScript
+class HashTable {
+  constructor() {
+    this.table = [];
+  }
+  // 散列函数
+  liseloseHashCode (key) {
+    let hash = 0;
+    console.log(key)
+    for(let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    return hash % 37; // 为了返回一个比较小的值。
+  }
+  put (key, value) {
+    const position = this.liseloseHashCode(key);
+    this.table[position] = value
+  }
+
+  get (key) {
+    return this.table[this.liseloseHashCode(key)];
+  }
+
+  remove (key) {
+    this.table[this.liseloseHashCode(key)] = undefinde
+  }
+}
+
+const hash = new HashTable()
+hash.put('gandalf','gandelf@qq.com')
+hash.put('john','john@qq.com')
+hash.put('tyrion','tyrion@qq.com')
+console.log(hash.get('john'))
+// 这里数组储存了三个元素，但是占用了25个空间，感觉很不合理。
+```
