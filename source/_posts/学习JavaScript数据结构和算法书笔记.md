@@ -322,5 +322,194 @@ console.log(100,16) // 64
 创建自己的类来表示一个队列和上面的例子非常相似知识添加移除元素原则不同
 
 ```JavaScript
+class Queue {
+    constructor(){
+        // 声明一个数组保存队列里的元素
+        this.items = [];
+        }
+        // 添加元素到队列末尾
+    enqueue (element) {
+        this.items.push(element)
+    }
+        // 移除并返回队列第一个元素
+    dequeue() {
+        return this.items.shift()
+    }
+        // 返回队列第一个元素
+    front() {
+        return this.items[0];
+    }
+        //  判断元素是否为空
+    isEmpty() {
+        return this.items.length === 0;
+    }
+        //  清空队列
+    clear() {
+        this.items = []
+    }
+        //  返回队列元素长度
+    size() {
+        return items.length;
+    }
+    // 打印队列
+    print() {
+        console.log(this.items)
+    }
+}
+```
+
+## 使用队列
+
+上面创建了个队列的类，现在生成一个对象，就可以使用它了
+
+```JavaScript
+const queue = new Queue()
+
+console.log(queue.isEmpty()) // 返回true，因为队列为空
+
+//现在添加几个元素
+
+queue.enqueue('john')
+queue.enqueue('jack')
+queue.enqueue('camila')
+
+queue.print() // ["john", "jack", "camila"]
+
+console.log(queue.size()) // 输出3
+console.log(queue.isEmpty()) //false 队列不为空
+
+queue.dequeue()
+queue.dequeue()
+queue.print() // ["camila"] 前面的两个元素已经被删除掉了
+// 向队列中添加三个元素
+
 
 ```
+
+## 队列优先
+
+列队大量应用在计算机科学和生活中，这里可以修改上面的列队，让他称为一个优先列队，元素的添加和移除是基于优先级的，现实中的例子，比如医院中的重症患者和普通患者，优先级别是不同的。
+
+要实现一个优先列队，有两种选项：设置优先级，然后在正确的位置添加元素，或者用入列操作添加元素，然后按照优先级移除他们。
+
+```JavaScript
+function PriorityQueue() {
+   let items = [];
+   this.enqueue = function (element) {
+        this.items.push(element)
+    }
+    this.dequeue = function () {
+        return this.items.shift()
+    }
+    this.front = function () {
+        return this.items[0];
+    }
+    this.isEmpty = function () {
+        return this.items.length === 0;
+    }
+    this.clear = function () {
+        this.items = []
+    }
+    this.size = function () {
+        return this.items.length;
+    }
+    this.print = function () {
+        console.log(this.items)
+    }
+    function QueueElenent (element, priority) {
+        this.element = element;
+        this.priority = priority;
+    }
+
+ function QueueElement (element, priority){
+  this.element = element;
+  this.priority = priority;
+ }
+ this.enqueue = function(element, priority){
+  let queueElement = new QueueElement(element, priority);
+  let added = false;
+  for (let i=0; i<items.length; i++){
+    if (queueElement.priority < items[i].priority){
+      items.splice(i,0,queueElement);
+      added = true;
+      break;
+    }
+  }
+  if (!added){
+    items.push(queueElement);
+  }
+ };
+ this.print = function(){
+  for (let i=0; i<items.length; i++){
+    console.log(`${items[i].element} - ${items[i].priority}`);
+  }
+ };
+}
+
+const queue = new PriorityQueue()
+
+queue.enqueue('john',2)
+queue.enqueue('jack',1)
+queue.enqueue('camila',1)
+queue.print()
+
+// 这里就是就是增加了一个QueueElement类，这个元素包含了要添加列队的元素，他可以是任意类型的，还有本身的优先级
+
+// 如果列队为空，可以直接插入，否则就需要比较这个元素和其他列队元素的优先级，当找到一个优先级值更大（值越大优先级越底）就把元素插入在他之前
+```
+
+## 循环队列--击鼓传花
+
+另一种队列的实现就是`循环列队`，列队循环的例子就是击鼓传花游戏，在游戏中，若干小孩围城一个圆圈，把花尽快传递给旁边的人，某一时刻传花停止，这个时候花在谁手中，谁就退出圆圈，结束游戏，重复这个过程，直到只剩一个小孩。
+
+```JavaScript
+class Queue {
+    constructor(){
+        this.items = [];
+        }
+    enqueue (element) {
+        this.items.push(element)
+    }
+    dequeue() {
+        return this.items.shift()
+    }
+    front() {
+        return this.items[0];
+    }
+    isEmpty() {
+        return this.items.length === 0;
+    }
+    clear() {
+        this.items = []
+    }
+    size() {
+        return this.items.length;
+    }
+    print() {
+        console.log(this.items)
+    }
+}
+
+function hotPotato (nameList, num) {
+    const queue = new Queue();
+    for (let i = 0; i < nameList.length; i++) {
+        queue.enqueue(nameList[i]);
+    }
+
+    let eliminated = '';
+
+    while (queue.size() > 1) {
+        for (let i = 0; i < num; i++) {
+            queue.enqueue(queue.dequeue())
+        }
+        eliminated = queue.dequeue()
+        console.log("被淘汰", eliminated)
+    }
+    return queue.dequeue()
+}
+const name = new Array('john','jack','camila','ingrif','carl')
+console.log(typeof name)
+const winner = hotPotato(name, 7)
+console.log(winner)
+```
+
