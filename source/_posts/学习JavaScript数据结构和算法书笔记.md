@@ -1325,3 +1325,362 @@ hash.put('tyrion','tyrion@qq.com')
 console.log(hash.get('john'))
 // 这里数组储存了三个元素，但是占用了25个空间，感觉很不合理。
 ```
+
+# 树
+
+目前为止学习的都是一些`顺序`数据结构，第一个非顺序数据结构是散列表，接下来学习另一种非顺序数据结构-树，对于储存需要快速查找的数据非常有用。
+
+树是一种分层数据的抽象模型，现实生活中最常见的树的例子就是家谱，系统目录等。
+
+## 树的相关术语
+
+一个树结构包含一系列存在父子的节点，每个节点都有一个父节点，除了顶部的第一个节点以及零个或者多个子节点。
+
+```
+                   11
+                /     \
+              /         \
+            /             \
+          7                15
+       /     \         /      \
+      5       9       13      20
+     / \     / \     /  \    /  \
+    3   6   8   10  12  14  18  25
+```
+
+位于顶部的11叫做根节点，树中的每个元素都叫做节点，节点分为内部节点和外部节点，至少右一个子节点的节点称为内部节点7,5,9,15,13,20 都是内部节点，没有子元素的节点称为外部节点或者叶节点3,6,5,10,12,14,18,25都是叶节点。
+
+一个节点可以右祖先和后端，一个节点（除了根节点）的祖先包括父节点，祖父节点，曾祖父节点等，一个节点的后代包括子节点，孙子节点，曾孙节点等，例如8的祖先节点右7和11，后代节点右3和6
+
+另外一个有关的术语是子树，子树由节点和它的后代构成，例如13,12,14构成了一棵子树
+
+节点的一个属性是深度，节点的深度取决于它的祖先节点数量，比如节点3有三个祖先节点，他的深度为3.
+
+树的高度取决于所有节点深度的最大值，一棵树也可以被分解成层级，根节点在0层他的子节点在1层，以此类推上面的树高度为3.
+
+## 二叉树和二叉搜索树
+
+二叉树的每个节点只能有两个节点：一个左侧节点，另一个右侧节点，这些定义有助于写出更高效的对树的操作，二叉树在计算机科学中应用很广。（二叉树不能右重复节点，比如系统目录同目录下不能有重名文件夹）
+
+二叉搜索树BST是二叉树的一种，但是他只允许你在左侧节点储存比父节点小的值，右侧节点储存比父节点大的值。
+
+实现一个二叉树
+
+```JavaScript
+class Node {
+  constructor(key) {
+    this.key = key;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+  // insert 向树中插入一个节点
+  insert (key) {
+    const newNode = new Node(key);
+    if (this.root === null) {
+      // 如果树为空
+      this.root = newNode;
+    } else {
+      this.inserNode(this.root, newNode)
+    }
+  }
+  
+  // 查询插入函数
+  
+  inserNode (node, newNode) {
+    // 先判断比当前节点大（右）还是小（左）分别去左或者去右
+    if (newNode.key < node.key) {
+      // 如果left为空直接赋值
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        // 不为空递归调用
+        this.inserNode(node.left,newNode);
+      }
+    } else {
+       // 思路和上面一样
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.inserNode(node.right, newNode);
+      }
+    }
+  }
+  
+  
+}
+const tree = new BinarySearchTree()
+tree.insert(7)
+tree.insert(15)
+tree.insert(5)
+tree.insert(3)
+console.log(tree)
+```
+
+## 树的遍历
+
+遍历一棵树是指访问树的每个节点，并对他们进行某种操作的过程，常用有三种树的遍历方法
+
+### 中序遍历
+
+中序遍历是一种以上行顺序访问BST所有节点的遍历方式，也就是从最小到最大的顺序访问所有节点，中序遍历一种应有就是对树进行排序操作
+
+```JavaScript
+class InOrderTraverse extends BinarySearchTree {
+    inOrderTraverse (node, callback) {
+    console.log(node)
+        if (node !== null) {
+            this.inOrderTraverse(node.left,callback)
+            callback(node.key)
+            this.inOrderTraverse(node.right,callback)
+        }
+    }
+}
+const traverse = new InOrderTraverse()
+const tree = new BinarySearchTree()
+tree.insert(7)
+tree.insert(15)
+tree.insert(5)
+tree.insert(3)
+traverse.inOrderTraverse(tree.root, (key) => console.log(key))
+```
+
+### 先序遍历
+
+先序遍历是以优先于后代节点的顺序访问每个节点，先序遍历一种应用是打印结构文档
+
+```JavaScript 
+class PreorderTraverseNode extends BinarySearchTree {
+    preOrderTraverse (root,callback) {
+      this.preOrderTraverseNode(root,callback)
+    }
+    preOrderTraverseNode(node, callback) {
+      if (node !== null) {
+        callback(node.key);
+        this.preOrderTraverseNode(node.left,callback);
+        this.preOrderTraverseNode(node.right, callback)
+      }
+    }
+}
+const a = new PreorderTraverseNode()
+const tree = new BinarySearchTree()
+tree.insert(7)
+tree.insert(15)
+tree.insert(5)
+tree.insert(3)
+console.log(tree)
+a.preOrderTraverse(tree.root,(key) => console.log(key))
+```
+
+### 后序遍历
+
+后序遍历是现房问节点的后代，在访问节点本身，后序遍历应用是计算一个目录和他子目录中所有文件占用空间的大小。
+
+```JavaScript
+class PostOrderTraverseNode extends BinarySearchTree {
+   postOrderTraverse (root,callback) {
+     this.postOrderTraverseNode(root,callback)
+   }
+  postOrderTraverseNode(node, callback) {
+    console.log(node)
+    if(node !== null) {
+      this.postOrderTraverseNode(node.left,callback);
+      this.postOrderTraverseNode(node.right,callback)
+      callback(node.key)
+    }
+  }
+}
+const b = new PostOrderTraverseNode()
+const tree = new BinarySearchTree()
+tree.insert(7)
+tree.insert(15)
+tree.insert(5)
+tree.insert(3)
+
+b.postOrderTraverse(tree.root, (key) => console.log(key))
+```
+
+### 搜索树中的值
+
+在树中搜索经常有三种搜索：
+
+1. 最小值
+
+2. 最大值
+
+3. 特定值
+
+### 搜索最小值和最大值
+
+根据树的规定，那么最小值一定在最左端的末枝，对应的最大的在最右端。
+
+先实现最小值方法
+
+```JavaScript
+class MidNode extends BinarySearchTree {
+  mid (root) {
+    return this.midNode(root)
+  }
+  midNode (node) {
+    if(node) {
+      while(node && node.left !== null) {
+        node = node.left
+      }
+      return node.key
+    }
+    return null
+  }
+}
+
+const midNode = new MidNode()
+const tree = new BinarySearchTree()
+tree.insert(7)
+tree.insert(15)
+tree.insert(5)
+tree.insert(3)
+console.log(midNode.mid(tree.root)) // 3
+```
+
+同理最大值就是最右了
+
+```JavaScript
+class MaxNode extends BinarySearchTree {
+  max (root) {
+    return this.maxNode(root)
+  }
+  maxNode (node) {
+    if(node) {
+      while(node && node.right !== null) {
+        node = node.right
+      }
+      return node.key
+    }
+    return null
+  }
+}
+
+const midNode = new MaxNode()
+const tree = new BinarySearchTree()
+tree.insert(7)
+tree.insert(15)
+tree.insert(5)
+tree.insert(3)
+console.log(midNode.max(tree.root))// 15
+```
+
+### 搜索特定值
+
+在BST树中实现搜索
+
+```JavaScript
+
+class Search extends BinarySearchTree {
+  search (root, key) {
+    return this.searchNode(root, key)
+  }
+  searchNode (node, key) {
+    if (node === null) {
+      return false;
+    }
+    
+    if (key < node.key) { // 小于向左
+      return this.serachNode(node.left, key);
+    } else if (key > node.key) {// 大于向右
+      return this.searchNode(node.right, key)
+    } else {// 不大于不小于就是等于
+      return true
+    }
+  }
+}
+const search = new Search()
+const tree = new BinarySearchTree()
+tree.insert(7)
+tree.insert(15)
+tree.insert(5)
+tree.insert(3)
+console.log(search.search(tree.root, 7)) // true
+```
+
+## 移除一个节点
+
+移除一个节点比较复杂，因为移除有很多情况。
+
+```JavaScript
+class Remove extends BinarySearchTree {
+   mid (root) {
+    return this.midNode(root)
+  }
+  midNode (node) {
+    if(node) {
+      while(node && node.left !== null) {
+        node = node.left
+      }
+      return node.key
+    }
+    return null
+  }
+  remove (root,key) {
+    this.root = this.removeNode(root, key)
+  }
+  removeNode (node, key) {
+    if (node === null) {
+      // 如果节点为空
+      return null
+    }
+    
+    if (key < node.key) {
+      // 递归左节点
+      node.left = this.removeNode(node.left, key)
+      // 返回值
+      return node
+    } else if (key > node.key) {
+      // 递归右节点
+      node.right = this.removeNode(node.right,key)
+      // 返回值
+      return node
+    } else {
+        // 不大于不小于那么就是等于
+      
+      // 第一种情况它是最末尾的一个叶节点，没有子节点了
+      
+      if (node.left === null && node.rhght === null) {
+        // 移除当前节点的引用
+        node = null;
+        return node;
+      }
+      
+      // 第二种情况不是叶节点但是只有一个子节点
+      
+      if (node.left === null) {
+        node = node.right;
+        return node
+      } else if (node.right === null) {
+        node = node.left;
+        return node;
+      }
+      
+      // 第三种情况它有两个子节点
+      // 思路是使用左叶或者右叶替换掉要被移除的节点
+      
+      const aux = this.mid(node.right)
+      node.key = aux.key
+      node.right = this.removeNode(node.right, aux.kye)
+      return node
+    }
+  }
+}
+const remove = new Remove()
+const tree = new BinarySearchTree()
+tree.insert(7)
+tree.insert(15)
+tree.insert(5)
+tree.insert(3)
+console.log(tree.root)
+remove.remove(tree.root, 7)
+console.log(tree.root)
+```
