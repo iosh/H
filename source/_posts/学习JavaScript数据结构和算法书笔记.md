@@ -1632,7 +1632,7 @@ class Remove extends BinarySearchTree {
       // 如果节点为空
       return null
     }
-    
+
     if (key < node.key) {
       // 递归左节点
       node.left = this.removeNode(node.left, key)
@@ -1645,17 +1645,17 @@ class Remove extends BinarySearchTree {
       return node
     } else {
         // 不大于不小于那么就是等于
-      
+
       // 第一种情况它是最末尾的一个叶节点，没有子节点了
-      
+
       if (node.left === null && node.rhght === null) {
         // 移除当前节点的引用
         node = null;
         return node;
       }
-      
+
       // 第二种情况不是叶节点但是只有一个子节点
-      
+
       if (node.left === null) {
         node = node.right;
         return node
@@ -1663,10 +1663,10 @@ class Remove extends BinarySearchTree {
         node = node.left;
         return node;
       }
-      
+
       // 第三种情况它有两个子节点
       // 思路是使用左叶或者右叶替换掉要被移除的节点
-      
+
       const aux = this.mid(node.right)
       node.key = aux.key
       node.right = this.removeNode(node.right, aux.kye)
@@ -1683,4 +1683,393 @@ tree.insert(3)
 console.log(tree.root)
 remove.remove(tree.root, 7)
 console.log(tree.root)
+```
+
+# 图
+
+> 图是另一种非线性结构，而且图是一个庞大的主题，深入探索图的奇妙世界每个部分都可以写一本书
+
+这一章右很多图，我画不出来。
+
+## 图的相关术语
+
+`图`是网格结构的抽象模型，图是右一组由边链接的节点（或定点），学习图是十分重要的，因为任何二元关系都可以用图来表示
+
+任何的社交网络如Facebook 、 微博、 知乎都可以用图来表示
+
+图在数学和技术上的基础
+
+一个图 G = (V,E) 由以下元素组成
+
+V: 一组定点
+
+E: 一组边，链接V中的点
+
+在着手实现算法之前，先了解一些术语
+
+由一条边链接在一起的顶点称为相邻顶点
+
+一个顶点的度是其相邻顶点的数量
+
+路径是顶点v1，v2，v3...vk的一个连续序列，其中vi好vi+1是相邻的
+
+简单路径要求不包含重复的顶点，环也是一个简单路径。
+
+如果图中不存在环，则称该图是无环的，如果图中每两个顶点中都存在路径，那么该图是连通的。
+
+## 有向图和无向图
+
+图可以是无向的（边没有方向）或是有向的（边是右方向的），有向图的边是有一个方向。
+
+如果图中每两个顶点间在双向都存在路径，则该图是强连通的。
+
+图还可以是未加权的或者是加权的
+
+可以使用图来解决计算机科学世界中的很多问题，比如所搜图中的一个特定顶点或搜索特定边，寻找图中一条路径（从一个顶点到另一个顶点），寻找两个顶点之间的最短路径，以及环检测。
+
+## 图的表示
+
+从数据结构的角度来说，右很多种方式来表示图，在所有的表示法中，不存在绝对正确的方式，图的正确表示法取决于待解决的问题和图的类型
+
+## 邻接矩阵
+
+图最常见的实现是相邻矩阵，每个节点都和一个整数相关联，该整数将作为数组的索引，我们用一个二维数组来表示顶点之间的链接，如果索引为i的节点和索引为j的节点相邻，则array[i][j] === 1， 否则array[i][j]===0.
+
+不是强连通的图（稀疏图）如果用邻接矩阵来表示，则矩阵中将会用很多0，这意味着浪费了计算机储存空间来表示根本不存在的边，例如找给定顶点的相邻顶点，及时该顶点只有一个相邻顶点，也不得不迭代一整行，相邻矩阵表示法不好的另一个理由是图中数量可能会边，二维数组不太灵活。
+
+## 邻接表
+
+另一种表示图的数据结构叫做邻接表，邻接表由途中每个顶点的相邻列表组成，存在好几种方式来实现这种结构，可以使用列表，链表，甚至是散列表或者字典来表示相邻顶点列表。
+
+尽管邻接表可能对大多数问题来说都是更好的选择，但以上两种表示方法都很有用，且他们有着不同的性质，所以在本书中将使用邻接表表示法。
+
+## 创建图类
+
+```JavaScript
+class Graph {
+    constructor {
+        this.vertices = []
+        this.adjList = new Map() // 使用Map数据结构来储存。
+    }
+}
+```
+
+使用一个数组来储存所有顶点的名字，以及一个字典来储存邻接表，字典将会使用顶点的名字作为键，邻接顶点列表作为值。
+
+```JavaScript
+class Graph {
+    constructor() {
+        this.vertices = []
+        this.adjList = new Map() // 使用Map数据结构来储存。
+    }
+
+    // 向图中新增一个新的顶点。
+    addVertex (v) {
+    this.vertices.push(v);
+    this.adjList.set(v,[]);
+    }
+
+    //添加边
+    addEdge (v, w) {
+    // 给顶点v添加一条到w的边
+    this.adjList.get(v).push(w)
+    // 相反给顶点w添加一天到v的边
+    this.adjList.get(w).push(v)
+    }
+}
+const graph = new Graph()
+const myVerties = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+
+for (let i = 0; i < myVerties.length; i++) {
+graph.addVertex(myVerties[i])
+}
+console.log(graph) // 如果不好理解的话跑一下这段代码看看这两个console
+graph.addEdge('A','B')
+
+console.log(graph)
+```
+
+## 表的遍历
+
+和树的数据结构类似，也可以访问图的所有节点，有两种算法可以对图进行遍历，`广度优先搜索`和`深度优先搜索`，图遍历可以用来寻找特定的顶点或者寻找两个顶点之间的路径，检查图是否连通是否有环等。
+
+先理解一下图遍历的思想方法。
+
+图遍历算法的思想是必须追踪每个第一次访问的节点，并且追踪有那些节点还没有完全探索，对于良好总图遍历算法，都需要明确指出第一个被访问的顶点。
+
+完全探索一个顶点要求我们查看该顶点的每一条边，对于每一条边所链接的没有被访问过的顶点，将其标注为发现，并将其加进待访问顶点列表中。
+
+为了保证算法的效率，务必访问每个顶点两次，连通图中每条边和顶点都会被访问到。
+
+广度优先搜索算法和深度优先搜索算法基本上是相同的，只有一点不同，那就是待访问顶点列表的数据结构
+
+深度优先使用栈，通过将顶点存入占中，顶点是沿着路径被弹错的，存在的新的 邻顶点就过去访问。
+
+广度优先使用队列，通过将顶点存入队列中，先进入队列的顶点先被探索。
+
+当要标注已经被访问过的顶点时候使用三种颜色来翻译他们的状态
+
+白色，表示该顶点还没有被访问过
+
+灰色，表示该顶点被访问过，但是并未被探索
+
+黑色，表示该顶点被访问过且被完全探索过
+
+这就是之前提到的务必访问每个顶点最多两次的原因。
+
+## 广度优先算法
+
+广度优先搜索算法会从指定的第一个顶点开始遍历图，先访问其所有的相邻节点，就像一次访问图的一层，换句话说就是先宽后深的访问顶点。
+
+以下是从顶点v开始广度搜索算法所遵循的步骤
+
+1. 先创建一个列队Q
+
+2. 将v标注为被发现灰色，并将v加入队列Q
+
+3. 如果Q非空，则运行以下步骤：
+    1. 将u从Q中出队列
+    2. 将标注为U为被发现的灰色
+    3. 将U所有未被访问过的邻节点白色加入列队Ｑ
+    4. 将Ｕ标注为已被探索的黑色
+
+文字看不太懂，先看看代码如何实现的吧
+
+```JavaScript
+class Queue {
+    constructor(){
+        // 声明一个数组保存队列里的元素
+        this.items = [];
+        }
+        // 添加元素到队列末尾
+    enqueue (element) {
+        this.items.push(element)
+    }
+        // 移除并返回队列第一个元素
+    dequeue() {
+        return this.items.shift()
+    }
+        // 返回队列第一个元素
+    front() {
+        return this.items[0];
+    }
+        //  判断元素是否为空
+    isEmpty() {
+        return this.items.length === 0;
+    }
+        //  清空队列
+    clear() {
+        this.items = []
+    }
+        //  返回队列元素长度
+    size() {
+        return items.length;
+    }
+    // 打印队列
+    print() {
+        console.log(this.items)
+    }
+}
+
+class Graph {
+    constructor() {
+        this.vertices = []
+        this.adjList = new Map() // 使用Map数据结构来储存。
+    }
+
+    // 向图中新增一个新的顶点。
+    addVertex (v) {
+    this.vertices.push(v);
+    this.adjList.set(v,[]);
+    }
+
+    //添加边
+    addEdge (v, w) {
+    // 给顶点v添加一条到w的边
+    this.adjList.get(v).push(w)
+    // 相反给顶点w添加一天到v的边
+    this.adjList.get(w).push(v)
+    }
+
+    initializeColor () {
+      const color = []
+      for (let i = 0; i < this.vertices.length; i++) {
+        color[this.vertices[i]] = 'white';
+      }
+      return color;
+    }
+
+    bfs (v, callback) {
+        let color = this.initializeColor(); // 将所有顶点渲染为白色
+      const queue = new Queue(); // 生成队列
+      queue.enqueue(v);	 // 添加入队
+
+      while (!queue.isEmpty()) { // 如果列队不为空
+        let u = queue.dequeue(); // 从列队中出队第一个顶点
+        let neighbors = this.adjList.get(u);//取得这个顶点包含其所有林甸的邻接表
+
+       color[u] = 'grey'; // 标记顶点被访问过，但是没有被探索过
+
+       for (let i = 0; i < neighbors.length; i++) {
+    // 访问这个顶点的边
+          const w = neighbors[i];
+          if (color[w] === 'white') { // 如果它还没有被访问过则将他标记为已访问
+            color[w] = 'grey';
+            queue.enqueue(w); // 并将这个顶点加入队列中
+          }
+       }
+       color[u] = 'black'; // 当完成探索该顶点和相邻顶点后将其标注为已探索的黑色
+       if (callback) {// 判断有没有回调如果右执行回调
+       callback(u)
+       }
+      }
+    }
+}
+const graph = new Graph()
+const myVerties = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+
+for (let i = 0; i < myVerties.length; i++) {
+graph.addVertex(myVerties[i])
+}
+graph.addEdge('A','B')
+graph.addEdge('A','C')
+graph.addEdge('A','D')
+graph.addEdge('C','D')
+graph.addEdge('C','G')
+graph.addEdge('D','G')
+graph.addEdge('D','H')
+graph.addEdge('B','E')
+graph.addEdge('B','F')
+graph.addEdge('E','I')
+function printNode(value) {
+console.log('访问了顶点', value)
+}
+graph.bfs(myVerties[0],printNode)
+
+// 一知半解的感觉，代码实现上没有错误，感觉反正让我写我写不出来
+```
+
+### 使用BFS寻找最短路径
+
+使用BFS搜索来解决一个问题
+
+给定一个图的G和源顶点V，找出对每个顶点U，U和V之间的最短路径的距离，以边的数量多少来衡量。
+
+对于给定顶点V，广度优先搜索hUI访问所有与其距离为1的顶点，接着是距离为2的顶点，以此类推，所以可以使用广度优先算法来解决这个问题，修改bfs方法返回给我们一些信息：
+从V到U的距离d[U]
+前溯点pred[U]，用来推到出从V到其他每个顶点U的最短路径
+
+```JavaScript
+class Queue {
+    constructor(){
+        // 声明一个数组保存队列里的元素
+        this.items = [];
+        }
+        // 添加元素到队列末尾
+    enqueue (element) {
+        this.items.push(element)
+    }
+        // 移除并返回队列第一个元素
+    dequeue() {
+        return this.items.shift()
+    }
+        // 返回队列第一个元素
+    front() {
+        return this.items[0];
+    }
+        //  判断元素是否为空
+    isEmpty() {
+        return this.items.length === 0;
+    }
+        //  清空队列
+    clear() {
+        this.items = []
+    }
+        //  返回队列元素长度
+    size() {
+        return items.length;
+    }
+    // 打印队列
+    print() {
+        console.log(this.items)
+    }
+}
+
+class Graph {
+    constructor() {
+        this.vertices = []
+        this.adjList = new Map() // 使用Map数据结构来储存。
+    }
+
+    // 向图中新增一个新的顶点。
+    addVertex (v) {
+    this.vertices.push(v);
+    this.adjList.set(v,[]);
+    }
+
+    //添加边
+    addEdge (v, w) {
+    // 给顶点v添加一条到w的边
+    this.adjList.get(v).push(w)
+    // 相反给顶点w添加一天到v的边
+    this.adjList.get(w).push(v)
+    }
+    
+    initializeColor () {
+    	const color = []
+      for (let i = 0; i < this.vertices.length; i++) {
+      	color[this.vertices[i]] = 'white';
+      }
+      return color;
+    }
+    
+    bfs (v, callback) {
+    	let color = this.initializeColor()
+      const queue = new Queue()
+      let d = [], pred = [];
+      queue.enqueue(v);
+      
+      for(let i = 0; i < this.vertices.length; i ++) {
+      d[this.vertices[i]] = 0;
+      pred[this.vertices[i]] = null;
+      }
+      
+      while(!queue.isEmpty()) {
+      const u =  queue.dequeue();
+      let neighbors = this.adjList.get(u)
+      color[u] = 'grey'
+      for (let i =0; i < neighbors.length; i++) {
+     		const w = neighbors[i]
+        if (color[w] === 'white') {
+        	color[w] = 'grey'
+          d[w] = d[u] + 1;
+          pred[w] = u
+          queue.enqueue(w)
+        }
+      }
+      color[u] = 'black'
+      }
+      return {
+      distances: d,
+      predecessors: pred
+      }
+    }
+}
+const graph = new Graph()
+const myVerties = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+
+for (let i = 0; i < myVerties.length; i++) {
+graph.addVertex(myVerties[i])
+}
+graph.addEdge('A','B')
+graph.addEdge('A','C')
+graph.addEdge('A','D')
+graph.addEdge('C','D')
+graph.addEdge('C','G')
+graph.addEdge('D','G')
+graph.addEdge('D','H')
+graph.addEdge('B','E')
+graph.addEdge('B','F')
+graph.addEdge('E','I')
+console.log(graph.bfs(myVerties[0]))
 ```
