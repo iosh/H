@@ -2073,3 +2073,366 @@ graph.addEdge('B','F')
 graph.addEdge('E','I')
 console.log(graph.bfs(myVerties[0]))
 ```
+
+深入学习最短路径算法
+
+上面的图是不加权的，如果要在加权图中寻找最短路径，例如城市A到城市B之间的最短路径，那么广度优先搜索未必合适。
+
+有很多专用其他的算法，来对应不同情况下最短路径问题，正如前面所说的，图是一个广泛的主题，单单一个最短路径问题和他的变种问题就右很多很多解决方案，但是在学习这些方案之前，需要很好的掌握图的基本概念，从而更轻松的学习其他解决方案。
+
+### 深度优先搜索
+
+深度优先搜索算法将会从第一个指定的顶点开始遍历图，沿着路径一直到这条路径最后一个顶点被访问，接着按原路回退探索下一条路径，换句话说，他是先深度后广度的访问顶点。
+
+深度优先搜索算法不需要一个源顶点，在深度优先算法中，若图中顶点V未被访问，则访问该顶点V，要访问顶点V，需要按照一下步骤进行。
+
+1. 标注V为未发现的灰色
+
+2. 对于V的所有未访问的邻点W都进行一次访问
+
+3. 将V标记为已探索
+
+深度优先搜索的步骤是递归，这意味着深度优先搜索算法使用栈来储存函数调用，由递归函数调用所创建的栈。
+
+```JavaScript
+    constructor() {
+        this.vertices = []
+         this.adjList = new Map() // 使用Map数据结构来储存。
+    }
+
+    // 向图中新增一个新的顶点。
+    addVertex (v) {
+    this.vertices.push(v);
+    this.adjList.set(v,[]);
+    }
+
+    //添加边
+    addEdge (v, w) {
+    // 给顶点v添加一条到w的边
+    this.adjList.get(v).push(w)
+    // 相反给顶点w添加一天到v的边
+    this.adjList.get(w).push(v)
+    }
+    dfsVisit (u, color, callback) {
+    	color[u] = 'grey';
+      if (callback) {
+      	callback(u)
+      }
+      const neighbors = this.adjList.get(u)
+      for (let i = 0; i < neighbors.length; i++) {
+      const w = neighbors[i]
+      if (color[w] === 'white') {
+      	this.dfsVisit(w,color,callback);
+      }
+      }
+      color[u] = 'black';
+    }
+    initializeColor () {
+    	const color = []
+      for (let i = 0; i < this.vertices.length; i++) {
+      	color[this.vertices[i]] = 'white';
+      }
+      return color;
+    }
+    
+    dfs (callback) {
+    	let color = this.initializeColor();
+      for (let i = 0; i < this.vertices.length; i ++) {
+      	if (color[this.vertices[i]] === 'white'){
+        this.dfsVisit(this.vertices[i],color,callback)
+        }
+      }
+    }
+}
+const graph = new Graph()
+const myVerties = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+
+for (let i = 0; i < myVerties.length; i++) {
+graph.addVertex(myVerties[i])
+}
+graph.addEdge('A','B')
+graph.addEdge('A','C')
+graph.addEdge('A','D')
+graph.addEdge('C','D')
+graph.addEdge('C','G')
+graph.addEdge('D','G')
+graph.addEdge('D','H')
+graph.addEdge('B','E')
+graph.addEdge('B','F')
+graph.addEdge('E','I')
+function printNode(value) {
+console.log('访问了顶点', value)
+}
+console.log(graph)
+console.log(graph.dfs(printNode))
+```
+
+# 排序和搜索算法
+
+在日常生活中需要值信息，比如春村在数据结构里面的信息，排序和搜索算法广泛的运用在解决日常生活问题中。
+
+## 排序算法
+
+从最简单的开始
+
+先实现一个用来表示待排序和搜索的数据结构
+
+```JavaScript
+class ArrayList {
+    constructor () {
+        this.array = []
+    }
+    insert (item) {
+        array.push(item)
+    }
+    toString () {
+        return array.join()
+    }
+}
+```
+
+上面实现了一个非常简单的数据结构他将项储存在数组中，并且写了一个方法向数据结构中添加元素，为了帮助验证结果结果重写了toSting方法。
+
+### 冒泡排序
+
+冒泡排序是所有排序算法中最简单的，然而从时间复杂度来看他是最差的。
+
+冒泡排序比较任何两个相邻的项，如果第一个比第二个大，则交换他们，元素向上移动到正确的位置，好像气泡升至表面一样，冒泡排序因此得名。
+
+实现以下冒泡排序
+
+```JavaScript
+class ArrayList {
+    constructor () {
+        this.array = []
+    }
+    insert (item) {
+        this.array.push(item)
+    }
+    toString () {
+        return this.array.join()
+    }
+    swap(index1, index2) {
+    // 交换数组的两个元素
+    	const aux = this.array[index1]
+      this.array[index1] = this.array[index2]
+      this.array[index2] = aux
+    }
+    
+    // 冒泡排序
+    bubbleSort () {
+    	const length = this.array.length
+      for (let i = 0; i < length; i++) {
+      	for (let j = 0; j < length - 1; j++) {
+        	if (this.array[j] > this.array[j+1]) {
+          	this.swap(j, j+1)
+          }
+        }
+      }
+    }
+}
+
+// 测试排序代码
+// 逆序创建一个ArrayList
+function createNonSortedArray(size) {
+	const arr = new ArrayList()
+  for (let i = size; i > 0; i --) {
+  	arr.insert(i)
+  }
+  return arr
+}
+const arr = createNonSortedArray(100)
+console.log(arr.toString()) // 确定为逆序
+arr.bubbleSort()
+console.log(arr.toString()) // 确定排序完毕
+
+```
+
+### 选择排序
+
+```JavaScript
+class ArrayList {
+    constructor () {
+        this.array = []
+    }
+    insert (item) {
+        this.array.push(item)
+    }
+    toString () {
+        return this.array.join()
+    }
+    swap(index1, index2) {
+    // 交换数组的两个元素
+    	const aux = this.array[index1]
+      this.array[index1] = this.array[index2]
+      this.array[index2] = aux
+    }
+    
+   selectionSort () {
+    	const length = this.array.length
+    	let indexMin
+    	for (let i = 0; i < length - 1; i++) {
+      	indexMin = i;
+        for (var j = i; j < length; j++) {
+        	if (this.array[indexMin]>this.array[j])
+          	indexMin = j
+        }
+        if (i !== indexMin) {
+        	this.swap(i,indexMin)
+        }
+      }
+    }
+}
+
+// 测试排序代码
+// 逆序创建一个ArrayList
+function createNonSortedArray(size) {
+	const arr = new ArrayList()
+  for (let i = size; i > 0; i --) {
+  	arr.insert(i)
+  }
+  return arr
+}
+const arr = createNonSortedArray(100)
+console.log(arr.toString()) // 确定为逆序
+arr.selectionSort()
+console.log(arr.toString()) // 确定排序完毕
+
+```
+
+这两段排序的时间复杂度都是O(n²)，他们都有两个嵌套循环，这导致了二次方的复杂度。
+
+### 插入排序
+
+插入排序每次排一个数组项，以此方式构建最后的排序数组，假设第一项已经排序了，接着他和第二项进行比较，第二项是应该待在原位还是插到第一项之前，这样头两项就已正确排序，接着比较第三项。判断他应该在哪里。
+
+```JavaScript
+class ArrayList {
+    constructor () {
+        this.array = []
+    }
+    insert (item) {
+        this.array.push(item)
+    }
+    toString () {
+        return this.array.join()
+    }
+    swap(index1, index2) {
+    // 交换数组的两个元素
+    	const aux = this.array[index1]
+      this.array[index1] = this.array[index2]
+      this.array[index2] = aux
+    }
+    
+   insertionSort () {
+   const length = this.array.length
+   let j, temp
+   
+   for(let i = 1; i < length; i++) {
+   	j = i
+    temp = this.array[i]
+    while(j > 0 && this.array[j-1] > temp) {
+    	this.array[j] = this.array[j-1]
+      j--
+    }
+    this.array[j] = temp
+   }
+   }
+}
+
+// 测试排序代码
+// 逆序创建一个ArrayList
+function createNonSortedArray(size) {
+	const arr = new ArrayList()
+  for (let i = size; i > 0; i --) {
+  	arr.insert(i)
+  }
+  return arr
+}
+const arr = createNonSortedArray(100)
+console.log(arr.toString()) // 确定为逆序
+arr.insertionSort()
+console.log(arr.toString()) // 确定排序完毕
+```
+
+在排序小型数组时候，其效率高于冒泡排序
+
+### 并归排序
+
+并归排序是一个可以被实际使用的排序算法，并归排序的算法复杂度为O(n log n次方)
+
+JavaScript的Array定义了一个sort函数，用于培训JavaScript数组，但是ECMASsript 并没有规定使用那种算法进行排序，个浏览器厂商可以自行实现算法，那么火狐使用了并归排序，谷歌则使用了排序排序。
+
+并归排序是一种分治算法，其思想是将原始数组分割成较小的数组，直到每个小数组只有一个位置，接着将小数组合并成大数组，最后只有一个排序完毕的大数组。
+
+```JavaScript
+class ArrayList {
+    constructor () {
+        this.array = []
+    }
+    insert (item) {
+        this.array.push(item)
+    }
+    toString () {
+        return this.array.join()
+    }
+   
+   // 并归函数入口
+   mergeSort () {
+   	this.array = this.mergeSortRec(this.array)
+   }
+   
+   // 将数组递归拆分成只有一个元素的数组
+   mergeSortRec (array) {
+   		const length = array.length
+      if (length === 1) {// 递归函数终止条件
+      	return array
+      }
+      
+      const mid = Math.floor(length / 2);  // 取得中间值
+      const left = array.slice(0,mid), // 左切片
+      			right = array.slice(mid, length); // 右切片
+      return this.merge(this.mergeSortRec(left), this.mergeSortRec(right)) // 递归调用。
+   }
+   
+   merge(left, right) {
+    console.log(left, right) // 如果理解不了的话可以看控制台打印出来的内容然后带入下面的迭代就比较好懂了。
+   	const result = [] // 声明一个数组用来储存归并过程中的新数组
+  	let il = 0, ir = 0;// 两个用于迭代的变量
+    while(il < left.length && ir < right.length) { // 迭代两个数组
+    	if (left[il] < right[ir]) { // 对比左边是否小于右边
+      	result.push(left[il++]); // 如果是那么将左边添加到数组
+      } else {
+      	result.push(right[ir++]); // 如果不是则将右边添加到数组
+      }
+    }
+    while (il < left.length) { // 接下来将左边数组剩余项添加到归并数组中
+    	result.push(left[il++])
+    }
+    while (ir < right.length) { // 将右边数组生育项添加到归并数组中
+    	result.push(right[ir++])
+    }
+     return result
+   }
+}
+
+// 测试排序代码
+// 逆序创建一个ArrayList
+const arr = new ArrayList()
+arr.insert(4)
+arr.insert(2)
+arr.insert(8)
+arr.insert(3)
+arr.insert(5)
+arr.insert(1)
+arr.insert(7)
+arr.insert(6)
+console.log(arr.toString()) // 确定为逆序
+arr.mergeSort()
+console.log(arr.toString()) // 确定排序完毕
+```
+
+这段代码理解起来比较复杂，首先对递归有了新的认识，从运算结果推断过程，还有就是发明这个算法的人真的好聪明。
+
+学习这段代码的时候我是一部一部console打印过来的。我在代码中留下了其中最重要的一个console，根据console的内容来带入运行，就可以比较轻松地理解排序过程了。
+
