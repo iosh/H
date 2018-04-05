@@ -1336,7 +1336,8 @@ console.log(hash.get('john'))
 
 一个树结构包含一系列存在父子的节点，每个节点都有一个父节点，除了顶部的第一个节点以及零个或者多个子节点。
 
-```
+```JavaScript
+
                    11
                 /     \
               /         \
@@ -1389,9 +1390,9 @@ class BinarySearchTree {
       this.inserNode(this.root, newNode)
     }
   }
-  
+
   // 查询插入函数
-  
+
   inserNode (node, newNode) {
     // 先判断比当前节点大（右）还是小（左）分别去左或者去右
     if (newNode.key < node.key) {
@@ -1411,8 +1412,7 @@ class BinarySearchTree {
       }
     }
   }
-  
-  
+
 }
 const tree = new BinarySearchTree()
 tree.insert(7)
@@ -1454,7 +1454,7 @@ traverse.inOrderTraverse(tree.root, (key) => console.log(key))
 
 先序遍历是以优先于后代节点的顺序访问每个节点，先序遍历一种应用是打印结构文档
 
-```JavaScript 
+```JavaScript
 class PreorderTraverseNode extends BinarySearchTree {
     preOrderTraverse (root,callback) {
       this.preOrderTraverseNode(root,callback)
@@ -1587,7 +1587,7 @@ class Search extends BinarySearchTree {
     if (node === null) {
       return false;
     }
-    
+
     if (key < node.key) { // 小于向左
       return this.serachNode(node.left, key);
     } else if (key > node.key) {// 大于向右
@@ -1902,7 +1902,7 @@ class Graph {
     bfs (v, callback) {
         let color = this.initializeColor(); // 将所有顶点渲染为白色
       const queue = new Queue(); // 生成队列
-      queue.enqueue(v);	 // 添加入队
+      queue.enqueue(v); // 添加入队
 
       while (!queue.isEmpty()) { // 如果列队不为空
         let u = queue.dequeue(); // 从列队中出队第一个顶点
@@ -2014,34 +2014,34 @@ class Graph {
     // 相反给顶点w添加一天到v的边
     this.adjList.get(w).push(v)
     }
-    
+
     initializeColor () {
-    	const color = []
+      const color = []
       for (let i = 0; i < this.vertices.length; i++) {
-      	color[this.vertices[i]] = 'white';
+        color[this.vertices[i]] = 'white';
       }
       return color;
     }
-    
+
     bfs (v, callback) {
-    	let color = this.initializeColor()
+      let color = this.initializeColor()
       const queue = new Queue()
       let d = [], pred = [];
       queue.enqueue(v);
-      
+
       for(let i = 0; i < this.vertices.length; i ++) {
       d[this.vertices[i]] = 0;
       pred[this.vertices[i]] = null;
       }
-      
+
       while(!queue.isEmpty()) {
       const u =  queue.dequeue();
       let neighbors = this.adjList.get(u)
       color[u] = 'grey'
       for (let i =0; i < neighbors.length; i++) {
-     		const w = neighbors[i]
+        const w = neighbors[i]
         if (color[w] === 'white') {
-        	color[w] = 'grey'
+          color[w] = 'grey'
           d[w] = d[u] + 1;
           pred[w] = u
           queue.enqueue(w)
@@ -2114,31 +2114,31 @@ console.log(graph.bfs(myVerties[0]))
     this.adjList.get(w).push(v)
     }
     dfsVisit (u, color, callback) {
-    	color[u] = 'grey';
+      color[u] = 'grey';
       if (callback) {
-      	callback(u)
+      callback(u)
       }
       const neighbors = this.adjList.get(u)
       for (let i = 0; i < neighbors.length; i++) {
-      const w = neighbors[i]
+        const w = neighbors[i]
       if (color[w] === 'white') {
-      	this.dfsVisit(w,color,callback);
+        this.dfsVisit(w,color,callback);
       }
       }
       color[u] = 'black';
     }
     initializeColor () {
-    	const color = []
+        const color = []
       for (let i = 0; i < this.vertices.length; i++) {
-      	color[this.vertices[i]] = 'white';
+        color[this.vertices[i]] = 'white';
       }
       return color;
     }
-    
+
     dfs (callback) {
-    	let color = this.initializeColor();
+        let color = this.initializeColor();
       for (let i = 0; i < this.vertices.length; i ++) {
-      	if (color[this.vertices[i]] === 'white'){
+        if (color[this.vertices[i]] === 'white'){
         this.dfsVisit(this.vertices[i],color,callback)
         }
       }
@@ -2214,18 +2214,18 @@ class ArrayList {
     }
     swap(index1, index2) {
     // 交换数组的两个元素
-    	const aux = this.array[index1]
+      const aux = this.array[index1]
       this.array[index1] = this.array[index2]
       this.array[index2] = aux
     }
-    
+
     // 冒泡排序
     bubbleSort () {
-    	const length = this.array.length
+      const length = this.array.length
       for (let i = 0; i < length; i++) {
-      	for (let j = 0; j < length - 1; j++) {
-        	if (this.array[j] > this.array[j+1]) {
-          	this.swap(j, j+1)
+        for (let j = 0; j < length - 1; j++) {
+            if (this.array[j] > this.array[j+1]) {
+            this.swap(j, j+1)
           }
         }
       }
@@ -2235,9 +2235,9 @@ class ArrayList {
 // 测试排序代码
 // 逆序创建一个ArrayList
 function createNonSortedArray(size) {
-	const arr = new ArrayList()
+    const arr = new ArrayList()
   for (let i = size; i > 0; i --) {
-  	arr.insert(i)
+    arr.insert(i)
   }
   return arr
 }
@@ -2263,22 +2263,22 @@ class ArrayList {
     }
     swap(index1, index2) {
     // 交换数组的两个元素
-    	const aux = this.array[index1]
+      const aux = this.array[index1]
       this.array[index1] = this.array[index2]
       this.array[index2] = aux
     }
-    
+
    selectionSort () {
-    	const length = this.array.length
-    	let indexMin
-    	for (let i = 0; i < length - 1; i++) {
-      	indexMin = i;
+        const length = this.array.length
+        let indexMin
+        for (let i = 0; i < length - 1; i++) {
+        indexMin = i;
         for (var j = i; j < length; j++) {
-        	if (this.array[indexMin]>this.array[j])
-          	indexMin = j
+            if (this.array[indexMin]>this.array[j])
+            indexMin = j
         }
         if (i !== indexMin) {
-        	this.swap(i,indexMin)
+            this.swap(i,indexMin)
         }
       }
     }
@@ -2287,9 +2287,9 @@ class ArrayList {
 // 测试排序代码
 // 逆序创建一个ArrayList
 function createNonSortedArray(size) {
-	const arr = new ArrayList()
+    const arr = new ArrayList()
   for (let i = size; i > 0; i --) {
-  	arr.insert(i)
+    arr.insert(i)
   }
   return arr
 }
@@ -2319,20 +2319,20 @@ class ArrayList {
     }
     swap(index1, index2) {
     // 交换数组的两个元素
-    	const aux = this.array[index1]
+        const aux = this.array[index1]
       this.array[index1] = this.array[index2]
       this.array[index2] = aux
     }
-    
+
    insertionSort () {
    const length = this.array.length
    let j, temp
-   
+
    for(let i = 1; i < length; i++) {
-   	j = i
+    j = i
     temp = this.array[i]
     while(j > 0 && this.array[j-1] > temp) {
-    	this.array[j] = this.array[j-1]
+        this.array[j] = this.array[j-1]
       j--
     }
     this.array[j] = temp
@@ -2343,9 +2343,9 @@ class ArrayList {
 // 测试排序代码
 // 逆序创建一个ArrayList
 function createNonSortedArray(size) {
-	const arr = new ArrayList()
+    const arr = new ArrayList()
   for (let i = size; i > 0; i --) {
-  	arr.insert(i)
+    arr.insert(i)
   }
   return arr
 }
@@ -2376,41 +2376,41 @@ class ArrayList {
     toString () {
         return this.array.join()
     }
-   
+
    // 并归函数入口
    mergeSort () {
-   	this.array = this.mergeSortRec(this.array)
+    this.array = this.mergeSortRec(this.array)
    }
-   
+
    // 将数组递归拆分成只有一个元素的数组
    mergeSortRec (array) {
-   		const length = array.length
+    const length = array.length
       if (length === 1) {// 递归函数终止条件
-      	return array
+        return array
       }
-      
+
       const mid = Math.floor(length / 2);  // 取得中间值
       const left = array.slice(0,mid), // 左切片
-      			right = array.slice(mid, length); // 右切片
+            right = array.slice(mid, length); // 右切片
       return this.merge(this.mergeSortRec(left), this.mergeSortRec(right)) // 递归调用。
    }
-   
+
    merge(left, right) {
     console.log(left, right) // 如果理解不了的话可以看控制台打印出来的内容然后带入下面的迭代就比较好懂了。
-   	const result = [] // 声明一个数组用来储存归并过程中的新数组
-  	let il = 0, ir = 0;// 两个用于迭代的变量
+    const result = [] // 声明一个数组用来储存归并过程中的新数组
+    let il = 0, ir = 0;// 两个用于迭代的变量
     while(il < left.length && ir < right.length) { // 迭代两个数组
-    	if (left[il] < right[ir]) { // 对比左边是否小于右边
-      	result.push(left[il++]); // 如果是那么将左边添加到数组
+        if (left[il] < right[ir]) { // 对比左边是否小于右边
+        result.push(left[il++]); // 如果是那么将左边添加到数组
       } else {
-      	result.push(right[ir++]); // 如果不是则将右边添加到数组
+        result.push(right[ir++]); // 如果不是则将右边添加到数组
       }
     }
     while (il < left.length) { // 接下来将左边数组剩余项添加到归并数组中
-    	result.push(left[il++])
+        result.push(left[il++])
     }
     while (ir < right.length) { // 将右边数组生育项添加到归并数组中
-    	result.push(right[ir++])
+        result.push(right[ir++])
     }
      return result
    }
@@ -2436,3 +2436,283 @@ console.log(arr.toString()) // 确定排序完毕
 
 学习这段代码的时候我是一部一部console打印过来的。我在代码中留下了其中最重要的一个console，根据console的内容来带入运行，就可以比较轻松地理解排序过程了。
 
+### 快速排序
+
+快速排序也许是最常用的排序算法了，他的复杂度为O(n log 的n次方)，而且他的性能通常比其他复杂度相同的排序算法要好，和归并排序一样，快速排序也使用分治的方法，将原始数组分为较小的数组，但是他没有想归并排序那样将数组分割开。
+
+快速排序相对比较复杂逻辑实现分为一下步骤：
+
+1. 从数组中间项作为主元
+
+2. 创建两个指针，左边指向数组的第一项，右边指向数组最后一项，移动左指针直到找到比主元大的元素，接着移动右指针直到找到一个比主元小的元素，然后交换他们，重复这个过程，直到左指针超过了右指针，这个过程中将使比主元小的小的值都排在主元之前，而比主元大的值都排在主元之后，这一步叫做划分操作
+
+3. 接着，算法对划分之后的小数组，小数组是指比主元小的值组成的子数组，以及较主元大的值组成的子数组，重复之前的两个步骤，直到数组完成排序。
+
+```JavaScript
+class ArrayList {
+    constructor () {
+        this.array = []
+    }
+    insert (item) {
+        this.array.push(item)
+    }
+    toString () {
+        return this.array.join()
+    }
+
+  // 快速排序入口
+
+  quickSort () {
+    // 调用递归函数传入数组，和数组开始及结束位置下标
+    this.quick(this.array, 0, this.array.length - 1);
+  }
+
+  quick (array, left, right) {
+    let index; // 声明一个变量用于储存分离较小数组和较大数组（在它左边的就是小他右边的就是大）
+    if (array.length > 1) { // 数组元素小于1就不进行排序
+        index = this.partition(array, left, right)
+      if (left < index -1) {
+        this.quick(array, left, index -1)
+      }
+      if (index < right) {
+        this.quick(array,index,right)
+      }
+    }
+  }
+
+  partition(array, left, right) {
+        console.log(array,left, right)
+    const pivot = array[Math.floor((right + left)/2)]
+    console.log('中间值下标',pivot)
+    let i = left, j = right;
+    while (i <= j) {
+    console.log('while迭代',array, i, j)
+        while(array[i] < pivot) {
+        i++
+      }
+      while(array[j] > pivot) {
+        j--
+      }
+      if (i <= j) {
+        this.swapQuickSort(array, i, j)
+        i++
+        j--
+      }
+    }
+    console.log('返回i',i)
+    return i
+  }
+  swapQuickSort(array, index1, index2) {
+    const aux = this.array[index1]
+    this.array[index1] = this.array[index2]
+    this.array[index2] = aux
+  }
+
+}
+
+// 测试排序代码
+// 逆序创建一个ArrayList
+const arr = new ArrayList()
+arr.insert(4)
+arr.insert(2)
+arr.insert(8)
+arr.insert(3)
+arr.insert(5)
+arr.insert(1)
+arr.insert(7)
+arr.insert(6)
+console.log(arr.toString()) // 确定为逆序
+arr.quickSort()
+console.log(arr.toString()) // 确定排序完毕
+```
+
+快速排序较为复杂，需要多多进行理解，同样的我在代码中留下了比较方便理解代码运行的console，拿着这个值去带入代码，在脑中或者在书上模拟代码运行就比较好理解了。
+
+# 算法知识补充
+
+## 递归
+
+递归是一种解决问题的方法，他解决问题的各个小部分，直到解决最初的大问题，通常设计函数调用自身
+
+能够像下面这样直接调用自身的方法或者函数，是递归函数
+
+```JavaScript
+const recursiveFunction = function(someParam) {
+    recursiveFunction(someParam)
+}
+// 注意递归函数一定要设置终止条件，像上面的代码会直接死循环导致内存溢出。
+```
+
+### JavaScript调用栈大小限制
+
+如果忘记加上停止函数递归调用条件的边界，递归并不会无限制的执行下去，浏览器会抛出异常，也就是栈溢出错误。
+
+每个浏览器都有自己的上线，可以用一下代码进行测试
+
+```JavaScript
+let i = 0
+
+function Fn () {
+    i++
+  Fn()
+}
+
+try {
+    Fn()
+} catch (error) {
+    console.log(`i = ${i}, error = ${error}`)
+}
+
+// 我在Chrome65中得到结果，但是如果在代码中加上一个console的话这个值就会超过15672，我也不知道最终是多少。谷歌可能对死循环有优化。
+// i = 15672, error = RangeError: Maximum call stack size exceeded
+// 在火狐59中得到结果,而且这个值是不断变化的上下有几万次的浮动
+// i = 308087, error = InternalError: too much recursion
+```
+
+在ECMAScript6中有尾递归优化，如果函数内最后一个操作是函数调用，就会通过跳转指令，而不是子程序调用来控制，也就是说在ES6中这样的代码会一直执行下去，并不会出错。所以具备终止条件的非常重要。
+
+### 斐波那契数列
+
+斐波那契数列定义如下：
+
+1. 1和2的斐波那契数是1
+
+2. n(n>2)的斐波那契数是(n-1)的斐波那契树机上(n-2)的斐波那契数
+
+```JavaScript
+console.time(1)
+function fibonacci (num) {
+    if (num === 1 || num ===2) {
+    return 1
+  }
+  return fibonacci(num - 1) + fibonacci(num - 2)
+}
+console.log(fibonacci(20))
+console.timeEnd(1)
+
+
+console.time(2)
+function fib (num) {
+    let n1 = 1,
+      n2 = 1,
+      n=1;
+  for (let i = 3; i < num; i++) {
+    n =  n1 + n2
+    n1 = n2
+    n2 = n
+  }
+  return n
+}
+
+fib(20)
+console.timeEnd(2)
+
+// 上面代码分别是递归和非递归版本，通过打点计时
+// 递归函数在1.5ms  1: 1.541015625ms
+// 而循环版本则只有0.08ms  2: 0.080078125ms
+```
+
+那为什么还使用递归呢，递归并不比普通版本快，反而更慢，但是递归函数容易理解，也容易第一时间想到，所需要的代码量也更少。
+
+在ES6中因为尾递归优化的缘故，递归并不比迭代慢，但是在其他语言中递归通常更慢。
+
+> 注意,经查证ES6规范是规定了尾递归优化，但是规范落地的时候出现了分歧，具体了解请点击这里[V8 团队眼中的 ES6、ES7及未来](https://75team.com/post/v8-es6-es7-and-beyond.html)
+
+### 动态规划
+
+动态规范是一种将复杂问题分解成更小的子问题来解决的优化技术。
+
+使用动态规划解决问题，要遵循三个重要步骤：
+
+1. 定义子问题
+
+2. 要实现反复执行而解决子问题的一部分
+
+3. 识别并求出边界条件
+
+能用动态规划解决一些著名的问题如下：
+
+背包问题：给出一组项目，各自有值和容量，目前是找出总值最大的集合，这个问题的限制是，容量必须小于等于背包的容量
+
+最长共因子序列：找出一组序列的最长公因子序列，可由另一序列删除元素但不会改变余下元素的序列而得到
+
+矩阵链相乘：给出一系列矩阵，目标是找到这些矩阵相乘的最高效方法
+
+图的全源最短路径：对所有的顶点对，找出从顶点到另一个顶点的最短路径
+
+### 大O表示法
+
+大O表示法的概念是描述算法的性能和复杂度
+在分析算法时候时常遇到以下积累函数：
+
+O(1) 常数的
+O(log(n)) 对数的
+O((log(n))c) 对数多项式的
+O(n) 线性的
+O(n²) 二次的
+O(n的c次方) 多项式的
+O(n的次方) 指数的
+
+### 理解大O表示法
+
+衡量算法的效率，通常是用资源，例如CPU占用时间，内存占用，硬盘占用，当讨论大O表示法时，一般指CPU占用时间。
+
+1. O(1)
+
+考虑一下函数
+
+```JavaScript
+function increment (num) {
+    return ++num
+}
+```
+
+假设num为1时执行函数时间为X，那么当num为N时，执行函数时间还是X，运行时间是恒定的，和参数没有关系。
+2. O(n)
+
+以下面的函数为例
+
+```JavaScript
+function Fn(array, item) {
+    for(let i = 0; i < array.length; i++) {
+        if(item === array[i]) {
+            return i
+        }
+    }
+    return -1
+}
+```
+
+如果将10个元素的数组传给这个函数Fn，并且搜索1，那么第一次判断就能找到这个元素，那么开销是1,
+
+如果要搜索的值是11，那么他会判断10次发现数组内元素都不等，第十次返回-1，如果有1000个元素搜索1001，执行1000次然后返回-1
+
+所以最好情况下是1，最坏情况下就是Array的长度，所以复杂度是O(n)，n为输入数组的大小
+3. O(n²)
+
+使用冒泡排序来做O(n²)的例子：
+
+```JavaScript
+function swap (array, index1, index2) {
+    const aux = array[index1]
+    array[index1] = array[index2]
+    array[index2] = aux
+}
+
+fonction bubbleSort (array) {
+    const length = array.length
+    for (let i = 0; i < length; i++) {
+        for (let j = 0; j < length - 1; j++) {
+            if (array[j] > array[j+1]) {
+                swap(array, j, i)
+            }
+        }
+    }
+}
+```
+
+输入一个长度为10的数组，开销是100，即10的平方，如果用长度100的数组那么开销是10000，随着每次传入参数的大小不同，执行时间长短也不同。
+
+简单的分析复杂度可以看函数内部有嵌套右多少层循环，O(n)只有一层循环，而O(n²)则嵌套有两层循环，如果右三层嵌套循环那么他的复杂度可能就是O(n³)
+
+完结撒花。。。看下一本。。
