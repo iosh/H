@@ -222,3 +222,159 @@ sudo usermod -aG docker $USER
 
 之后重启或者注销，才会生效
 
+之后可以输入
+
+```
+docker run hello-world
+```
+
+输入这条命令之后，会有两个情况
+
+情况一报错
+
+```
+docker: Get https://registry-1.docker.io/v2/library/hello-world/manifests/latest: net/http: TLS....
+```
+
+遇到这个问题，就是不可描述问题，一全局梯子，二换源
+
+换源有两个推荐
+
+[Docker 中国官方镜像](https://www.docker-cn.com/registry-mirror)
+
+[daocloud加速镜像](https://www.daocloud.io/mirror#accelerator-doc)需要注册
+
+情况二就是正常输入欢迎信息。
+
+```
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+.......
+```
+
+输出这段欢迎词之后容器就会自动终止，但是有些是提供服务的，例如安装和运行 Ubuntu 的 image ，就可以在命令行体验 Ubuntu 系统
+
+对于不会自动终止的容器，必须使用
+
+```
+docker container kill [containID]
+```
+
+id 可以通过
+
+```
+docker image ls
+```
+
+找到对应的id，结束掉进程
+
+## 定义一个镜像
+
+接下来使用`node`框架`express`在3000端口显示一个hello world并且制作成 Docker 的镜像
+
+新建一个demo文件
+
+demo作为 Docker 的工程目录
+
+```JavaScript
+将终端路径切换到demo下输入
+npm init // 创建一个package文件
+npm i express // 安装express
+```
+
+然后在新建一个 index.js 文件然后里面写上 espress 标准的 hello world 代码
+
+```JavaScript
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
+
+var server = app.listen(3000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+```
+
+
+
+那么现在有了一个 demo 文件夹，文件夹内有
+
+`index.js`  `node_modules`  `package.json`  `package-lock.json`
+
+index.js 文件里面我们写了上面的代码，而且可以通过 node index.js 来运行这段代码 确定启动服务，http://localhost:3000/ 端口也可以显示 hello world！
+
+接下来就是将制作 Docker 镜像
+
+现在，在 demo 文件夹中新建一个文件，文件名为 `.dockerignore`这个文件类似于 git 的忽略文件，之后在其中写入
+
+```dockerfile
+.git
+node_modules
+npm-debug.log
+就是忽略这三个文件和文件夹
+```
+
+接下来新建另一个文件`Dockerfile`这个就是 Docker 工作文件，Docker 会根据文件内的内容一步一步执行，在文件中写入如下内容
+
+```dockerfile
+# 将官方的 node 8.11.1
+FROM node:8.11.1
+# 将工作目录设置为 /app
+WORKDIR /app
+# 将当前目录下的(demo目录)app文件夹复制到/app中的镜像中
+ADD . /app
+# 运行npm 安装以来包
+RUN npm install --registry=https://registry.npm.taobao.org
+# 对外暴露 3000 端口
+EXPOSE 3000
+# 容器启动后运行该条命令
+CMD node index.js
+```
+
+那么 demo 文件夹内现在有以下文件
+
+   `index.j` express源代码 `node_modules` 依赖文件夹（上面写了忽略规则，所以会被忽略）  package.json` npm的工作文件 Dockerfile` Docker 工作文件  `.dockerignore`  Docker构建镜像忽略文件
+
+接下来构建 Docker 镜像及 image 文件
+
+```Docker
+# 使用 Docker 生成 image 文件， -t 是用来指定 image 文件的名字 我起了 demoapp ，如果不指定那么默认标签就是 latest 最后的点代表 Dockerfile 文件所在位置 当前路径就是 . 
+docker build -t demoapp .
+```
+
+接下来如果没有报错，那么就是等待 Docker 依据 Dockerfile 文件下载依赖，有点慢，换了国内镜像还是慢，不知道是不是我网速问题。
+
+成功之后
+
+```
+# docker 以 demoapp 为镜像运行一个容器，映射主机5000端口和容器的3000 端口，运行完毕之后容器不会自动删除
+docker container run -p 5000:3000 -it demoapp
+
+# 和上面的命令一样但是运行后会自动删除容器 可以使用 docker container ls --all 查看容器是否被删除了
+docker container run --rm -p 5000:3000 -it demoapp
+```
+
+之后就会用浏览器打开
+
+```
+http://localhost:5000
+```
+
+可以访问到并且反返回了 hello world 那么就成功了
+
+
+
+```
+docker container run 
+# 上面这条命令每运行一次都会生成一个容器，如果不想生成新的容器应该使用下面的命令
+
+docker container start 容器id
+
+# 查看容器ID命令使用 docker container ls --all
+```
+
