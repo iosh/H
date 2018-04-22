@@ -1,10 +1,12 @@
 ---
-title: React中常见的模式
+title: React详细介绍
 date: 2018-04-22 16:13:06
 tags: React
 ---
 
 [React in patterns](https://krasimir.gitbooks.io/react-in-patterns/content/)   观看笔记
+
+<!-- more -->
 
 # 通讯
 
