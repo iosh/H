@@ -268,7 +268,7 @@ docker image ls
 
 找到对应的id，结束掉进程
 
-## 定义一个镜像
+## 定义一个镜像并运行容器
 
 接下来使用`node`框架`express`在3000端口显示一个hello world并且制作成 Docker 的镜像
 
@@ -377,4 +377,340 @@ docker container start 容器id
 
 # 查看容器ID命令使用 docker container ls --all
 ```
+
+
+
+以下是上面所有的 Docker 用到或者可以用到的一些相关命令
+
+```do
+docker build -t friendlyname .     # 使用此目录的 Dockerfile 创建镜像（命令最后有个点别忘了
+docker run -d -p 4000:80 friendlyname         # 运行镜像，后台模式
+docker ps           # 查看所有正在运行的容器的列表 或者使用 docker container ls --all
+docker stop <CONTAINER ID>                     # 安全结束容器
+docker ps -a           # 查看所有容器的列表，甚至包含未运行的容器
+docker kill <CONTAINER ID>                   # 强制关闭指定的容器
+docker rm <CONTAINER ID>              # 从此机器中删除指定的容器
+docker rm $(docker ps -a -q)           # 从此机器中删除所有容器
+docker images -a                               # 显示此机器上的所有镜像
+docker rmi <imagename>            # 从此机器中删除指定的镜像
+docker rmi $(docker images -q)             # 从此机器中删除所有镜像
+docker login             # 使用您的 Docker 凭证登录此 CLI 会话
+docker tag <image> username/repository:tag  # 标记 <image> 以上传到镜像库
+docker push username/repository:tag            # 将已标记的镜像上传到镜像库
+docker run username/repository:tag                   # 运行镜像库中的镜像
+```
+
+
+
+之后使用上面的命令将本地的`镜像`和`容器`都删掉吧，感觉还是满占地方的
+
+```
+docker rm $(docker ps -a -q) # 删除所有容器
+docker rmi $(docker images -q) # 删除所有镜像
+```
+
+
+
+## Docker 微服务教程
+
+这里 还是阮老师的教程 [教程地址](http://www.ruanyifeng.com/blog/2018/02/docker-wordpress-tutorial.html)
+
+看完之后然后我在准备看一下官方文档，之后继续回去看书。
+
+因为阮老师的教程写的很详细，我就不会照抄阮老师的教程了，我只会将我觉得比较重要的东西记录下来
+
+
+
+阮老师教程上使用了三种方法，演示如何假设 WordPress 网站，分别动手试试
+
+- 方法 A：自建 WordPress 容器
+- 方法 B：采用官方的 WordPress 容器
+- 方法 C：采用 Docker Compose 工具
+
+第一种方法是`事无巨细，皆需亲为`，从开始搭建一遍
+
+第二种方法是`使用官方提供的便捷镜像`，快速搭建服务
+
+第三种方法是`使用 Docker 官方容器管理工具`方便管理多个容器互相协作
+
+一个一个动手写一下
+
+
+
+### 自建 WordPress 容器
+
+首先新建一个`demo`文件夹，并且将命令行目录切换到`demo`文件夹，手动或者命令行命令都可以
+
+```
+mkdir demo && cd demo
+```
+
+然后使用命令创建一个基于`php`的 image (镜像) 新建一个容器，并且运行这个容器，`php`的标签是`5.6-apache`说明 `php`版本是5.6并且自带了`Apache`服务器
+
+```
+docker container run \ # Docker 运行一个容器，
+  --rm \ # 运行结束后删除容器
+  --name wordpress \ #容器的名字叫做 wordpress
+  --volume "$PWD/":/var/www/html \ # 将当前目录（demo）映射到容器的 /var/www/html 因为 Apache 对外访问的默认目录是这个，因此在 demo 文件中的任何修改，都会反应到容器里面，从而被外部访问到
+  php:5.6-apache # 指定镜像名称
+  
+  # 这是一行命令， \ 带便换行符，将一条命令分成几行展示，和下面这条命令是一样的,赋值下面的命令，我在上面命令后面写了注释
+  
+docker container run --rm --name wordpress  --volume "$PWD/":/var/www/html php:5.6-apache
+```
+
+
+
+运行上面的命令之后，Docker 就会去镜像仓库下载镜像，并根据镜像生成名为 wordpress 镜像。然后服务就跑起来了，简单吧。
+
+那么emmmmm不出不知道你们是否可以访问到`172.17.0.2`我访问不到，那么怎么办呢，ctrl + c 结束掉当前容器(他会自己删除容器),之后输入
+
+```
+docker container run -p 80:80   --rm   --name wordpress   --volume "$PWD/":/var/www/html   php:5.6-apache
+```
+
+多了一个端口暴露指令 `-p 80:80`
+
+之后访问
+
+http://localhost/
+
+就可以访问啦，然后就看到
+
+> Forbidden  You don't have permission to access / on this server.
+
+我们已经映射了容器的`/var/www/html` 到 `demo`文件夹下，当前因为`demo`文件夹没有文件，所以无法提供访问，添加一个最简单的 php 文件，在 demo 文件夹下新建一个 index.php 文件，在文件内写入
+
+```php
+<?php 
+phpinfo();
+?>
+```
+
+之后在访问
+
+http://localhost/
+
+就可以访问到一个页面了
+
+接下来从 [WordPress 官方网站](https://cn.wordpress.org/) 中下载下来安装包,或者直接点击 [下载WordPress4.9.4安装包](https://cn.wordpress.org/wordpress-4.9.4-zh_CN.zip)
+
+之后将 WordPress 压缩包里面的 WordPress 文件夹放到 demo 文件夹内然后访问
+
+http://localhost/wordpress/
+
+就可以看到安装界面了，那么要安装和运行 WordPress 还需要一个数据库 MySQL 数据库，那就再跑一个镜像，这个镜像跑 MySQL。
+
+这样逻辑上就是跑两个容器 一个 WordPress 容器， 一个 MySQL 容器
+
+新建一个命令行窗口，刚才哪个别关里面还跑着我们的 WordPress 呢
+
+```
+docker container run \ # Docker 运行一个容器
+  -d \ # 容器启动后，在后台运行
+  --rm \ # 运行结束后删除容器
+  --name wordpressdb \ # 容器名称为 wordpressdb
+  --env MYSQL_ROOT_PASSWORD=123456 \ # 向容器传进一个环境变量 MYSQL_ROOT_PASSWORD，等号后面的值会作为 MySQL 的根密码，不太懂这个根密码什么意思
+  --env MYSQL_DATABASE=wordpress \ # 向容器传进一个环境变量 MYSQL_DATABASE，等号后面的值会被创建同名的数据库
+  mysql:5.7 # MySQL数据库镜像
+  
+  # 上面的还是一条指令为了方便写注释就拆成多行，直接复制下面这行就可以了
+docker container run -d --rm --name wordpressdb --env MYSQL_ROOT_PASSWORD=123456 --env MYSQL_DATABASE=wordpress mysql:5.7
+```
+
+上面这条命令多了一个 -d 容器运行后，会自动后台，可以使用
+
+​	docker container ls
+
+开看看当前运行的容器
+
+```
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                NAMES
+56da209af68b        mysql:5.7           "docker-entrypoint.s…"   About a minute ago   Up About a minute   3306/tcp             wordpressdb
+cd8b32dc65ae        php:5.6-apache      "docker-php-entrypoi…"   23 minutes ago       Up 23 minutes       0.0.0.0:80->80/tcp   wordpress
+
+```
+
+会发现数据库容器确实在运行中，数据库是后台运行的，前台看不到他的输出，如果像看到它的输出，必须使用下面的命令
+
+​	docker container logs wordpressdb
+
+接下来需要将 WordPress 和 MySQL 链接起来，但是官方的 PHP 镜像不带 MySQL 扩展，所以得自己新建 镜像
+
+首先 ctrl + c 退出 WordPress 容器进程，因为在启动命令中右 `--rm` 所以退出后容器会自己删除。
+
+之后在 demo 目录中新建一个 `Dockerfile` 文件，并写入下面的内容
+
+```dockerfile
+# 指定容器镜像为php:5.6-apache
+FROM php:5.6-apache
+# 运行php官方提供的安装扩展指令，安装mysqli插件，方便链接MySQL数据库
+RUN docker-php-ext-install mysqli
+# 之后运行 apache2-foreground 命令跑起来 php环境
+CMD [ "apache2-foreground" ]
+```
+
+接下来命令（demo文件路径下）
+
+```
+# 基于我们上面写的 Dockerfile 文件生成一个镜像 phpwithmysql 别忘了，最后还有个点，然后等待生成镜像
+
+docker build -t phpwithmysql .
+  
+# 修改 demo 文件夹下 wordpress 文件夹的权限，保证它有写入权限，以便安装
+
+chmod -R 777 wordpress
+
+# 接下来根据镜像新建一个 WordPress 容器
+
+docker container run \ # 运行一个容器
+  --rm \ # 结束后删除容器
+  -p 80:80 \ # 映射本地80端口到容器的80端口
+  --name wordpress \ # 容器名称为 WordPress
+  --volume "$PWD/":/var/www/html \ # 将demo 文件夹映射到容器的 /var/www/html 目录
+  --link wordpressdb:mysql \ # 链接 wordpress 和 mysql 数据库
+  phpwithmysql # 依据 phpwithmysql 镜像生成容器
+  
+# 直接复制下面的命令就可以了
+
+docker container run -p 80:80  --rm   --name wordpress   --volume "$PWD/":/var/www/html   --link wordpressdb:mysql   phpwithmysql
+
+```
+
+接下来访问
+
+http://localhost/wordpress/
+
+就会跳转到 WordPress 的安装界面，点击现在就开始按钮进行安装， 接着 WordPress 要求数据数据库参数，输入参数如下
+
+`数据库名`： wordpress
+
+`用户名`： root
+
+`密码`： 123456
+
+`数据库主机`： mysql
+
+`表前缀`： wp_
+
+接下来就不用说了。之后就成了，也就安装完毕了。第一步也就完成了接下来关闭容器（他会自动删除容器），删除我们生成的容器。
+
+```
+# 停止php 和 MySQL 容器 他会自动删除 因为启动的时候添加了 --rm
+docker container stop wordpress wordpressdb
+
+# 然后列出本地的 镜像文件 吧用不着的都删除了
+docker image ls
+
+# 然后根据列表上面的id 删除镜像，此步骤可选，想删除就删除不想就留着
+docker rmi 镜像id  镜像id  镜像id
+
+# 可以连续删除多个本地镜像
+```
+
+### 采用官方的 WordPress 容器
+
+上面采用了自己构建 WordPress 容器，分别生成 php 容器和 MySQL 容器，然后还需要链接起来，很麻烦，Docker 已经提供了官方的 WordPress image 镜像文件，直接用就可以了。
+
+[这里有镜像的详细使用说明都可以看看](https://hub.docker.com/_/wordpress/)  里面有启动变量参数
+
+首先新建并启动 MySQL 容器
+
+```
+docker container run \
+  -d \ # 后台运行
+  --rm \ # 结束后删除容器
+  --name wordpressdb \ # 容器名称为 wordpressdb
+  --env MYSQL_ROOT_PASSWORD=123456 \ # 根密码
+  --env MYSQL_DATABASE=wordpress \ # 数据库名称
+  mysql:5.7
+```
+
+之后就会在后台运行 MySQL 服务
+
+然后运行基于官方的 WordPress image ，新建并启动 WordPress 容器
+
+```
+docker container run \
+  -d \ # 后台运行
+  -p 80:80 \ # 映射本机和容器端口
+  --rm \ # 结束后自动删除容器
+  --name wordpress \ # 容器名称
+  --env WORDPRESS_DB_PASSWORD=123456 \ # 通过变量向容器内传入数据库密码
+  --link wordpressdb:mysql \ # 链接数据库 和 WordPress 两个容器
+  wordpress # 镜像名称
+  
+  # 老规矩赋值下面的命令
+  docker container run -d -p 80:80 --rm --name wordpress --env WORDPRESS_DB_PASSWORD=123456 --link wordpressdb:mysql wordpress
+```
+
+之后访问就可以看到安装界面了
+
+http://localhost/
+
+
+
+不想玩了就输入
+
+```
+docker stop wordpress wordpressdb
+```
+
+关闭两个容器进程就可以了
+
+### 采用 Docker Compose 工具
+
+Docker Compose 是用来提供一种更简单的方法来管理容器之间的联动，就不用我们一个一个去启动还要传参数。
+
+windows 和 Mac 安装 Docker 同时一同安装Docker Compose ，linux 安装 [Docker Compose 教程](https://docs.docker.com/compose/install/#prerequisites) 
+
+安装完毕之后输入
+
+​	docker-compose --version
+
+验证是否安装成功
+
+之后在 demo 文件夹中，新建 docker-compose.yml 文件写入下面内容
+
+```
+# mysql 容器配置
+mysql:
+    # 容器的镜像
+    image: mysql:5.7
+    # 环境变量分别输入 数据库根密码 和 数据库名称
+    environment:
+     - MYSQL_ROOT_PASSWORD=123456
+     - MYSQL_DATABASE=wordpress
+# WordPress 容器配置
+web:
+    # 容器镜像
+    image: wordpress
+    # 链接到 MySQL 容器
+    links:
+     - mysql
+    # 输入环境变量，就是数据库的密码
+    environment:
+     - WORDPRESS_DB_PASSWORD=123456
+    # 映射端口本地和容器端口
+    ports:
+     - "80:80"
+    # 映射容器目录到
+    working_dir: /var/www/html
+    # 设置容器工作目录
+    volumes:
+     - wordpress:/var/www/html
+```
+
+```
+# 启动所有服务
+$ docker-compose up
+# 关闭所有服务
+$ docker-compose stop
+```
+
+使用启动命令之后就可以打开 
+
+http://localhost/
+
+进行访问了
 
