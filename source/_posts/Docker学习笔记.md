@@ -117,8 +117,6 @@ Docker CE 下载地址
 - [Fedora](https://docs.docker.com/install/linux/docker-ce/fedora/)
 - [其他 Linux 发行版](https://docs.docker.com/install/linux/docker-ce/binaries/)
 
-
-
 我目前使用的是 Ubuntu 系统
 
 首先更新软件源
@@ -199,10 +197,6 @@ Client:
  Orchestrator:	swarm
 
 ```
-
-
-
-
 
 Docker 需要用户具有 root 权限，为了避免每次命令都输入 sudo，可以将用户加入 Docker 用户组
 
@@ -300,8 +294,6 @@ var server = app.listen(3000, function () {
 });
 ```
 
-
-
 那么现在有了一个 demo 文件夹，文件夹内有
 
 `index.js`  `node_modules`  `package.json`  `package-lock.json`
@@ -338,12 +330,16 @@ CMD node index.js
 
 那么 demo 文件夹内现在有以下文件
 
-   `index.j` express源代码 `node_modules` 依赖文件夹（上面写了忽略规则，所以会被忽略）  package.json` npm的工作文件 Dockerfile` Docker 工作文件  `.dockerignore`  Docker构建镜像忽略文件
+  `index.j` express源代码
+  `node_modules` 依赖文件夹（上面写了忽略规则，所以会被忽略
+  `package.json`npm的工作文件
+  `Dockerfile` Docker 工作文件
+  `.dockerignore`  Docker构建镜像忽略文件
 
 接下来构建 Docker 镜像及 image 文件
 
 ```Docker
-# 使用 Docker 生成 image 文件， -t 是用来指定 image 文件的名字 我起了 demoapp ，如果不指定那么默认标签就是 latest 最后的点代表 Dockerfile 文件所在位置 当前路径就是 . 
+# 使用 Docker 生成 image 文件， -t 是用来指定 image 文件的名字 我起了 demoapp ，如果不指定那么默认标签就是 latest 最后的点代表 Dockerfile 文件所在位置 当前路径就是 .
 docker build -t demoapp .
 ```
 
@@ -367,8 +363,6 @@ http://localhost:5000
 
 可以访问到并且反返回了 hello world 那么就成功了
 
-
-
 ```
 docker container run 
 # 上面这条命令每运行一次都会生成一个容器，如果不想生成新的容器应该使用下面的命令
@@ -377,8 +371,6 @@ docker container start 容器id
 
 # 查看容器ID命令使用 docker container ls --all
 ```
-
-
 
 以下是上面所有的 Docker 用到或者可以用到的一些相关命令
 
@@ -400,16 +392,12 @@ docker push username/repository:tag            # 将已标记的镜像上传到�
 docker run username/repository:tag                   # 运行镜像库中的镜像
 ```
 
-
-
 之后使用上面的命令将本地的`镜像`和`容器`都删掉吧，感觉还是满占地方的
 
 ```
 docker rm $(docker ps -a -q) # 删除所有容器
 docker rmi $(docker images -q) # 删除所有镜像
 ```
-
-
 
 ## Docker 微服务教程
 
@@ -418,8 +406,6 @@ docker rmi $(docker images -q) # 删除所有镜像
 看完之后然后我在准备看一下官方文档，之后继续回去看书。
 
 因为阮老师的教程写的很详细，我就不会照抄阮老师的教程了，我只会将我觉得比较重要的东西记录下来
-
-
 
 阮老师教程上使用了三种方法，演示如何假设 WordPress 网站，分别动手试试
 
@@ -434,8 +420,6 @@ docker rmi $(docker images -q) # 删除所有镜像
 第三种方法是`使用 Docker 官方容器管理工具`方便管理多个容器互相协作
 
 一个一个动手写一下
-
-
 
 ### 自建 WordPress 容器
 
@@ -453,13 +437,11 @@ docker container run \ # Docker 运行一个容器，
   --name wordpress \ #容器的名字叫做 wordpress
   --volume "$PWD/":/var/www/html \ # 将当前目录（demo）映射到容器的 /var/www/html 因为 Apache 对外访问的默认目录是这个，因此在 demo 文件中的任何修改，都会反应到容器里面，从而被外部访问到
   php:5.6-apache # 指定镜像名称
-  
-  # 这是一行命令， \ 带便换行符，将一条命令分成几行展示，和下面这条命令是一样的,赋值下面的命令，我在上面命令后面写了注释
-  
+
+  # 这是一行命令， \ 带便换行符，将一条命令分成几行展示，和下面这条命令是一样的,复制下面的命令，我在上面命令后面写了注释
+
 docker container run --rm --name wordpress  --volume "$PWD/":/var/www/html php:5.6-apache
 ```
-
-
 
 运行上面的命令之后，Docker 就会去镜像仓库下载镜像，并根据镜像生成名为 wordpress 镜像。然后服务就跑起来了，简单吧。
 
@@ -513,14 +495,14 @@ docker container run \ # Docker 运行一个容器
   --env MYSQL_ROOT_PASSWORD=123456 \ # 向容器传进一个环境变量 MYSQL_ROOT_PASSWORD，等号后面的值会作为 MySQL 的根密码，不太懂这个根密码什么意思
   --env MYSQL_DATABASE=wordpress \ # 向容器传进一个环境变量 MYSQL_DATABASE，等号后面的值会被创建同名的数据库
   mysql:5.7 # MySQL数据库镜像
-  
+
   # 上面的还是一条指令为了方便写注释就拆成多行，直接复制下面这行就可以了
 docker container run -d --rm --name wordpressdb --env MYSQL_ROOT_PASSWORD=123456 --env MYSQL_DATABASE=wordpress mysql:5.7
 ```
 
 上面这条命令多了一个 -d 容器运行后，会自动后台，可以使用
 
-​	docker container ls
+  docker container ls
 
 开看看当前运行的容器
 
@@ -533,7 +515,7 @@ cd8b32dc65ae        php:5.6-apache      "docker-php-entrypoi…"   23 minutes ag
 
 会发现数据库容器确实在运行中，数据库是后台运行的，前台看不到他的输出，如果像看到它的输出，必须使用下面的命令
 
-​	docker container logs wordpressdb
+  docker container logs wordpressdb
 
 接下来需要将 WordPress 和 MySQL 链接起来，但是官方的 PHP 镜像不带 MySQL 扩展，所以得自己新建 镜像
 
@@ -556,7 +538,7 @@ CMD [ "apache2-foreground" ]
 # 基于我们上面写的 Dockerfile 文件生成一个镜像 phpwithmysql 别忘了，最后还有个点，然后等待生成镜像
 
 docker build -t phpwithmysql .
-  
+
 # 修改 demo 文件夹下 wordpress 文件夹的权限，保证它有写入权限，以便安装
 
 chmod -R 777 wordpress
@@ -570,7 +552,7 @@ docker container run \ # 运行一个容器
   --volume "$PWD/":/var/www/html \ # 将demo 文件夹映射到容器的 /var/www/html 目录
   --link wordpressdb:mysql \ # 链接 wordpress 和 mysql 数据库
   phpwithmysql # 依据 phpwithmysql 镜像生成容器
-  
+
 # 直接复制下面的命令就可以了
 
 docker container run -p 80:80  --rm   --name wordpress   --volume "$PWD/":/var/www/html   --link wordpressdb:mysql   phpwithmysql
@@ -639,16 +621,14 @@ docker container run \
   --env WORDPRESS_DB_PASSWORD=123456 \ # 通过变量向容器内传入数据库密码
   --link wordpressdb:mysql \ # 链接数据库 和 WordPress 两个容器
   wordpress # 镜像名称
-  
-  # 老规矩赋值下面的命令
+
+  # 老规矩复制下面的命令
   docker container run -d -p 80:80 --rm --name wordpress --env WORDPRESS_DB_PASSWORD=123456 --link wordpressdb:mysql wordpress
 ```
 
 之后访问就可以看到安装界面了
 
 http://localhost/
-
-
 
 不想玩了就输入
 
@@ -666,7 +646,7 @@ windows 和 Mac 安装 Docker 同时一同安装Docker Compose ，linux 安装 [
 
 安装完毕之后输入
 
-​	docker-compose --version
+  docker-compose --version
 
 验证是否安装成功
 
@@ -713,4 +693,3 @@ $ docker-compose stop
 http://localhost/
 
 进行访问了
-
