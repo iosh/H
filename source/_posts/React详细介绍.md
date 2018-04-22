@@ -843,3 +843,150 @@ Views ---> 触发 action ---> 通过 dispatch ---> 更新 Stores ---> 而Stores�
 
 这些 action 是从 View 或者其他部分进入 dispatch ，例如 HTTP 请求结束收到结果会触发一个 action ，说明请求成功。
 
+## dispatcher
+
+在大多情况下，都需要一个 dispatcher ，它将作为与其他部分之间的沟通部分，dispatcher 需要知道两件事情，action 和 Store，并且将这些 action 转发给 Store 
+
+```jsx
+var Dispatcher = function () {
+  return {
+    _stores: [],
+    register: function (store) {  
+      this._stores.push({ store: store });
+    },
+    dispatch: function (action) {
+      if (this._stores.length > 0) {
+        this._stores.forEach(function (entry) {
+          entry.store.update(action);
+        });
+      }
+    }
+  }
+};
+```
+
+这里向Store中存在一个 `update`方法，如果这个方法不存在则抛出一个错误
+
+```jsx
+register: function (store) {
+  if (!store || !store.update) {
+    throw new Error('你需要为 Store 提供一个拥有 `update` 方法.');
+  } else {
+    this._stores.push({ store: store });
+  }
+}
+```
+
+emmmmmm下面字谷歌翻译也看不懂。。。。
+
+## 更新View 和 Store
+
+接下来合乎逻辑的步骤是`View` 链接到 `Store`，以便在 `Store`放生变化的时候 `View`可以进行重新渲染
+
+### 使用Flux辅助函数
+
+这里可以使用 `Flux`提供的一个辅助函数来完成链接功能
+
+```js
+Framework.attachToStore(view, store);
+```
+
+通过辅助函数来链接`view`和`store`
+
+但是作者不喜欢这种直接调用赋值函数的方法，所以下面将介绍如果自己实现这个方法
+
+###使用mixin
+
+使用 React 的 mixin 进行构建(mixin 官方已经弃用了)
+
+官方说明：
+
+> **注意：**
+>
+> ES6在没有任何混合支持的情况下发布。因此，当您使用ES6类的React时，不支持mixin。
+>
+> **我们在使用mixins的代码库中也发现了很多问题，并且不建议在新代码中使用它们。**
+>
+> 本部分仅供参考
+
+```js
+var View = React.createClass({
+  mixins: [Framework.attachToStore(store)]
+  ...
+});
+```
+
+这是定义现有 React 组件行为的好方法(createClass 是使用es5 语法书写 React 的方法)
+
+emmmm 。。。作者不喜欢 mixin 因为它用不可预测的方式修改组件，所以放弃了这个选项
+
+### 使用context
+
+那么mixin 不能用那就只能使用另一个可行的技术是 React 的 context API，这是一种可以穿透组件传递状态的方法，而不需要在每个组件中层层传递，Facebook 在数据必须深入嵌套组件的情况下建议使用 context
+
+### 高阶组件概念
+
+高阶组件借鉴了 [introduced](https://gist.github.com/sebmarkbage/ef0bf1f338a7182b6775)  代码片段(这个地址好像要科学上网)作者 Sebastian,它是关于创造一个返回包装过的组件，做这件事它将有机会添加属性和引入其他逻辑，例如：
+
+```jsx
+// 这是个高阶函数不用讲了吧
+function attachToStore(Component, store, consumer) {
+  // 使用 es5 语法创建一个 react 的 class
+    const Wrapper = React.createClass({
+        // 定义初始 state 下面的我也不太懂。。抱歉
+    getInitialState() {
+      return consumer(this.props, store);
+    },
+    componentDidMount() {
+      store.onChangeEvent(this._handleStoreChange);
+    },
+    componentWillUnmount() {
+      store.offChangeEvent(this._handleStoreChange);
+    },
+    _handleStoreChange() {
+      if (this.isMounted()) {
+        this.setState(consumer(this.props, store));
+      }
+    },
+    render() {
+      return <Component {...this.props} {...this.state} />;
+    }
+  });
+  return Wrapper;
+};
+```
+
+我们想将`Store`附加到 `store`，同时传入一个`consumer`函数说明应该提取哪些`Store`的状态并且分发到`view`，上述功能的简单使用可以是
+
+```jsx
+class MyView extends React.Component {
+  ...
+}
+
+ProfilePage = connectToStores(MyView, store, (props, store) => ({
+  data: store.get('key')
+}));
+```
+
+真是巧妙的代码，反正我写不出来，我理解起来都需要一会，真是巧妙。
+
+这是一个有趣的模式，因为它改变了职责，从`Store`中获取数据的`view`，而不是从`Store`中推送数据到`view`，当然这也有他的缺点，这种方法的缺点就是还需要一个包装组件参与其中
+
+### 作者的选择
+
+上面的最后一个选项是高阶组件，它非常接近作者正在探索的内容
+
+到目前为止仅在该`register`方法中与`Store`进行交互
+
+```jsx
+register: function (store) {
+  if (!store || !store.update) {
+    throw new Error('你应该为store提供一个 `update` 方法.');
+  } else {
+    this._stores.push({ store: store });
+  }
+}
+```
+
+通过`register` 保持对`dispatcher`内的`store`的引用，但是，`register`他可能会返回一个用户接受的`subscriber`
+
