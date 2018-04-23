@@ -990,3 +990,463 @@ register: function (store) {
 
 通过`register` 保持对`dispatcher`内的`store`的引用，但是，`register`他可能会返回一个用户接受的`subscriber`
 
+决定将整个`store`放在`consumer`里面，而不是在`store`中保存数据，就像高阶组件一样，View 应该使用`stroe`的`getter`方法来说明他需要什么，这使得`store`非常简单
+
+```jsx
+// register 接受一个 Store对象，对象需要有一个 update方法如果不存在就抛出异常
+register: (store) => { // 用箭头函数绑定this
+  if (!store || !store.update) {
+    throw new Error(
+      '你应该为store 提供一个 `update` 方法.'
+    );
+  } else {
+    var consumers = [];// 通知列表
+    var subscribe = function (consumer) { // 待通知对象
+      consumers.push(consumer); // 添加到队列
+    };
+
+    this._stores.push({ store: store });保存store
+    return subscribe; // 返回添加通知函数
+  }
+  return false;
+}
+```
+
+根据原则，Store会根据行为改变状态，在`update`方法中发送`action`，也可以发送一个`change`函数，调用这个函数触发观察者模式。
+
+```jsx
+register: function (store) {
+  if (!store || !store.update) {
+    throw new Error(
+      'You should provide a store that has an `update` method.'
+    );
+  } else {
+    var consumers = [];
+    var change = function () {
+      consumers.forEach(function (l) {
+        l(store);
+      });
+    };
+    var subscribe = function (consumer) {
+      consumers.push(consumer);
+    };
+
+    this._stores.push({ store: store, change: change });
+    return subscribe;
+  }
+  return false;
+},
+dispatch: function (action) { // dispatch 函数接受一个参数action
+  if (this._stores.length > 0) {// 如果store不为空
+    this._stores.forEach(function (entry) {// 调用遍历函数给store中每个对象添加一个update方法用来发送action和触发观察者模式函数
+      entry.store.update(action, entry.change);
+    });
+  }
+}
+```
+
+最常用的方法就是使用`Store`的初始状态渲染`View`,这意味着至少需要一次初始化，可以通过下面的`subscribe`方法完成
+
+```jsx
+var subscribe = function (consumer, noInit) {
+  consumers.push(consumer);
+  !noInit ? consumer(store) : null;
+};
+```
+
+看不太懂，有点绕
+
+下面是最终版本
+
+```jsx
+var Dispatcher = () => {
+  return {
+    _stores: [], // stores 对象
+    register: (store) => { // 返回一个函数接受原始 store 对象作为参数，并且判断其中有没有update方法
+      if (!store || !store.update) {
+        throw new Error(
+          'You should provide a store that has an `update` method'
+        );
+      } else {
+        var consumers = [];// 待通知队列
+        var change = () => { // 给每个待通知对象都传入一个store
+          consumers.forEach(function (l) {
+            l(store);
+          });
+        };
+        var subscribe =  (consumer, noInit) => {// 订阅对象接受一个待通知函数和是否进行初始化布尔值
+          consumers.push(consumer);
+          !noInit ? consumer(store) : null;
+        };
+
+        this._stores.push({ store: store, change: change }); // 不太懂
+        return subscribe;
+      }
+      return false;
+    },
+    dispatch:  (action) => { // dispatch
+      if (this._stores.length > 0) { // 判断Store是否为空
+        this._stores.forEach(function (entry) { // 调用被通知对象函数通知更新
+          entry.store.update(action, entry.change);
+        });
+      }
+    }
+  }
+};
+```
+
+### action
+
+action 定义为右两个属性，`type`，`payload`：
+
+```jsx
+{
+  type: 'USER_LOGIN_REQUEST',
+  payload: {
+    username: '...',
+    password: '...'
+  }
+}
+```
+
+这个 `action` 包含了两个对象分别是`type`和`payload`，在一些情况下`payload`可以是空的
+
+创建一个创建一个函数，用来构造 `action`对象，例如
+
+```jsx
+var createAction = function (type) {
+  if (!type) {
+    throw new Error('Please, provide action\'s type.');
+  } else {
+    return function (payload) {
+      return dispatcher.dispatch({
+        type: type,
+        payload: payload
+      });
+    }
+  }
+}
+```
+
+调用两次，第一次调用传入`type`第二次调用传入`payload`
+
+这个函数有几个好处
+
+- 不再需要记住`action`的具体类型，仅仅需要传入一个`type`
+- 不在需要显式的调用`dispatch`函数
+- 不必要亲自处理每个细节，而是将过程封装为一个函数，这个函数会描述整个过程
+
+这个也影响到了接下来流行的redux
+
+最终部分代码
+
+```jsx
+var createSubscriber = function (store) {
+  return dispatcher.register(store);
+}
+
+var Dispatcher = function () {
+  return {
+    _stores: [],
+    register: function (store) {
+      if (!store || !store.update) {
+        throw new Error(
+          'You should provide a store that has an `update` method'
+        );
+      } else {
+        var consumers = [];
+        var change = function () {
+          consumers.forEach(function (l) {
+            l(store);
+          });
+        };
+        var subscribe = function (consumer, noInit) {
+          consumers.push(consumer);
+          !noInit ? consumer(store) : null;
+        };
+
+        this._stores.push({ store: store, change: change });
+        return subscribe;
+      }
+      return false;
+    },
+    dispatch: function (action) {
+      if (this._stores.length > 0) {
+        this._stores.forEach(function (entry) {
+          entry.store.update(action, entry.change);
+        });
+      }
+    }
+  }
+};
+
+module.exports = {
+  create: function () {
+    var dispatcher = Dispatcher();
+
+    return {
+      createAction: function (type) {
+        if (!type) {
+          throw new Error('Please, provide action\'s type.');
+        } else {
+          return function (payload) {
+            return dispatcher.dispatch({
+              type: type,
+              payload: payload
+            });
+          }
+        }
+      },
+      createSubscriber: function (store) {
+        return dispatcher.register(store);
+      }
+    }
+  }
+};
+```
+
+整个过程真的巧妙，厉害
+
+# Redux
+
+redux 是一个状态管理库，在 `React`中管理全局数据，是`Flux`的进阶版
+
+在`redux`中由`React`部分触发`action`，到达`Store`，最后由`reducer`更新`Store`
+
+和`Flux`最大的区别就是`Redux`只有一个`Store`，最后决定数据的是由`reducer`来决定的，`reducer`是一个纯函数，一旦`Store`接收到一个`action`就会挨个匹配`reducer`并且调用函数进行更新数据
+
+这个理念非常线性，而且遵循`单向数据流`接下来介绍一些`redux`的工作模式
+
+## Actions
+
+在`Redux`中的和`flux`类似，`action`都是一个具有`type`的对象，这个对象中的其他所有数据都和这个模式无关
+
+```jsx
+const CHANGE_VISIBILITY = 'CHANGE_VISIBILITY'; // 常理中全大写的字符串是静态的固定的
+const action = {
+  type: CHANGE_VISIBILITY,
+  visible: false // 携带的数据
+}
+```
+
+当需要`dispatch`一个`action`的时候，都必须要使用这个对象，但是一遍一遍抄太枯燥了，这就是为什么有`createAction`，这个`createAction`是一个函数，返回一个对象。
+
+## Store
+
+
+
+在`Redux`中，为我们提供了一个`createStore`函数用来创建`Store`使用方法如下
+
+```jsx
+import { createStore } from 'redux'
+createStore([reducer],[initial state],[enhancer])
+```
+
+createStore 的第一个参数`reducer`是一个接受当前`action`并且返回新的状态的函数，第二个参数是`初始化状态`，这是一个非常方便定义初始状态的地方，第三个参数是`Redux`添加第三方中间件的，可以用来添加一些插件，比如日至打印，异步处理等中间件。
+
+一旦创建`Store`之后，`Store`就有了四种方法，`getState`，`dispatch`，`subscribe`，和`replaceReducer`其中最重要的是`dispatch`
+
+```jsx
+store.dispath(changeVisibility(false))
+```
+
+这里是使用`createAction`的地方，将这个函数的返回对象传递给`dispatch`方法，然后他会在应用程序中传递给`reducer`，在典型的`React`应用程序中，通常不会直接使用`getState`，`subscribe`因为有一个帮助函数(因为在React中有一个react-redux这个包提供了两个API帮助我们更好的使用redux，而上面这两个函数是用在其他框架中使用redux提供的基础API，用起来还是比较麻烦的)，将组件和状态链接到一起，而`replaceReducer`是一种先进的 API 它用来替换`reducer`函数，我没用过这个函数
+
+## Reducer
+
+`reducer`可能是`Redux`中最为精妙的部分，`reducer`有两个特点非常重要：
+
+- 它必须是纯函数，意味着只要输入相同，那么输出一定相同。
+- 它不应该有副作用，像访问全局变量，进行异步操作等
+
+下面是一个简单的计数器的`reducer`：
+
+```jsx
+const counterReducer = (state, action) => {// 接受另个参数，第一个参数是当前状态，第二个参数是action对象，其中必定包含了type属性，也可以附带其他的数据
+  if (action.type === ADD) { // 对比type 是否等一 “ADD”
+    return { value: state.value + 1 };// 是则+1
+  } else if (action.type === SUBTRACT) {
+    return { value: state.value - 1 };
+  }
+  return { value: 0 };// 如果type都不符则返回value：0
+};
+```
+
+这个函数没有副作用，而且每次都会返回一个全新的对象，根据之前的值进行累加或者减少
+
+## 连接到React组件
+
+如果是在`React`中讨论`redux`那么必定包含`react-redux`模块，`react-redux`提供了两个重要 API 用来将 React 和 Redux 进行连接
+
+1. `<Provider/>` 组件，他是一个组件，接受一个`Store`作为参数，并且通过`React`的 `context` API  穿透组件进行通信，举个例子
+
+   ```jsx
+   import { Provider } from 'react-redux'
+   import myStore from '自己写的store对象'
+   // Provider 应作为最上级组件包裹整个 React 应用，保证他的所有子集都可以获得到传递的数据
+   <Provider store={ myStore }>
+     <MyApp />
+   </Provider>
+   ```
+
+2.  `connect` 函数，用于订阅`Redux`的`Store`并且用来更新 UI ，他是一个高阶组件，下面是它接受的参数
+
+   ```jsx
+   connect(
+     [mapStateToProps],
+     [mapDispatchToProps],
+     [mergeProps],
+     [options]
+   )
+   ```
+
+   mapStateToProps 参数是是一个函数，它会接受到当前的`state`作为参数，并且必须返回一个对象，这些对象会被以`props`的形式传递给组件，例如：
+
+   ```jsx
+   const mapStateToProps = state => ({
+       visible: state.visible
+   })
+   // 这样组件将会接收到一个 visible 的 props 他的值就是 store里面的 visible
+   ```
+
+   mapDispatchToProps 也是一个函数，但不是接受`state`而是接受`dispatch`作为参数，这里可以定义`dispatch action`props 的地方
+
+   ```jsx
+   const mapDispatchToProps = dispatch => ({
+     changeVisibility: value => dispatch(changeVisibility(value))
+   });
+   // 这样组件将会接受到一个 changeVisibility 函数的 props 运行这个函数并且传入一个参数就会dispatch一个action
+   ```
+
+   ​
+
+后面最后两个参数用的比较少，可以去官方文档看。
+
+## 一个简单的计数器
+
+来创建一个简单的应用来使用上面提到的 API 
+
+[这里写了个在线的例子，可以跑起来的](https://codesandbox.io/s/j77l61lm43)
+
+### 创建action
+
+对于作者而言，每个`Redux`都应该从构建`action`开始，并且定义我们向保留的状态，对于计数器而言，设计三个状态`ADD`增加，`subtract`减少，`change visibility`更改计数器数值
+
+### Store 和 reducer
+
+有些东西在前面没讲到，是说一个应用通常有很多个`reducer`，这样可以分开定义很多事情，而不必耦合在一起，这里的`Store`虽然只有一个，但是可以有很多属性，就是下面这种结构
+
+```jsx
+// 但是redux提供了组合函数将这些分片的reduce组合起来
+import { createStore, combineReducers } from 'redux';
+
+const rootReducer = combineReducers({
+  counter: reducer1,
+  visible: reducer2
+});
+const store = createStore(rootReducer);
+```
+
+接下来定义`reducer`应该定义的`ADD`,`SUBRECT`并且计算出新的`counter`状态
+
+```jsx
+// 因为比较少所以就用了if 如果多的话可以使用 swift 进行匹配
+const counterReducer = function (state, action) {
+  if (action.type === ADD) {
+    return { value: state.value + 1 };
+  } else if (action.type === SUBTRACT) {
+    return { value: state.value - 1 };
+  }
+  return state || { value: 0 };
+};
+```
+
+在`Redux`初始化的时候，每个`reducer`会被至少触发一次，在第一次运行的时候`state`是`undefined`和`action`现在`{ type: "@@redux/INIT"}`， 之后我们定义的`reducer`就会返回数据的初始值`{ value: 0 }`
+
+之后的第三个也就是`CHANGE_VISIBILITY`也和上面的差不多
+
+```jsx
+const visibilityReducer = function (state, action) {
+  if (action.type === CHANGE_VISIBILITY) {
+    return action.visible;
+  }
+  return true;
+};
+```
+
+这样我们就有了两个`reducer`，就可以按照上面的方法将这两个`reducer`组合起来
+
+```jsx
+const rootReducer = combineReducers({
+  counter: counterReducer,
+  visible: visibilityReducer
+});
+```
+
+### React组件
+
+首先处理计数器的用户界面
+
+```jsx
+function Visibility({ changeVisibility }) {
+  return (
+    <div>
+      <button onClick={ () => changeVisibility(true) }>
+        Visible
+      </button>
+      <button onClick={ () => changeVisibility(false) }>
+        Hidden
+      </button>
+    </div>
+  );
+}
+
+const VisibilityConnected = connect(
+  null, // 没有订阅任何的 Store 的属性
+  dispatch => ({ // 被映射到 props 的方法
+    changeVisibility: value => dispatch(changeVisibility(value))
+  })
+)(Visibility);// 高阶组件的用法
+```
+
+第二个组件
+
+```jsx
+function Counter({ value, add, subtract }) {
+  return (
+    <div>
+      <p>Value: { value }</p>
+      <button onClick={ add }>Add</button>
+      <button onClick={ subtract }>Subtract</button>
+    </div>
+  );
+}
+
+const CounterConnected = connect(
+  state => ({ // 订阅了 
+    value: state.counter.value
+  }),
+  dispatch => ({
+    add: () => dispatch(add()),
+    subtract: () => dispatch(subtract())
+  })
+)(Counter);
+```
+
+最后的组件
+
+```jsx
+function App({ visible }) {
+  return (
+    <div>
+      <VisibilityConnected />
+      { visible && <CounterConnected /> }
+    </div>
+  );
+}
+const AppConnected = connect(
+  state => ({
+    visible: state.visible;
+  })
+)(App);
+```
