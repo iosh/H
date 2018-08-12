@@ -250,3 +250,22 @@ print(noNewLineRegx.search('serve the public trust .\n Protect the innocent').gr
 - \D,\W,\S 分别匹配出数字,单词和空格外的所有字符
 - [abc]匹配方括号内的任意字符
 - [^abc]匹配不在方括号内的任意字符
+
+### 不区分大小写
+不区分大小写可以向compile传入第二个参数re.I或者re.IGNORECASE
+
+```python
+pobocop = re.compile(r'robocop', re.I)
+
+print(pobocop.search('RoboCop is ...').group())
+
+```
+### 使用sub方法替换字符串
+正则表达式不仅能够找到文本模式,而且能够用新的文本替换掉这些模式,Regex对象的sub方法需要传入两个参数,第一个是字符串,用于取代发现的匹配,第二个参数是一个字符串,用于正则表达式匹配的内容,返回替换完成的字符串
+
+```python
+nameRegex = re.compile(r'Agent \w+')
+
+print(nameRegex.sub('GENSORED', 'Agent Alice gave the secret document to Agent Bob'))
+
+```
