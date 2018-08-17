@@ -3,6 +3,8 @@ title: python正则表达式
 date: 2018-08-12 20:43:27
 tags: python
 ---
+python 中的正则表达式
+<!-- more -->
 
 # 正则表达式用来匹配字符串中特定的字符
 正则表达式简称regex
