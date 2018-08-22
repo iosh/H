@@ -43,6 +43,54 @@ tags: JavaScript
 其支持一下几种主要的方法:
 
 - 插入
+
+```javascript
+
+/**
+ * 这个插入节点非常有趣
+ */
+  append(value: any): LinkedListInterface {
+
+    // 首先根据参数生成一个节点这里假设 value = 1
+    // 那么生成的节点就是 {value:1, next: null}
+    const newNode = new LinkedListNode(value)
+    // 假如一开始链表是空的
+    if (!this.head) {
+      // 那么头节点和尾节点指向的是同一个对象 this.head = {value:1, next: null}
+      // this.tail = {value: 1, next: null} 注意这里引用的是同一个对象
+      this.head = newNode
+      this.tail = newNode
+      return this
+    }
+
+
+    // 那么第二次添加节点链表头结点不为空执行下面的赋值 这里假设 value参数为2
+    // 首先this.tail.netx = {value:2,next:null}
+    // 那么this.tail 完整储存的内容就是 {value:1, next: {value:2,next:null}}
+    // 因为this.head 和 this.tail 指向的是同一个对象所以完整的的链表是这样的
+    // this.head的值  {value:1, next: {value:2,next:null}}
+    // this.tail的值   {value:1, next: {value:2,next:null}}
+    this.tail.next = newNode
+
+    // 接下来将tali 赋值为 {value: 2, next:null}
+    // 此时链表结构为
+    // this.head = {value:1, next: {value:2,next:null}}
+    // this.tail = {value: 2, next:null}
+    // 这里this.head.next引用的对象和tail引用的对象是同一个对象
+    // 所以下次赋值会重复这个过程,即最后一个节点和tail节点引用的是同一个对象
+    // 所以重复
+    // this.tail.next = newNode
+    // this.tail = newNode
+    // 即可完成添加新的节点
+    this.tail = newNode
+
+    return this
+
+  }
+
+```
+
+
 - 搜索
 - 删除
 - 反转
