@@ -108,3 +108,27 @@ tags: JavaScript
 ## 空间复杂度
 
 O(n)
+
+
+# 双向链表
+
+在计算机科学中,双向链表是一种线性数据结构,由一组被称为节点的顺序连接记录组成,每个节点包含两个字段,称为链接,节点中有上一个节点和下一个节点的引用,可以被概念化为由两个相同数据形成的两个链表,但是以相反的顺序组成
+
+![Doubly Linked List](https://upload.wikimedia.org/wikipedia/commons/5/5e/Doubly-linked-list.svg)
+
+# 构成双向链表的基本方法
+
+- insert
+- delte
+- reverse traversal
+
+# 相关复杂度
+
+| Access(访问) | Search | insertin | deleteion |
+| ------------ | ------ | -------- | --------- |
+| O(n)         | O(n)   | O(1)     | O(1)      |
+
+## 空间复杂度
+
+O(n)
+
