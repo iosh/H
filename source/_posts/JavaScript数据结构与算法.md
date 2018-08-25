@@ -132,3 +132,46 @@ O(n)
 
 O(n)
 
+
+## 笔记
+
+双向链表顾名思义,就是每个节点都由`三个部分`组成
+- 上个节点的引用
+- 下个节点的引用
+- 节点存储的值
+
+`prepend`
+```javascript
+  /** 向节点头部插入值 */
+  prepened(value: any): DoublyLinkedListInterface {
+
+    // 生成节点
+    const newNode = new DoublyLinkedListNode(value)
+
+    // 如果头结点存在值那么就给它的pervious节点赋值
+
+    // 使用实际值来带入比较好理解
+    // 假设链表为空,第一次插入值,并且假设值为1
+    // 那么就是hand 和 tali 节点指向同一个对象值都为{value:1,next:null,previous:null}
+    // 第二次调用该方法传入一个假设值为2
+    // 首先hand不为空则对pervious进行赋值,由于hand tali指向的是同一个对象那么赋值之后
+    // this.hand: {value:1, next: null, pervious: {value:1, next: null, previous: null}}
+    // this.tali: {value:1, next: null, pervious: {value:1, next: null, previous: null}}
+    // 然后修改hand的值为 {value:1, next: null, previous: null}
+    // 这样 this.hand: {value:1, next: null, previous: null}
+    // this.tali : {value:1, next: null, pervious: {value:1, next: null, previous: null}}
+    // 从而实现向链表头部添加了一个节点
+    if (this.hand) {
+      this.hand.pervious = newNode
+    }
+    this.hand = newNode
+
+    if (!this.tail) {
+      this.tail = newNode
+    }
+
+    return this
+
+  }
+```
+其他的方面和单向链表差不多,写完之后代码测试就错了三处,可喜可贺
