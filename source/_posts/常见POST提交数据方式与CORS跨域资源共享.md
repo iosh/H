@@ -1,4 +1,4 @@
-title: 常见POST提交数据方式
+title: 常见POST提交数据方式与CORS跨域资源共享
 date: 2018-09-06 18:36:03
 tags: HTTP
 ---
