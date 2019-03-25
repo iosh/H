@@ -1326,7 +1326,7 @@ const counterReducer = (state, action) => {// 接受另个参数，第一个参�
 
 来创建一个简单的应用来使用上面提到的 API 
 
-[这里写了个在线的例子，可以跑起来的](https://codesandbox.io/s/wn8w0y65y5)
+[这里写了个在线的例子，可以跑起来的](https://codesandbox.io/s/qxnl7wxylq)
 
 ### 创建action
 
