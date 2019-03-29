@@ -111,7 +111,7 @@ function throttle(fn, wait) {
 		if(!timeout) { // 判断timeout是否存有定时器返回值
 			timeout = setTimeout(()=>{
 				timeout = null;// 定时器执行
-				fun(); // 执行传入函数
+				fn(); // 执行传入函数
 			}, wait) // 延迟多久
 		}
 	}
