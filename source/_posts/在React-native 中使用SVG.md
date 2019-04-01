@@ -1,9 +1,9 @@
 ---
-title: 在 React-native 中使用svg
+title: 在 React-native 中使用SVG
 date: 2019-04-01 11:08:31
 tags: React-native
 ---
-
+在React-Native中使用SVG的一种简单而方便的方法。
 <!-- more -->
 
 在 React-native 中并不支持 SVG, 并且官方已经对此问题提出了[回复](https://github.com/react-native-community/discussions-and-proposals/issues/104),简单的说就是社区已经有了解决方案，所以官方并不会内置对SVG的处理，
