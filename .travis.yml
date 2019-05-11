@@ -12,7 +12,7 @@ before_install:
     - export TZ='Asia/Shanghai' # 更改时区
     - git config --global user.name "{GH_Name}" # 设置全局用户名
     - git config --global user.email "{GH_EMAIL}" # 设置全局邮箱
-    - npm install -g hexo-cli gulp-cli
+    - npm install -g hexo-cli gulp
 install:
   - npm install  #安装hexo及插件
 
