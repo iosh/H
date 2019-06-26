@@ -4,6 +4,9 @@ date: 2018-5-19 12:42:09
 tags: React
 ---
 
+## React 中使用
+
+写于18年5月19日
 在 React 中富文本编辑器框架有 Facebook 开源的著名 [draft-js](https://github.com/facebook/draft-js) 很厉害，但是他只是一个基础框架，并不可以直接拿来使用，像知乎的编辑器就是基于他实现的，我这种弱鸡不会，只能找一个简单的富文本编辑器来使用，这里我看到了Quill
 <!-- more -->
 
@@ -150,3 +153,88 @@ Quill 的所有配置项 [文档在这里](https://quilljs.com/docs/modules/tool
 简单到只需要看文档上原有的名字叫什么然后新建一个div 给个 id=ql-配置名称即可
 
 Quill 提供了丰富多样的 api 从内容获取，到添加样式之类的应有尽有，可以配合起来可以实现比较多的功能
+
+
+## 在Vue中的使用 
+
+(写于2019年6月26日
+
+```
+<template>
+  <div class="editor-box">
+    <div id="toolbar"></div>
+    <div ref="editor"></div>
+  </div>
+</template>
+<script>
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import quill from "quill";
+export default {
+  props: {
+    options: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    values: {
+      type: String
+    }
+  },
+  mounted() {
+    this.editor = new quill(this.$refs.editor, {
+      modules: {
+        toolbar: [
+          ["bold", "italic", "underline", "strike"], // toggled buttons
+          ["blockquote", "code-block"],
+          [{ header: 1 }, { header: 2 }], // custom button values
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ script: "sub" }, { script: "super" }], // superscript/subscript
+          [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+          [{ direction: "rtl" }], // text direction
+          [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+          [{ font: [] }],
+          [{ align: [] }],
+          ["clean"] // remove formatting button
+        ]
+      },
+      theme: "snow",
+      ...this.options
+    });
+
+    if (this.values !== "") {
+      this.editor.clipboard.dangerouslyPasteHTML(this.values);
+    }
+    this.editor.on("text-change", (delta, oldDelta, source) => {
+      if (source === "user") {
+        const html = this.editor.root.innerHTML;
+        const text = this.editor.getText();
+        this.$emit("onChange", { html, text, editor: this.editor });
+      }
+    });
+  },
+  // 这里通过watch 实现了内容受控
+  watch: {
+    values(newValues) {
+      if (newValues !== this.editor.root.innerHTML) {
+        this.editor.clipboard.dangerouslyPasteHTML(newValues);
+      }
+    }
+  }
+};
+</script>
+<style lang="scss">
+.editor-box {
+  line-height: 22px;
+}
+</style>
+
+
+
+
+```
+
