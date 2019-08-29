@@ -398,4 +398,4 @@ function invokeCallback(settled, promise, callback, detail) {
 
 ```
 
-![ES6-Promise流程图](/images/Promise.jpg)
+![ES6-Promise流程图](https://ms.momocdn.com/08/29/962D/8859.jpg)
