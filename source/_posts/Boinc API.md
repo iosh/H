@@ -1,5 +1,5 @@
 ---
-int dup_element(FILE* in, const char* end_tag, char** pp);title: Boinc API
+title: Boinc API
 date: 2019-12-09 18:28:48
 tags: Boinc
 ---
