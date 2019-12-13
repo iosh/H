@@ -3,9 +3,12 @@ title: JavaScript中Sort函数
 date: 2017-12-12 18:51:15
 tags: JavaScript
 ---
-由于昨天看了几个排序，又想到JavaScript常用`Array.sort`进行排序，所以搜索了一下JavaScript中sort函数使用了那种排序方法。
+
+由于昨天看了几个排序，又想到 JavaScript 常用`Array.sort`进行排序，所以搜索了一下 JavaScript 中 sort 函数使用了那种排序方法。
+
 <!-- more -->
-> sort() 方法在适当的位置对数组进行排序，并返回数组，同时sort排序不一定是稳定的 -- MDN文档
+
+> sort() 方法在适当的位置对数组进行排序，并返回数组，同时 sort 排序不一定是稳定的 -- MDN 文档
 
 语法
 
@@ -13,7 +16,7 @@ tags: JavaScript
 
 > arr.sort(compareFunction)
 
-sort()函数默认根据字符串Unicode码点进行排序
+sort()函数默认根据字符串 Unicode 码点进行排序
 
 比如
 
@@ -31,17 +34,17 @@ b.sort(); //[1, 10, 2, 21]
 
 ```
 
-这种这种按Unicode顺序排序一般不符合使用要求。 所以大多都会使用
+这种这种按 Unicode 顺序排序一般不符合使用要求。 所以大多都会使用
 
 > arr.sort(compareFunction)
 
-给sort函数传一个比较函数
+给 sort 函数传一个比较函数
 
 如果指明了 compareFunction ，那么数组会按照调用该函数的返回值排序。即 a 和 b 是两个将要被比较的元素：
 
 如果 compareFunction(a, b) 小于 0 ，那么 a 会被排列到 b 之前； 如果 compareFunction(a, b) 等于 0 ， a 和 b 的相对位置不变。备注： ECMAScript 标准并不保证这一行为，而且也不是所有浏览器都会遵守（例如 Mozilla 在 2003 年之前的版本）； 如果 compareFunction(a, b) 大于 0 ， b 会被排列到 a 之前。 compareFunction(a, b) 必须总是对相同的输入返回相同的比较结果，否则排序的结果将是不确定的。
 
-谷歌搜了一下在谷歌浏览器的v8引擎中 sort只有两种方法 对于长度小于等于10的数组使用插入排序， 长度大于10的数组使用快速排序。 具体看[V8源码](https://github.com/v8/v8/blob/be3c2cdd8de464dd0832c0ba4c9159ce5a0ce979/src/js/array.js#L707)
+谷歌搜了一下在谷歌浏览器的 v8 引擎中 sort 只有两种方法 对于长度小于等于 10 的数组使用插入排序， 长度大于 10 的数组使用快速排序。 具体看[V8 源码](https://github.com/v8/v8/blob/be3c2cdd8de464dd0832c0ba4c9159ce5a0ce979/src/js/array.js#L707)
 
 我看不懂
 

@@ -7,6 +7,7 @@ tags: javaScript
 深入学习 JavaScript 中的 Promise.
 
 <!-- more -->
+
 文字如果嫌太长后面有一张流程图
 
 本质上讲 Promise 就是一个对象, 它代表了一个异步操作的`最终`完成或者失败.
@@ -207,7 +208,8 @@ function subscribe(parent, child, onFulfillment, onRejection) {
   }
 }
 
-function publish(promise) { // 传给 asap 的成功回调 promise 是当前的 promise 对象
+function publish(promise) {
+  // 传给 asap 的成功回调 promise 是当前的 promise 对象
   //  接受要处理的promise实例对象
   let subscribers = promise._subscribers; // 订阅数组
   let settled = promise._state; // 读取当前状态
@@ -226,7 +228,7 @@ function publish(promise) { // 传给 asap 的成功回调 promise 是当前的 
     callback = subscribers[i + settled];
 
     if (child) {
-      invokeCallback(settled, child, callback, detail); // 
+      invokeCallback(settled, child, callback, detail); //
     } else {
       callback(detail); // 读取回调并且调用 // resolve 或者 reject
     }
@@ -236,7 +238,8 @@ function publish(promise) { // 传给 asap 的成功回调 promise 是当前的 
 }
 
 function publishRejection(promise) {
-  if (promise._onerror) { // 如果 onerror 存在则调用 一般这个值为 成功的时候这个值为 null 可以通过设置onerror 来设置自定义错误处理
+  if (promise._onerror) {
+    // 如果 onerror 存在则调用 一般这个值为 成功的时候这个值为 null 可以通过设置onerror 来设置自定义错误处理
     promise._onerror(promise._result);
   }
 
@@ -330,20 +333,21 @@ function flush() {
 }
 ```
 
-
 ```js
 function then(onFulfillment, onRejection) {
   const parent = this; // 声明一个变量储存当前的 promise
 
   const child = new this.constructor(noop); // 声明一个 新的 promise 实例
 
-  if (child[PROMISE_ID] === undefined) { // 判断声明出来的东西是否包含一个自增的id如果没有那么调用函数增加一个
+  if (child[PROMISE_ID] === undefined) {
+    // 判断声明出来的东西是否包含一个自增的id如果没有那么调用函数增加一个
     makePromise(child);
   }
 
   const { _state } = parent;
 
-  if (_state) { // 如果state 不等于0 及等待中
+  if (_state) {
+    // 如果state 不等于0 及等待中
     const callback = arguments[_state - 1]; // 根据状态码来读取正确的回调 成功是1 失败是2 那么 -1就可以取到正确的回调函数
     asap(() => invokeCallback(_state, child, callback, parent._result)); // 调用函数处理
   } else {
@@ -352,19 +356,22 @@ function then(onFulfillment, onRejection) {
 
   return child;
 }
-
 ```
-
 
 ```js
 function invokeCallback(settled, promise, callback, detail) {
   let hasCallback = isFunction(callback), // 判断 callback 是否为函数
-      value, error, succeeded, failed; // 声明要用到的变量
+    value,
+    error,
+    succeeded,
+    failed; // 声明要用到的变量
 
-  if (hasCallback) { // 回调存在那么 尝试吧结果值传递给回调
+  if (hasCallback) {
+    // 回调存在那么 尝试吧结果值传递给回调
     value = tryCatch(callback, detail);
 
-    if (value === TRY_CATCH_ERROR) { // 判断返回值(主要是看是不是有错误发生)
+    if (value === TRY_CATCH_ERROR) {
+      // 判断返回值(主要是看是不是有错误发生)
       failed = true; // 错误发生
       error = value.error; // 错误发生
       value.error = null; // 错误发生
@@ -372,30 +379,33 @@ function invokeCallback(settled, promise, callback, detail) {
       succeeded = true; // 否则成功
     }
 
-    if (promise === value) { // 判断传入的 promise 是不是和值一样,如果是那么直接失败 抛出错误
+    if (promise === value) {
+      // 判断传入的 promise 是不是和值一样,如果是那么直接失败 抛出错误
       reject(promise, cannotReturnOwn());
       return;
     }
-
   } else {
     value = detail; //  callBack 不是函数 那么直接复制
     succeeded = true; // 直接成功
   }
 
-  if (promise._state !== PENDING) { // 如果不是等待中
+  if (promise._state !== PENDING) {
+    // 如果不是等待中
     // noop
-  } else if (hasCallback && succeeded) { // 如果回调存在 并且成功
+  } else if (hasCallback && succeeded) {
+    // 如果回调存在 并且成功
     resolve(promise, value); // resolve
-  } else if (failed) { // 如果错误发生 
+  } else if (failed) {
+    // 如果错误发生
     reject(promise, error); // 直接 eject
-  } else if (settled === FULFILLED) { //状态码如果 是等待中则调用 fulfill
+  } else if (settled === FULFILLED) {
+    //状态码如果 是等待中则调用 fulfill
     fulfill(promise, value);
-  } else if (settled === REJECTED) { // 状态码如果等于失败则直接eject
+  } else if (settled === REJECTED) {
+    // 状态码如果等于失败则直接eject
     reject(promise, value);
   }
 }
-
-
 ```
 
 ![ES6-Promise流程图](https://ms.momocdn.com/08/29/962D/8859.jpg)

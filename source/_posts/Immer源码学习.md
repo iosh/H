@@ -20,30 +20,29 @@ Immer 暴露了一个可以完成所有工作的默认函数,函数签名如下:
 
 同时它还有一个柯里化后的重载
 
-
 这个库用起来非常简单
 
 ```javascript
-import produce from "immer"
+import produce from "immer";
 
 const baseState = [
-    {
-        todo: "Learn typescript",
-        done: true
-    },
-    {
-        todo: "Try immer",
-        done: false
-    }
-]
+  {
+    todo: "Learn typescript",
+    done: true
+  },
+  {
+    todo: "Try immer",
+    done: false
+  }
+];
 
 const nextState = produce(baseState, draftState => {
-    draftState.push({todo: "Tweet about it"})
-    draftState[1].done = true
-})
+  draftState.push({ todo: "Tweet about it" });
+  draftState[1].done = true;
+});
 ```
 
-函数 produce 接收两个参数, 第一个参数是当前的状态树,第二个参数是一个函数,函数接受一个参数,可以对这个参数进行修改,直接赋值即可,最后 produce 函数返回的就是一个新的状态树(不需要return)
+函数 produce 接收两个参数, 第一个参数是当前的状态树,第二个参数是一个函数,函数接受一个参数,可以对这个参数进行修改,直接赋值即可,最后 produce 函数返回的就是一个新的状态树(不需要 return)
 
 从 Immer 库中开始看
 
@@ -63,9 +62,9 @@ import {produceEs5} from "./es5"
  * 这意味着原始状态将保持不变,一旦函数运行完毕,它将返回修改后的状态
  *
  * @export
- * @param {any} baseState - 原始的 state 
+ * @param {any} baseState - 原始的 state
  * @param {Function} producer - 一个函数接受一个基本 state 代理并且可以自由修改它的函数
- * @returns {any} 新的 state, 如果没有修改 state 的话就返回 baseState 
+ * @returns {any} 新的 state, 如果没有修改 state 的话就返回 baseState
  */
 export default function produce(baseState, producer) {
     // 检查函数参数,预期得到1个或者两个参数,如果不是一个或者两个则抛出错误
@@ -90,7 +89,7 @@ export default function produce(baseState, producer) {
             return produce(currentState, draft => { // 上面收集到相关数据了,这里就进行调用
             // 转变为普通调用 produce(当前state, 可以修改的state)
                 args[0] = draft // blegh!
-                return recipe.apply(draft, args) 
+                return recipe.apply(draft, args)
             })
         }
     }
@@ -134,8 +133,6 @@ export default function produce(baseState, producer) {
 ```
 
 阅读文档说明得知 Immer 支持比较旧的 JavaScript 环境, 在比较新的环境下使用性能好的 Proxy ,在比较旧的环境下使用另一种方案先看看 Proxy 方案
-
-
 
 # Proxy 方案实现
 

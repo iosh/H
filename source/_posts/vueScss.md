@@ -5,37 +5,39 @@ tags: scss
 categories: 
 	- 教程
 ---
-##  在Vue CLI脚手架中使用scss
-今天学习vue当中遇到了如何配置scss的问题经过查证，写出记录。
+
+## 在 Vue CLI 脚手架中使用 scss
+
+今天学习 vue 当中遇到了如何配置 scss 的问题经过查证，写出记录。
+
 <!-- more -->
+
 `第一步`
-		npm install sass-loader node-sass
-	或者
-		yarn add sass-loader node-sass
->  如果node-sass在Windows中安装失败(需要Python和C++构建工具），大家可以使用cnpm单独安装node-sass
+npm install sass-loader node-sass
+或者
+yarn add sass-loader node-sass
+
+> 如果 node-sass 在 Windows 中安装失败(需要 Python 和 C++构建工具），大家可以使用 cnpm 单独安装 node-sass
 
 `第二步`
-在vue文件中
+在 vue 文件中
+
 ```css
-<style  lang='scss'>
+<style lang="scss" > #app {
+  @import url("./assets/aaa.scss"); // 引入单独的scss文件
 
-#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
 
-@import  url('./assets/aaa.scss'); // 引入单独的scss文件
+  -webkit-font-smoothing: antialiased;
 
-font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -moz-osx-font-smoothing: grayscale;
 
--webkit-font-smoothing: antialiased;
+  text-align: center;
 
--moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
 
-text-align: center;
-
-color: #2c3e50;
-
-margin-top: 60px;
-
+  margin-top: 60px;
 }
 ```
-使用sass同理
 
+使用 sass 同理
