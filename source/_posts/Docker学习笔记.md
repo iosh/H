@@ -8,7 +8,7 @@ Docker 实践学习笔记
 
 <!-- more -->
 
-Docker  是相当了不起的，当它未出现之前，应用程序还是一些庞大的单体软件，独自运行在一堆钢铁和硅块上，持续多年，并且拒绝改变，不思进取，对于想要快速前行的组织而言，这的确是一个难题，因此虚拟机的崛起也就不足为奇，应用程序不必再和这些硬件捆绑在一起，使得这一切可以更快更替，更加灵活。
+Docker 是相当了不起的，当它未出现之前，应用程序还是一些庞大的单体软件，独自运行在一堆钢铁和硅块上，持续多年，并且拒绝改变，不思进取，对于想要快速前行的组织而言，这的确是一个难题，因此虚拟机的崛起也就不足为奇，应用程序不必再和这些硬件捆绑在一起，使得这一切可以更快更替，更加灵活。
 
 但是虚拟机本身也是很复杂的，那么应该如何管理所有的复杂性，通过配置管理当然可以办到，但是配置管理就不复杂了吗。
 
@@ -86,7 +86,7 @@ Docker 的子命令
 
 |     命令      |                目的                |
 | :-----------: | :--------------------------------: |
-| docker build  |         构建一个Docker镜像         |
+| docker build  |        构建一个 Docker 镜像        |
 |  docker run   |  以容器的形式运行一个 Docker 镜像  |
 | docker commit | 将一个 Docker 容器作为一个镜像提交 |
 |  docker tag   |      给一个 Docker 镜像打标签      |
@@ -110,7 +110,7 @@ Docker 是一个开源的商业产品，有两个版本：社区版（Community 
 Docker CE 下载地址
 
 - [Mac](https://docs.docker.com/docker-for-mac/install/)
-- [Windows](https://docs.docker.com/docker-for-windows/install/)  请注意 windows 安装比较麻烦，需要系统开启 Hyper-V 功能，具体怎么做百度有，系统版本需要是Windows 10 企业版、专业版或教育版 才有这个功能，那么家庭版没这个功能怎么办，请前往淘宝寻找解决方案
+- [Windows](https://docs.docker.com/docker-for-windows/install/) 请注意 windows 安装比较麻烦，需要系统开启 Hyper-V 功能，具体怎么做百度有，系统版本需要是 Windows 10 企业版、专业版或教育版 才有这个功能，那么家庭版没这个功能怎么办，请前往淘宝寻找解决方案
 - [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 - [Debian](https://docs.docker.com/install/linux/docker-ce/debian/)
 - [CentOS](https://docs.docker.com/install/linux/docker-ce/centos/)
@@ -124,7 +124,8 @@ Docker CE 下载地址
 ```
 sudo apt-get update
 ```
-更新以下软件，允许通过HTTPS使用储存库
+
+更新以下软件，允许通过 HTTPS 使用储存库
 
 ```
 sudo apt-get install apt-transport-https  ca-certificates  curl  software-properties-common
@@ -135,6 +136,7 @@ sudo apt-get install apt-transport-https  ca-certificates  curl  software-proper
 ```
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
+
 官方的秘钥指纹是
 
 ```
@@ -236,7 +238,7 @@ docker: Get https://registry-1.docker.io/v2/library/hello-world/manifests/latest
 
 [Docker 中国官方镜像](https://www.docker-cn.com/registry-mirror)
 
-[daocloud加速镜像](https://www.daocloud.io/mirror#accelerator-doc)需要注册
+[daocloud 加速镜像](https://www.daocloud.io/mirror#accelerator-doc)需要注册
 
 情况二就是正常输入欢迎信息。
 
@@ -260,15 +262,15 @@ id 可以通过
 docker image ls
 ```
 
-找到对应的id，结束掉进程
+找到对应的 id，结束掉进程
 
 ## 定义一个镜像并运行容器
 
-接下来使用`node`框架`express`在3000端口显示一个hello world并且制作成 Docker 的镜像
+接下来使用`node`框架`express`在 3000 端口显示一个 hello world 并且制作成 Docker 的镜像
 
-新建一个demo文件
+新建一个 demo 文件
 
-demo作为 Docker 的工程目录
+demo 作为 Docker 的工程目录
 
 ```JavaScript
 将终端路径切换到demo下输入
@@ -296,7 +298,7 @@ var server = app.listen(3000, function () {
 
 那么现在有了一个 demo 文件夹，文件夹内有
 
-`index.js`  `node_modules`  `package.json`  `package-lock.json`
+`index.js` `node_modules` `package.json` `package-lock.json`
 
 index.js 文件里面我们写了上面的代码，而且可以通过 node index.js 来运行这段代码 确定启动服务，http://localhost:3000/ 端口也可以显示 hello world！
 
@@ -330,11 +332,11 @@ CMD node index.js
 
 那么 demo 文件夹内现在有以下文件
 
-  `index.js` express源代码
-  `node_modules` 依赖文件夹（上面写了忽略规则，所以会被忽略
-  `package.json`npm的工作文件
-  `Dockerfile` Docker 工作文件
-  `.dockerignore`  Docker构建镜像忽略文件
+`index.js` express 源代码
+`node_modules` 依赖文件夹（上面写了忽略规则，所以会被忽略
+`package.json`npm 的工作文件
+`Dockerfile` Docker 工作文件
+`.dockerignore` Docker 构建镜像忽略文件
 
 接下来构建 Docker 镜像及 image 文件
 
@@ -364,7 +366,7 @@ http://localhost:5000
 可以访问到并且反返回了 hello world 那么就成功了
 
 ```
-docker container run 
+docker container run
 # 上面这条命令每运行一次都会生成一个容器，如果不想生成新的容器应该使用下面的命令
 
 docker container start 容器id
@@ -429,7 +431,7 @@ docker rmi $(docker images -q) # 删除所有镜像，没有任何镜像会返�
 mkdir demo && cd demo
 ```
 
-然后使用命令创建一个基于`php`的 image (镜像) 新建一个容器，并且运行这个容器，`php`的标签是`5.6-apache`说明 `php`版本是5.6并且自带了`Apache`服务器
+然后使用命令创建一个基于`php`的 image (镜像) 新建一个容器，并且运行这个容器，`php`的标签是`5.6-apache`说明 `php`版本是 5.6 并且自带了`Apache`服务器
 
 ```
 docker container run \ # Docker 运行一个容器，
@@ -445,7 +447,7 @@ docker container run --rm --name wordpress  --volume "$PWD/":/var/www/html php:5
 
 运行上面的命令之后，Docker 就会去镜像仓库下载镜像，并根据镜像生成名为 wordpress 镜像。然后服务就跑起来了，简单吧。
 
-那么emmmmm不出不知道你们是否可以访问到`172.17.0.2`我访问不到，那么怎么办呢，ctrl + c 结束掉当前容器(他会自己删除容器),之后输入
+那么 emmmmm 不出不知道你们是否可以访问到`172.17.0.2`我访问不到，那么怎么办呢，ctrl + c 结束掉当前容器(他会自己删除容器),之后输入
 
 ```
 docker container run -p 80:80   --rm   --name wordpress   --volume "$PWD/":/var/www/html   php:5.6-apache
@@ -459,12 +461,12 @@ http://localhost/
 
 就可以访问啦，然后就看到
 
-> Forbidden  You don't have permission to access / on this server.
+> Forbidden You don't have permission to access / on this server.
 
 我们已经映射了容器的`/var/www/html` 到 `demo`文件夹下，当前因为`demo`文件夹没有文件，所以无法提供访问，添加一个最简单的 php 文件，在 demo 文件夹下新建一个 index.php 文件，在文件内写入
 
 ```php
-<?php 
+<?php
 phpinfo();
 ?>
 ```
@@ -475,7 +477,7 @@ http://localhost/
 
 就可以访问到一个页面了
 
-接下来从 [WordPress 官方网站](https://cn.wordpress.org/) 中下载下来安装包,或者直接点击 [下载WordPress4.9.4安装包](https://cn.wordpress.org/wordpress-4.9.4-zh_CN.zip)
+接下来从 [WordPress 官方网站](https://cn.wordpress.org/) 中下载下来安装包,或者直接点击 [下载 WordPress4.9.4 安装包](https://cn.wordpress.org/wordpress-4.9.4-zh_CN.zip)
 
 之后将 WordPress 压缩包里面的 WordPress 文件夹放到 demo 文件夹内然后访问
 
@@ -502,7 +504,7 @@ docker container run -d --rm --name wordpressdb --env MYSQL_ROOT_PASSWORD=123456
 
 上面这条命令多了一个 -d 容器运行后，会自动后台，可以使用
 
-  docker container ls
+docker container ls
 
 开看看当前运行的容器
 
@@ -515,7 +517,7 @@ cd8b32dc65ae        php:5.6-apache      "docker-php-entrypoi…"   23 minutes ag
 
 会发现数据库容器确实在运行中，数据库是后台运行的，前台看不到他的输出，如果像看到它的输出，必须使用下面的命令
 
-  docker container logs wordpressdb
+docker container logs wordpressdb
 
 接下来需要将 WordPress 和 MySQL 链接起来，但是官方的 PHP 镜像不带 MySQL 扩展，所以得自己新建 镜像
 
@@ -532,7 +534,7 @@ RUN docker-php-ext-install mysqli
 CMD [ "apache2-foreground" ]
 ```
 
-接下来命令（demo文件路径下）
+接下来命令（demo 文件路径下）
 
 ```
 # 基于我们上面写的 Dockerfile 文件生成一个镜像 phpwithmysql 别忘了，最后还有个点，然后等待生成镜像
@@ -573,7 +575,7 @@ http://localhost/wordpress/
 
 `数据库主机`： mysql
 
-`表前缀`： wp_
+`表前缀`： wp\_
 
 接下来就不用说了。之后就成了，也就安装完毕了。第一步也就完成了接下来关闭容器（他会自动删除容器），删除我们生成的容器。
 
@@ -594,7 +596,7 @@ docker rmi 镜像id  镜像id  镜像id
 
 上面采用了自己构建 WordPress 容器，分别生成 php 容器和 MySQL 容器，然后还需要链接起来，很麻烦，Docker 已经提供了官方的 WordPress image 镜像文件，直接用就可以了。
 
-[这里有镜像的详细使用说明都可以看看](https://hub.docker.com/_/wordpress/)  里面有启动变量参数
+[这里有镜像的详细使用说明都可以看看](https://hub.docker.com/_/wordpress/) 里面有启动变量参数
 
 首先新建并启动 MySQL 容器
 
@@ -642,11 +644,11 @@ docker stop wordpress wordpressdb
 
 Docker Compose 是用来提供一种更简单的方法来管理容器之间的联动，就不用我们一个一个去启动还要传参数。
 
-windows 和 Mac 安装 Docker 同时一同安装Docker Compose ，linux 安装 [Docker Compose 教程](https://docs.docker.com/compose/install/#prerequisites) 
+windows 和 Mac 安装 Docker 同时一同安装 Docker Compose ，linux 安装 [Docker Compose 教程](https://docs.docker.com/compose/install/#prerequisites)
 
 安装完毕之后输入
 
-  docker-compose --version
+docker-compose --version
 
 验证是否安装成功
 
@@ -688,7 +690,7 @@ $ docker-compose up
 $ docker-compose stop
 ```
 
-使用启动命令之后就可以打开 
+使用启动命令之后就可以打开
 
 http://localhost/
 

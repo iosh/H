@@ -6,7 +6,7 @@ categories:
 	- Docker
 ---
 
-学习Docker使用入门
+学习 Docker 使用入门
 
 <!-- more -->
 
@@ -26,16 +26,15 @@ docker 有三个重要的概念分别是 `镜像(image)` `容器(container)` `�
 
 1. 镜像(image)
 
-通过上面的例子,可以清楚的了解到,编写一些源代码或者引用一些第三方库之后就拥有了一个完整项目的源代码.通过使用docker来编译这些源代码docker会生成一个 image .
+通过上面的例子,可以清楚的了解到,编写一些源代码或者引用一些第三方库之后就拥有了一个完整项目的源代码.通过使用 docker 来编译这些源代码 docker 会生成一个 image .
 
 2. 容器(container)
 
-在上一步使用docker根据源文件生成了一个镜像(image),那么再通过docker来运行这个镜像,这里生成的运行环境叫做容器(container)
+在上一步使用 docker 根据源文件生成了一个镜像(image),那么再通过 docker 来运行这个镜像,这里生成的运行环境叫做容器(container)
 
 3. 仓库(repositor)
 
-在拥有镜像之后,可以通过仓库来分发镜像,可以通过docker的 hub.docker.com 来分发镜像
-
+在拥有镜像之后,可以通过仓库来分发镜像,可以通过 docker 的 hub.docker.com 来分发镜像
 
 三者个关系为: 通过源文件构建 镜像(image), 通过镜像(image) 生成容器(container), 还可以通过仓库来分发镜像
 
@@ -50,7 +49,6 @@ docker pull [选项] [Docker Registry 地址[:端口号]/]仓库名[:标签]
 在 docker hub 上有很多高质量官方维护的镜像可供使用,例如[node](https://hub.docker.com/_/node/)
 
 docker 默认是从 docker hub 上拉去镜像的,可以使用`docker pull [Docker Registry 地址[:端口号]/]仓库名[:标签]` 来从自己需要的地方来拉去镜像
-
 
 ## 列出镜像
 
@@ -68,11 +66,12 @@ docker images --all
 或者使用简写
 docker images -a
 ```
+
 来列出本地所有的镜像
 
 ## 删除本地镜像
 
-如果要删除本地镜像可以使用 `docker rmi [IMAGE]`来删除指定镜像,注意这里删除镜像需要先停止和删除容器,如果有使用这个镜像的容器存在的时候docker会给与警告⚠️,不推荐使用`docker rmi -f [IMAGE]`来强制删除镜像
+如果要删除本地镜像可以使用 `docker rmi [IMAGE]`来删除指定镜像,注意这里删除镜像需要先停止和删除容器,如果有使用这个镜像的容器存在的时候 docker 会给与警告 ⚠️,不推荐使用`docker rmi -f [IMAGE]`来强制删除镜像
 
 ## 删除容器
 
@@ -88,7 +87,7 @@ docker images -a
 
 `npx create-react-app app`
 
-npx 是 npm 5之后带的一个小工具,这个工具是帮助我们运行包的,简单的来说`npx [PACKAGENAME]` 执行这个命令之后,npx这个工具会首先在`node_module`文件夹内寻找指定名称的包,如果找不到那么就会去 npm 上下载这个包并执行这个包(用完就删了一次性的).
+npx 是 npm 5 之后带的一个小工具,这个工具是帮助我们运行包的,简单的来说`npx [PACKAGENAME]` 执行这个命令之后,npx 这个工具会首先在`node_module`文件夹内寻找指定名称的包,如果找不到那么就会去 npm 上下载这个包并执行这个包(用完就删了一次性的).
 
 之后使用编辑器打开 `app`目录
 
@@ -294,8 +293,6 @@ README.md
 
 打开浏览器访问 `http://localhost:3000/` 你就可以看到部署的网站了
 
-
-
 # Dockerfile 文件常用指令
 
 ## FROM
@@ -311,9 +308,9 @@ FROM <image><@digest> [AS <name>]
 
 ```
 
-这个指令用于后续指令的基准镜像,FROM必须是Dockerfile文件中的第一条命令
+这个指令用于后续指令的基准镜像,FROM 必须是 Dockerfile 文件中的第一条命令
 
-FROM 可以多次出现在文件中,用于多阶段构建,tag和digest是可选的
+FROM 可以多次出现在文件中,用于多阶段构建,tag 和 digest 是可选的
 
 ## CMD
 
@@ -324,8 +321,9 @@ CMD ["executable", "param1", "param2"] #首选模式
 CMD ["param1", "param2"] #这会将这些参数传递给 ENTRYPOINT 作为参数
 CMD command param1 param2
 ```
-一个文件中只能有一个CMD命令,如果列出多个那么只有最后一个生效
-CMD 命令的主要目的是为执行容器提供默认值(容器运行后就会运行CMD命令)
+
+一个文件中只能有一个 CMD 命令,如果列出多个那么只有最后一个生效
+CMD 命令的主要目的是为执行容器提供默认值(容器运行后就会运行 CMD 命令)
 
 ## EXPOSE
 
@@ -333,7 +331,7 @@ CMD 命令的主要目的是为执行容器提供默认值(容器运行后就会
 EXPOSE <port> [<port>/<protocol>...]
 ```
 
-EXPOSE 指令通知 docker 容器在运行的时候监听指定的网络端口,可以指定监听 TCP 或者 UDP,如果未指定协议那么默认是TCP
+EXPOSE 指令通知 docker 容器在运行的时候监听指定的网络端口,可以指定监听 TCP 或者 UDP,如果未指定协议那么默认是 TCP
 
 例如
 
@@ -341,6 +339,7 @@ EXPOSE 指令通知 docker 容器在运行的时候监听指定的网络端口,�
 ESPOSE 80/tcp
 EXPOSE 80/udp
 ```
+
 运行容器的时候可以通过使用`docker run -p 本机端口:docker EXPOSE端口`来进行端口映射
 
 ## ENV
@@ -352,7 +351,7 @@ ENV <key>=<value> ... #支持多条环境变量设置
 
 EVV 将环境变量<key>设置为<value>
 
-例如node常用的环境变量这样设置
+例如 node 常用的环境变量这样设置
 
 ```
 ENV NODE_ENV="production"
@@ -365,7 +364,7 @@ ADD [--chown=<user>:<group>] <src>... <dest>
 ADD [--chown=<user>:<group>] ["<src>",... "<dest>"] #包含空格的路径需要使用此项
 ```
 
-ADD 指令用于从目录中复制文件,目录可以是当前工作目录或者远程的URL,将文件复制到镜像的文件系统中
+ADD 指令用于从目录中复制文件,目录可以是当前工作目录或者远程的 URL,将文件复制到镜像的文件系统中
 
 ## COPY
 
@@ -374,7 +373,7 @@ COPY [--chown=<user>:<group>] <src>... <dest>
 COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
 ```
 
-COPY 和 ADD 指令相同都是向image中复制文件,不过没有 ADD 指令那么强,比如 ADD 可以指定远程 URL , 压缩文件等等,一般来讲使用 COPY 指令更多一些
+COPY 和 ADD 指令相同都是向 image 中复制文件,不过没有 ADD 指令那么强,比如 ADD 可以指定远程 URL , 压缩文件等等,一般来讲使用 COPY 指令更多一些
 
 ## ENTRYPOINT
 
@@ -385,7 +384,7 @@ ENTRYPOINT command param1 param2
 
 当指定了 ENTRYPOINT 后，CMD 的含义就发生了改变，不再是直接的运行其命令，而是将 CMD 的内容作为参数传给 ENTRYPOINT 指令
 
-就是可以通过命令行参数对executable附加参数,如果使用CMD的话就需要输入全称
+就是可以通过命令行参数对 executable 附加参数,如果使用 CMD 的话就需要输入全称
 
 ## VOLUME
 
@@ -395,8 +394,7 @@ VOLUME["/data"]
 
 VOLUME 指令用于创建具有名称的安装点,将其标记为从本机主机或者其他容器保存外部安装的卷,可以通过卷来共享目录
 
-主机目录本质上是依赖于注释的,为了保持镜像的可移植行,因为不能保证目标主机所指定的目录都可用,因此无法从Dockerfile中指定目录,必须在创建或者运行容器的时候指定安装点
-
+主机目录本质上是依赖于注释的,为了保持镜像的可移植行,因为不能保证目标主机所指定的目录都可用,因此无法从 Dockerfile 中指定目录,必须在创建或者运行容器的时候指定安装点
 
 ## USER
 
@@ -405,7 +403,7 @@ USER <user>[:<group>] or
 USER <UID>[:<GID>]
 ```
 
-USER 指令用于设置运行镜像任何设置的用户,例如使用 CMD RUN 这些指令的用户(比如有些指令不希望使用root用户权限进行运行),如果没有指定USER的话那么将使用root进行执行
+USER 指令用于设置运行镜像任何设置的用户,例如使用 CMD RUN 这些指令的用户(比如有些指令不希望使用 root 用户权限进行运行),如果没有指定 USER 的话那么将使用 root 进行执行
 
 ## WORKDIR
 
@@ -423,8 +421,7 @@ ARG <name>[=<default value>]
 
 ARG 指令定义了一个环境变量,可以使用`docker build --build-arg <varname>=<value>` 是该变量将传递给构建起,如果用户使用了未在 Dockerfile 文件中定义的构建参数则会发出警告
 
-和ENV的区别是在容器运行时候ARG定义的变量是不存在的
-
+和 ENV 的区别是在容器运行时候 ARG 定义的变量是不存在的
 
 ## ONBUILD
 
@@ -432,10 +429,9 @@ ARG 指令定义了一个环境变量,可以使用`docker build --build-arg <var
 ONBUILD [INSTRUCTION]
 ```
 
-ONBUILD 指令用于当前镜像被另一个镜像作为依赖的时候才会运行,会在下一个构建的上下文进行运行,就像他已经在下游构建FROM指令之后插入在Dockerfile文件中.
+ONBUILD 指令用于当前镜像被另一个镜像作为依赖的时候才会运行,会在下一个构建的上下文进行运行,就像他已经在下游构建 FROM 指令之后插入在 Dockerfile 文件中.
 
-任何指令都可以注册为ONBUILD
-
+任何指令都可以注册为 ONBUILD
 
 ## HEALTHCHECK
 
@@ -450,14 +446,14 @@ HEALTHCHECK NONE # 如果基础镜像有健康检查指令,这条指令可以屏
 SHELL ["executable", "parameters"]
 ```
 
-SHELL 指令用于覆盖默认的shell
+SHELL 指令用于覆盖默认的 shell
 
 # 数据管理
 
-数据卷是一个可供一个或者多个容器使用的特殊目录,数据卷是保存Docker容器生成和使用数据的首选,它有以下优点:
+数据卷是一个可供一个或者多个容器使用的特殊目录,数据卷是保存 Docker 容器生成和使用数据的首选,它有以下优点:
 
 1. 数据卷易于备份或者迁移
-2. 可以使用 Docker CLI 命令或者 Docker API管理卷
+2. 可以使用 Docker CLI 命令或者 Docker API 管理卷
 3. 数据卷可以跨系统
 4. 可以在多个容器之间安全的共享数据卷
 5. 数据卷驱动程序允许在远程主机或者云进行,还可以进行加密或者其他功能
@@ -465,8 +461,6 @@ SHELL 指令用于覆盖默认的shell
 
 可以使用 `-v`或者`--mount`
 
-对于新用户应该使用--mount因为比--value语法更简单
+对于新用户应该使用--mount 因为比--value 语法更简单
 
 [数据卷使用手册](https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container)
-
-

@@ -4,17 +4,17 @@ date: 2018-04-19 20:44:47
 tags: React
 ---
 
-React中 PureComponent的使用和介绍
+React 中 PureComponent 的使用和介绍
 
 <!-- more -->
 
-# 介绍PureComponent
+# 介绍 PureComponent
 
-在官方文档中是这样介绍PureComponent的：
+在官方文档中是这样介绍 PureComponent 的：
 
-> `React.PureComponent` 与 [`React.Component`](https://doc.react-china.org/docs/react-api.html#react.component) 几乎完全相同，但 `React.PureComponent`通过prop和state的浅对比来实现 [`shouldComponentUpate()`](https://doc.react-china.org/docs/react-component.html#shouldcomponentupdate)。
+> `React.PureComponent` 与 [`React.Component`](https://doc.react-china.org/docs/react-api.html#react.component) 几乎完全相同，但 `React.PureComponent`通过 prop 和 state 的浅对比来实现 [`shouldComponentUpate()`](https://doc.react-china.org/docs/react-component.html#shouldcomponentupdate)。
 >
-> 如果React组件的 `render()` 函数在给定相同的props和state下渲染为相同的结果，在某些场景下你可以使用 `React.PureComponent` 来提升性能。
+> 如果 React 组件的 `render()` 函数在给定相同的 props 和 state 下渲染为相同的结果，在某些场景下你可以使用 `React.PureComponent` 来提升性能。
 
 这段话中，有两个重点：
 
@@ -41,7 +41,7 @@ if (this._compositeType === CompositeTypes.PureClass) {
 
 那么第二点就很好理解了，因为减少了不必要的渲染，所以可以提升性能。
 
-# 使用PureComponent
+# 使用 PureComponent
 
 那么如何使用 PureComponent 呢，因为 PureComponent 如果使用不当，那么他将没什么作用，首先一点是，如果改变组件内部的 props 和 state，那么它将无法发挥作用，下面举个例子。
 
@@ -88,9 +88,7 @@ class App extends React.PureComponent { // 如果这里是 React.Component 那�
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
-
-
-如果这个组件继承 React.Component 那么它没有什么问题，但是如果它继承于 React.PureComponent 那么点击按钮它是不会重新渲染的，因为items前后都是指向同一个对象
+如果这个组件继承 React.Component 那么它没有什么问题，但是如果它继承于 React.PureComponent 那么点击按钮它是不会重新渲染的，因为 items 前后都是指向同一个对象
 
 需要对代码进行如下修改方可正常重新渲染
 
@@ -100,10 +98,10 @@ ReactDOM.render(<App />, document.getElementById('root'));
       items: prevState.items.concat(['new-item'])
     }))
   }
- 
+
 ```
 
- 这样，给 items 返回一个全新的对象
+这样，给 items 返回一个全新的对象
 
 那么同时有另外一个问题，如果给 PureComponent 的 state 或者 props 引用了一个新的对象，那么这个组件就会被重新渲染（render）。这意味着如果不想损失它的优点，那么应该避免一下结构
 
@@ -111,11 +109,10 @@ ReactDOM.render(<App />, document.getElementById('root'));
 <ItemList items={this.props.items || []} />
 ```
 
-这样的结构就导致了ItemList不管接受的是一个Items 还是空数组，都会使组件重新渲染
+这样的结构就导致了 ItemList 不管接受的是一个 Items 还是空数组，都会使组件重新渲染
 
 # 总结
 
 事实上，理解之后使用 PureComponent 是非常简单的，只需要将 Component 换成 PureComponent 即可，这样不但可以平滑过度，提升性能，所以可以在追求性能的时候不妨考虑一下 PureComponent 。
 
 那么说了这么多是不是迫不及待使用 PureComponent 了呢，那么别忘了最重要一点，PureComponent 还会阻止 this.context 改变时候引起的子组件重新渲染，除非在 PureComponent 中声明 contextTypes。（没写过，大概是说，会阻止 redux 引起的重新渲染）
-

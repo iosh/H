@@ -27,8 +27,6 @@ categories:
     npm i react-native-vector-icons
     react-native link
 
-
-
 那么接下来需要需要两步：
 
 第一步：[https://github.com/bob-chen/react-native-iconfont-mapper](https://github.com/bob-chen/react-native-iconfont-mapper)将这个项目克隆到本地，之后需要安装 Python 环境，环境安装完毕之后需要安装依赖
@@ -87,4 +85,4 @@ function Abcd () {
 ios 使用 xcode 打开 ReactNative 项目将 iconfont.ttf 改个名比如改成 aliiconfont.ttf 然后将文件放入`Resources`文件夹内，因为上面已经 react-native link 过了，所以文件夹内有好几个 ttf 文件都是 react-native-vector-icons 包自带的,
 之后在`info.plst`下 Fonts provided by application 属性，照着其他的把填上去 aliiconfont.ttf
 
-Android 很简单了 把字体文件aliiconfont.ttf放到  android/app/src/main/assets/fonts 文件夹下面就好了
+Android 很简单了 把字体文件 aliiconfont.ttf 放到  android/app/src/main/assets/fonts 文件夹下面就好了

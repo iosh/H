@@ -1,9 +1,10 @@
-title: JavaScript算法与数据结构
+title: JavaScript 算法与数据结构
 date: 2018-8-20 22:26:38
 tags: JavaScript
+
 ---
 
-认真学习JavaScript数据结构
+认真学习 JavaScript 数据结构
 
 <!-- more -->
 
@@ -32,7 +33,6 @@ tags: JavaScript
 ```
 
 构造一个这样的比较器函数之后可以在后面的数据结构中进行使用
-
 
 # 链表
 
@@ -90,12 +90,11 @@ tags: JavaScript
 
 ```
 
-
 - 搜索
 - 删除
 - 反转
 - 反向遍历
-  
+
 ## 复杂度
 
 时间复杂度
@@ -108,7 +107,6 @@ tags: JavaScript
 ## 空间复杂度
 
 O(n)
-
 
 # 双向链表
 
@@ -132,15 +130,16 @@ O(n)
 
 O(n)
 
-
 ## 笔记
 
 双向链表顾名思义,就是每个节点都由`三个部分`组成
+
 - 上个节点的引用
 - 下个节点的引用
 - 节点存储的值
 
 `prepend`
+
 ```javascript
   /** 向节点头部插入值 */
   prepened(value: any): DoublyLinkedListInterface {
@@ -174,4 +173,5 @@ O(n)
 
   }
 ```
+
 其他的方面和单向链表差不多,写完之后代码测试就错了三处,可喜可贺

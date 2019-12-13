@@ -5,18 +5,16 @@ tags: React
 ---
 
 React-router 源码学习
-<!-- more -->
 
+<!-- more -->
 
 # 开篇
 
-开篇通过一个最简单的 React-Router 的demo来进行学习
-
+开篇通过一个最简单的 React-Router 的 demo 来进行学习
 
 ```jsx
-
 import React from "react";
-import ReactDOM from 'react-dom'
+import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 function Index() {
@@ -59,22 +57,18 @@ function AppRouter() {
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(<AppRouter />, rootElement);
-
-
 ```
 
-这个来自官网的demo,其中有四个组件分别讲解一下
+这个来自官网的 demo,其中有四个组件分别讲解一下
 
 1. `BrowserRouter`
 2. `Router`
 3. `Route`
 4. `Link`
 
-
 # BrowserRouter
 
 BrowserRouter 作为最外层的组件,它需要是所有的 Route 的父组件.
-
 
 BrowserRouter 源码比较短下面直接展示一下
 
@@ -120,11 +114,9 @@ export default BrowserRouter;
 
 这个组件,非常简单,通过引入和初始化 `history` 包来获得一个 history 对象, 然后在 componentDidMount 生命周期中添加了一个检查, 这个检查是判断 props 中是否有 history 属性,如果存在的话,那么就弹出一个警告, 如果要使用自定义 history 对象那么就需要使用 import {Router} from 'react-router-dom'来使用. 最后这个组件返回了 `react-router` 包中的 `Router` 组件.
 
-
 # Router
 
-
-Router 组件篇幅比较长, 我会忽略一些样板代码,通常是一些import 和 if(__DEV__), __DEV__ 是作者设定的一个全局变量,这个变量等于 `'production' === process.env.NODE_ENV` 是用来判断当前是否处于开发环境.
+Router 组件篇幅比较长, 我会忽略一些样板代码,通常是一些 import 和 if(**DEV**), **DEV** 是作者设定的一个全局变量,这个变量等于 `'production' === process.env.NODE_ENV` 是用来判断当前是否处于开发环境.
 
 ```jsx
 
@@ -209,11 +201,9 @@ class Router extends React.Component {
 export default Router;
 ```
 
-
 # Switch
 
-这里先介绍一个 Switch 组件, 看过文档的应该知道 Switch 组件的作用是只匹配一个完全符合 location 的 Router组件,怎么理解呢举个例子
-
+这里先介绍一个 Switch 组件, 看过文档的应该知道 Switch 组件的作用是只匹配一个完全符合 location 的 Router 组件,怎么理解呢举个例子
 
 ```jsx
 function AppRouter() {
@@ -243,21 +233,17 @@ function AppRouter() {
 }
 ```
 
-如上组件如果不带没有switch组件包裹那么当导航到`/about` 和 `/users`'的时候其他两个也会被渲染,因为`/about` 和 `/users` 中都包含了 `/`
+如上组件如果不带没有 switch 组件包裹那么当导航到`/about` 和 `/users`'的时候其他两个也会被渲染,因为`/about` 和 `/users` 中都包含了 `/`
 
 那么加上`Switch`之后就会避免这种情况,会进行精准匹配.
 
 ```jsx
 <Switch>
-
-       <Route  path="/" component={Index} />
-        <Route path="/users" component={Users} />
-        <Route path="/about/" component={About} />
-
+  <Route path="/" component={Index} />
+  <Route path="/users" component={Users} />
+  <Route path="/about/" component={About} />
 </Switch>
-
 ```
-
 
 源码如下
 
@@ -272,7 +258,9 @@ import matchPath from "./matchPath";
 class Switch extends React.Component {
   render() {
     return (
-      <RouterContext.Consumer>  // 订阅 context
+      <RouterContext.Consumer>
+        {" "}
+        // 订阅 context
         {context => {
           invariant(context, "You should not use <Switch> outside a <Router>"); // 检查context是否存在
 
@@ -286,7 +274,8 @@ class Switch extends React.Component {
           // component at different URLs.
           // 通过React 提供的children的方法遍历children,
           React.Children.forEach(this.props.children, child => {
-            if (match == null && React.isValidElement(child)) { // 如果 match 为空而且 child是react组件
+            if (match == null && React.isValidElement(child)) {
+              // 如果 match 为空而且 child是react组件
               element = child;
 
               const path = child.props.path || child.props.from; // Router的path参数
@@ -298,23 +287,21 @@ class Switch extends React.Component {
           });
 
           return match
-            ? React.cloneElement(element, { location, computedMatch: match })// 返回一个克隆的组件并添加location和 computedMatch 对象
+            ? React.cloneElement(element, { location, computedMatch: match }) // 返回一个克隆的组件并添加location和 computedMatch 对象
             : null;
         }}
       </RouterContext.Consumer>
     );
   }
 }
-
 ```
 
 # Route
 
-Route 是 BrowserRouter 或者 Switch 的子组件,主要是根据path 和location进行匹配渲染.
+Route 是 BrowserRouter 或者 Switch 的子组件,主要是根据 path 和 location 进行匹配渲染.
 代码删掉了警告和开发验证.
 
 ```jsx
-
 import RouterContext from "./RouterContext";
 import matchPath from "./matchPath";
 
@@ -329,16 +316,18 @@ function isEmptyChildren(children) {
 class Route extends React.Component {
   render() {
     return (
-      <RouterContext.Consumer> // context
+      <RouterContext.Consumer>
+        {" "}
+        // context
         {context => {
-          invariant(context, "You should not use <Route> outside a <Router>");// 判断顶级是否存在 Router 组件,如果不存在进行报错,
+          invariant(context, "You should not use <Route> outside a <Router>"); // 判断顶级是否存在 Router 组件,如果不存在进行报错,
 
           const location = this.props.location || context.location; //获得location
           const match = this.props.computedMatch // 判断 是否存在 computedMatch 对象, computedMatch对象是Switch组件传递下来的, 如果存在就使用如果不存在那么自己解析
             ? this.props.computedMatch // <Switch> already computed the match for us
             : this.props.path
-              ? matchPath(location.pathname, this.props)
-              : context.match;
+            ? matchPath(location.pathname, this.props)
+            : context.match;
 
           const props = { ...context, location, match };
 
@@ -346,15 +335,18 @@ class Route extends React.Component {
 
           // Preact uses an empty array as children by
           // default, so use null if that's the case.
-          if (Array.isArray(children) && children.length === 0) { // 判断children是否为一个数组 ,api要求是一个函数
+          if (Array.isArray(children) && children.length === 0) {
+            // 判断children是否为一个数组 ,api要求是一个函数
             children = null;
           }
 
-          if (typeof children === "function") { // 判断children是否是一个函数
+          if (typeof children === "function") {
+            // 判断children是否是一个函数
             children = children(props); //如果是就将props传递给它 然后由children函数自己决定渲染
 
-            if (children === undefined) { // 如果children不存在
-            
+            if (children === undefined) {
+              // 如果children不存在
+
               children = null;
             }
           }
@@ -364,12 +356,13 @@ class Route extends React.Component {
               {children && !isEmptyChildren(children) //如果children属性存在,且是空的
                 ? children // 返回空的children
                 : props.match // 判断match 是否匹配
-                  ? component// 如果 component 存在
-                    ? React.createElement(component, props) // 渲染component
-                    : render // 如果component不存在render存在
-                      ? render(props) // 调用render
-                      : null // 不存在返回空
-                  : null} // match不匹配返回空
+                ? component // 如果 component 存在
+                  ? React.createElement(component, props) // 渲染component
+                  : render // 如果component不存在render存在
+                  ? render(props) // 调用render
+                  : null // 不存在返回空
+                : null}{" "}
+              // match不匹配返回空
             </RouterContext.Provider>
           );
         }}
@@ -379,17 +372,11 @@ class Route extends React.Component {
 }
 ```
 
-Route 主要做几件事情, 从顶级的 Router 组件中接受 location 属性 (也可以是Route组件的location属性), 判断用户是使用 children 还是 component 还是 render 进行渲染, 根据 location 进行匹配渲染,如果符合就返回,如果不符合就返回 null, 如果 Switch 存在那么 Switch 会传递一个 computedMatch 属性, Route 则会根据它进行渲染.
-
-
-
-
+Route 主要做几件事情, 从顶级的 Router 组件中接受 location 属性 (也可以是 Route 组件的 location 属性), 判断用户是使用 children 还是 component 还是 render 进行渲染, 根据 location 进行匹配渲染,如果符合就返回,如果不符合就返回 null, 如果 Switch 存在那么 Switch 会传递一个 computedMatch 属性, Route 则会根据它进行渲染.
 
 # Link
 
 ```jsx
-
-
 function isModifiedEvent(event) {
   return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 }
@@ -424,7 +411,9 @@ class Link extends React.Component {
     const { innerRef, replace, to, ...rest } = this.props; // eslint-disable-line no-unused-vars
 
     return (
-      <RouterContext.Consumer> // 从context中读取context
+      <RouterContext.Consumer>
+        {" "}
+        // 从context中读取context
         {context => {
           invariant(context, "You should not use <Link> outside a <Router>"); // 如果不存在则报错
 
@@ -447,21 +436,17 @@ class Link extends React.Component {
     );
   }
 }
-
-
 ```
 
-
-Like 看代码就非常简单了, 它主要会根据 Router 的 basename 属性(如果有), 和当前模式(如果是hash模式那么会加上#号), 然后处理Click事件.
-
+Like 看代码就非常简单了, 它主要会根据 Router 的 basename 属性(如果有), 和当前模式(如果是 hash 模式那么会加上#号), 然后处理 Click 事件.
 
 # withRouter
 
-withRouter 组件主要是给任意组件添加 `history` `location` `match` `staticContext(服务端渲染属性)`,其核心就是通过context得到上述属性,然后传递给指定的组件.
+withRouter 组件主要是给任意组件添加 `history` `location` `match` `staticContext(服务端渲染属性)`,其核心就是通过 context 得到上述属性,然后传递给指定的组件.
 
-代码没什么好讲解的就是一个HOC高阶组件.
+代码没什么好讲解的就是一个 HOC 高阶组件.
+
 ```jsx
-
 /**
  * A public higher-order component to access the imperative API
  */
@@ -500,29 +485,23 @@ function withRouter(Component) {
 
   return hoistStatics(C, Component);
 }
-
-
 ```
-
 
 # 常见疑问
 
 ## BrowserRouter 和 HashRouter 的区别
 
 BrowserRouter 使用 HTML5 的 history 属性来进行管理,[兼容查询](https://caniuse.com/#search=history)
-HashRouter 使用锚点来进行管理,浏览器在hash发生变化的时候回触发事件,从而触发重新渲染,用于兼容低版本浏览器.
+HashRouter 使用锚点来进行管理,浏览器在 hash 发生变化的时候回触发事件,从而触发重新渲染,用于兼容低版本浏览器.
 
-上述两个还有两个组件还有一个区别,就是 BrowserRouter 使用的 HTML5 history 产生的 url 是一个真实的url, 每个地址都会向后端发送一个请求,那么需要后端正确的处理这个请求的响应,否则就会404,至于后端如何解决这个问题,最简单的就是让后端在NGINX配置里面将所有的访问都响应返回`index.html`
+上述两个还有两个组件还有一个区别,就是 BrowserRouter 使用的 HTML5 history 产生的 url 是一个真实的 url, 每个地址都会向后端发送一个请求,那么需要后端正确的处理这个请求的响应,否则就会 404,至于后端如何解决这个问题,最简单的就是让后端在 NGINX 配置里面将所有的访问都响应返回`index.html`
 
-而 HashRouter 实际上是使用的锚点hash值作为记录,不管hash值如何发生变化实际上url都没有发生变化,不会向后端发送请求,也不需要后端进行处理.
-
+而 HashRouter 实际上是使用的锚点 hash 值作为记录,不管 hash 值如何发生变化实际上 url 都没有发生变化,不会向后端发送请求,也不需要后端进行处理.
 
 ## React-router-dom 和 React-router 的区别和联系
 
-先说区别`React-router-dom` 提供了 `BrowserRouter` `HashRouter` `Link` `NavLink` 四个独有的组件,这四个组件是React-router中不存在的,也就是说你要使用这四个api你就必须安装和使用React-router-dom.
+先说区别`React-router-dom` 提供了 `BrowserRouter` `HashRouter` `Link` `NavLink` 四个独有的组件,这四个组件是 React-router 中不存在的,也就是说你要使用这四个 api 你就必须安装和使用 React-router-dom.
 
-他们两者有什么联系, 通过分析源码发现 `BrowserRouter` `HashRouter`  两个组件实际上都是调用的 React-router 的 `Router` 组件, 但是 `BrowserRouter` `HashRouter`  组件在内部调用了 history 包,添加了监听事件,生成了history属性.
+他们两者有什么联系, 通过分析源码发现 `BrowserRouter` `HashRouter` 两个组件实际上都是调用的 React-router 的 `Router` 组件, 但是 `BrowserRouter` `HashRouter` 组件在内部调用了 history 包,添加了监听事件,生成了 history 属性.
 
 简单了说 React-router 是一个更为基础的包, React-router-dom 基于它提供了一些组件和方法,可以直接就用.
-
-
