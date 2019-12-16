@@ -4,9 +4,9 @@ tags: vs code
 
 ---
 
+学习 visual studio code
+
 <!-- more -->
-
-
 
 ## 安装与编译
 
@@ -22,8 +22,8 @@ tags: vs code
    cd vscode
    npm install --global --production windows-build-tools # 安装c++模块编译环境，会下载 Python2 和 visual studio 2017 tools 比较大比较慢
    yarn # 安装依赖
-   
-   # 如果在安装依赖途中发生错误，例如找不到 visual studio 2015 可以尝试 
+
+   # 如果在安装依赖途中发生错误，例如找不到 visual studio 2015 可以尝试
    npm install --global --production windows-build-tools  --vs2015
    ```
 
@@ -31,28 +31,24 @@ tags: vs code
 
    ```bash
    yarn watch # 编译ts
-   
+
    # 运行 electron
    # windows
    .\scripts\code.bat
-   
+
    # macOS and Linux
-   ./scripts/code.sh 
-   
+   ./scripts/code.sh
+
    ```
 
-
-
 ## 目录结构
-
-
 
 ```txt
 E:/vscode
 ├── azure-pipelines.yml  // ci
 ├── build // build stript
 ├── cglicenses.json //  licence
-├── cgmanifest.json 
+├── cgmanifest.json
 ├── CONTRIBUTING.md // 贡献说明
 ├── extensions // vs 内置扩展
 ├── gulpfile.js  // gulp 脚本
@@ -74,20 +70,15 @@ E:/vscode
 
 ```
 
+## VS code 如何更新
 
-
-## VS code 如何更新 
-
-通过搜索关键字，可以定位到 `src\vs\platform\update\electron-main\abstractUpdateService.ts`   ,  然后会发现这是一个 TS 的 `abstract` class 同目录下还有 `updateServeice.[平台名称].ts` 说明具体更新是根据环境不同而基于抽象方法的具体执行，之后可以找到 `updateIpc.ts` 文件，在通过搜索这个文件名称，就可以找到 Code Application 文件 `src\vs\code\electron-main\app.ts`.
+通过搜索关键字，可以定位到 `src\vs\platform\update\electron-main\abstractUpdateService.ts` , 然后会发现这是一个 TS 的 `abstract` class 同目录下还有 `updateServeice.[平台名称].ts` 说明具体更新是根据环境不同而基于抽象方法的具体执行，之后可以找到 `updateIpc.ts` 文件，在通过搜索这个文件名称，就可以找到 Code Application 文件 `src\vs\code\electron-main\app.ts`.
 
 ```typescript
 // src\vs\code\electron-main\app.ts
-import { IUpdateService } from 'vs/platform/update/common/update';
-import { UpdateChannel } from 'vs/platform/update/electron-main/updateIpc';
-
+import { IUpdateService } from "vs/platform/update/common/update";
+import { UpdateChannel } from "vs/platform/update/electron-main/updateIpc";
 ```
-
-
 
 ```typescript
 // src\vs\code\electron-main\app.ts
@@ -181,7 +172,6 @@ createServices 方法会在 openFirstWindow 方法之前被调用， openFirstWi
  * Donwloaded: There is an update ready to be installed in the background (win32).
  *  Donwloaded： 有一个就绪的更新在后台安装
  */
-
 ```
 
 从上面的状态机运行上来看，更新在不同系统下行为也是不同的。
@@ -192,20 +182,11 @@ createServices 方法会在 openFirstWindow 方法之前被调用， openFirstWi
 
 #### AbstractUpdateService.ts
 
-
-
-
-
 ### UpdateService 实例化
 
-在`app.ts`  创建 `updateChannel` 
+在`app.ts` 创建 `updateChannel`
 
 ```typescript
 const updateService = accessor.get(IUpdateService);
 // get 方法 内部会调用 _getOrCreateServiceInstance 来实例化
 ```
-
-
-
-
-
