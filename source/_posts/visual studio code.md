@@ -174,9 +174,41 @@ createServices 方法会在 openFirstWindow 方法之前被调用， openFirstWi
 
 从上面的状态机运行上来看，更新在不同系统下行为也是不同的。
 
-`IUpdateService` 是通过 `createDecorator` 函数来创建的一个函数，`createDecorator` 是一个用来创建 VS Code 服务标识的函数，暂时理解`createDecorator` === `updateService` 字符串好了。
+`IUpdateService` 是通过 `createDecorator` 函数来创建的一个函数
 
-然后还创建了一个同名的接口，接下来在 `AbstractUpdateService`实现了这个接口。
+```typescript
+/**
+ * A *only* valid way to create a {{ServiceIdentifier}}.
+ */
+export function createDecorator<T>(serviceId: string): ServiceIdentifier<T> {
+  if (_util.serviceIds.has(serviceId)) {
+    return _util.serviceIds.get(serviceId)!;
+  }
+
+  const id = <any>function(target: Function, key: string, index: number): any {
+    if (arguments.length !== 3) {
+      throw new Error(
+        "@IServiceName-decorator can only be used to decorate a parameter"
+      );
+    }
+    storeServiceDependency(id, target, index, false);
+  };
+
+  id.toString = () => serviceId;
+
+  _util.serviceIds.set(serviceId, id);
+  return id;
+}
+```
+
+从代码中看到,它会返回一个函数,而且重写了`toString`方法
+从返回的这个方法的签名来看
+
+```typescript
+const id = <any>function (target: Function, key: string, index: number): any
+```
+
+第三个参数是 index,那么说明这是一个参数装饰器.用来装饰函数参数或者构造函数参数的.
 
 #### AbstractUpdateService.ts
 
@@ -184,7 +216,52 @@ createServices 方法会在 openFirstWindow 方法之前被调用， openFirstWi
 
 在`app.ts` 创建 `updateChannel`
 
+通过在 `createServices` 函数内注册
+
 ```typescript
+services.set(IUpdateService, new SyncDescriptor(Win32UpdateService));
+```
+
+之后再 `openFirstWindow` 函数内
+
+```typescript
+// Register more Electron IPC services
 const updateService = accessor.get(IUpdateService);
-// get 方法 内部会调用 _getOrCreateServiceInstance 来实例化
+// accessor.get 在内部会调用 _getOrCreateServiceInstance 函数,从名称来看会获得实例,或者创建实例
+// 被实例化的 class 使用了参数装饰器 在 class 上标注了需要的参数
+// 然后通过 循环一个一个处理并 Cache 结果,然后实例化  services.set(IUpdateService, class) 里面的class
+
+const updateChannel = new UpdateChannel(updateService);
+// 实例化
+```
+
+UpdateChannel 内部听了两个方法 `listen` `call` 分别是订阅和通知, 让使用变得更加简单.
+
+```typescript
+export class UpdateChannel implements IServerChannel {
+
+	// 这里传入的service就是上面实例化出来的与平台有关的实现了  abstract class AbstractUpdateService {} 类的方法
+	constructor(private service: IUpdateService) { }
+
+	listen(_: unknown, event: string): Event<any> {
+		switch (event) {
+			case 'onStateChange': return this.service. ;
+		}
+
+		throw new Error(`Event not found: ${event}`);
+	}
+
+	call(_: unknown, command: string, arg?: any): Promise<any> {
+		switch (command) {
+			case 'checkForUpdates': return this.service.checkForUpdates(arg);
+			case 'downloadUpdate': return this.service.downloadUpdate();
+			case 'applyUpdate': return this.service.applyUpdate();
+			case 'quitAndInstall': return this.service.quitAndInstall();
+			case '_getInitialState': return Promise.resolve(this.service.state);
+			case 'isLatestVersion': return this.service.isLatestVersion();
+		}
+
+		throw new Error(`Call not found: ${command}`);
+	}
+}
 ```
