@@ -234,3 +234,39 @@ int factorial(int n) {
   else return n * factorial(n - 1);
 }
 ```
+
+## 标准模板库
+
+c++ 标准模板库(STL) 是一个容器 适配器 迭代器 函数对象和算法的集合。
+
+### accumulate
+
+`accumulate` 是对顺序表元素累积求和
+
+```cpp
+accumulate(start, end, initialValue)
+```
+
+```cpp
+template<class T>
+T sum(T a[], int n){
+  T theSum = 0;
+  return accumulate(am a+n, theSum);
+}
+```
+
+accumulate 利用++操作符，从 start 开始， 到 end 结束，相继访问要累积求和的顺序表元素。
+
+accumulate 更通用的方法是如下方法
+
+```cpp
+accumulate(start, end, initValue, operator);
+```
+
+Operator 是一个函数，它规定了累积过程中的操作
+
+### copy and next_permutation
+
+算法 copy 吧一个顺序列表的元素从一个位置复制到另一个位置 `copy(start, end, to)`
+
+next_permutation(start, end) 对于范围 start 到 end，内的元素，按字典顺序，产生下一个更大的排列。当且仅当这个排列存在是，返回为 true，
