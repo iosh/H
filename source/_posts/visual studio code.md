@@ -137,13 +137,73 @@ createServices 方法会在 openFirstWindow 方法之前被调用， openFirstWi
 
 那么核心代码就是 `src\vs\platform\update` 这个模块了
 
-### update/common
+### UpdateService 实例化
 
-#### update.config.contribution.ts
+在`app.ts` 创建 `updateChannel`
 
-此文件在 `src\vs\code\electron-main\main.ts` 中直接引用，通过源代码注释可以得知，讲一组对象写入了注册表。一组数据，例如更新模式，允许在后台更新 VS code.
+通过在 `createServices` 函数内注册
+
+```typescript
+services.set(IUpdateService, new SyncDescriptor(Win32UpdateService));
+```
+
+之后再 `openFirstWindow` 函数内
+
+```typescript
+// Register more Electron IPC services
+const updateService = accessor.get(IUpdateService);
+// accessor.get 在内部会调用 _getOrCreateServiceInstance 函数,从名称来看会获得实例,或者创建实例
+// 被实例化的 class 使用了参数装饰器 在 class 上标注了需要的参数
+// 然后通过 循环一个一个处理并 Cache 结果,然后实例化  services.set(IUpdateService, class) 里面的class
+
+const updateChannel = new UpdateChannel(updateService);
+// 实例化
+
+// 注册通信事件
+electronIpcServer.registerChannel("update", updateChannel);
+```
+
+UpdateChannel 内部听了两个方法 `listen` `call` 分别是订阅和通知, 让使用变得更加简单.
+
+```typescript
+export class UpdateChannel implements IServerChannel {
+
+	// 这里传入的service就是上面实例化出来的与平台有关的实现了  abstract class AbstractUpdateService {} 类的方法
+	constructor(private service: IUpdateService) { }
+
+	listen(_: unknown, event: string): Event<any> {
+		switch (event) {
+			case 'onStateChange': return this.service. ;
+		}
+
+		throw new Error(`Event not found: ${event}`);
+	}
+
+	call(_: unknown, command: string, arg?: any): Promise<any> {
+		switch (command) {
+			case 'checkForUpdates': return this.service.checkForUpdates(arg);
+			case 'downloadUpdate': return this.service.downloadUpdate();
+			case 'applyUpdate': return this.service.applyUpdate();
+			case 'quitAndInstall': return this.service.quitAndInstall();
+			case '_getInitialState': return Promise.resolve(this.service.state);
+			case 'isLatestVersion': return this.service.isLatestVersion();
+		}
+
+		throw new Error(`Call not found: ${command}`);
+	}
+}
+```
+
+UpdateChannel 类作为一个通用接口，在实例化的时候接受的参数，是具体执行方法。而具体的执行方法，会根据平台不同传入不同的参数。
+
+### AbstractUpdateService
+
+从名字上来看，这是一个 abstract 类，在 TS 中 abstract 类不允许直接 new 得到实例， 而是需要通过继承，这个函数定义 `IUpdateService` 接口所列出的方法，并定义了一些 abstract 方法需要子类实现。
+这种方式抹平了平台差异，调用者无需关心细节
 
 #### update.ts
+
+`AbstractUpdateService` 类继承了 `IUpdateService` 接口，这个接口描述了 `AbstractUpdateService` 需要实现的方法，也是外部调用所调用的方法。
 
 ```javascript
 //src\vs\platform\update\common\update.ts
@@ -210,58 +270,42 @@ const id = <any>function (target: Function, key: string, index: number): any
 
 第三个参数是 index,那么说明这是一个参数装饰器.用来装饰函数参数或者构造函数参数的.
 
-#### AbstractUpdateService.ts
-
-### UpdateService 实例化
-
-在`app.ts` 创建 `updateChannel`
-
-通过在 `createServices` 函数内注册
+`IUpdateService` 接口是
 
 ```typescript
-services.set(IUpdateService, new SyncDescriptor(Win32UpdateService));
-```
+export interface IUpdateService {
+  _serviceBrand: undefined; // 这是一个 vs code的约定  https://github.com/microsoft/vscode/issues/79918 表明这个函数会使用装饰器函数。
 
-之后再 `openFirstWindow` 函数内
+  readonly onStateChange: Event<State>; // 事件通知
+  readonly state: State; // 当前状态
 
-```typescript
-// Register more Electron IPC services
-const updateService = accessor.get(IUpdateService);
-// accessor.get 在内部会调用 _getOrCreateServiceInstance 函数,从名称来看会获得实例,或者创建实例
-// 被实例化的 class 使用了参数装饰器 在 class 上标注了需要的参数
-// 然后通过 循环一个一个处理并 Cache 结果,然后实例化  services.set(IUpdateService, class) 里面的class
+  checkForUpdates(context: any): Promise<void>; // 检查更新事件
+  downloadUpdate(): Promise<void>; // 下载更新
+  applyUpdate(): Promise<void>; // 申请更新
+  quitAndInstall(): Promise<void>; // 退出程序以及安装更新
 
-const updateChannel = new UpdateChannel(updateService);
-// 实例化
-```
-
-UpdateChannel 内部听了两个方法 `listen` `call` 分别是订阅和通知, 让使用变得更加简单.
-
-```typescript
-export class UpdateChannel implements IServerChannel {
-
-	// 这里传入的service就是上面实例化出来的与平台有关的实现了  abstract class AbstractUpdateService {} 类的方法
-	constructor(private service: IUpdateService) { }
-
-	listen(_: unknown, event: string): Event<any> {
-		switch (event) {
-			case 'onStateChange': return this.service. ;
-		}
-
-		throw new Error(`Event not found: ${event}`);
-	}
-
-	call(_: unknown, command: string, arg?: any): Promise<any> {
-		switch (command) {
-			case 'checkForUpdates': return this.service.checkForUpdates(arg);
-			case 'downloadUpdate': return this.service.downloadUpdate();
-			case 'applyUpdate': return this.service.applyUpdate();
-			case 'quitAndInstall': return this.service.quitAndInstall();
-			case '_getInitialState': return Promise.resolve(this.service.state);
-			case 'isLatestVersion': return this.service.isLatestVersion();
-		}
-
-		throw new Error(`Call not found: ${command}`);
-	}
+  isLatestVersion(): Promise<boolean | undefined>; // 检查是否最新版本
 }
 ```
+
+#### checkForUpdates
+
+```typescript
+	async checkForUpdates(context: any): Promise<void> {
+		// 日志系统，在构造函数中使用了函数参数装饰器
+		// 表明了这个类需要的构造函数参数，在通过server.get 的时候会被收集和赋值
+		this.logService.trace('update#checkForUpdates, state = ', this.state.type);
+		// 判断当前状态是否为闲置的
+		if (this.state.type !== StateType.Idle) return
+		// 执行 doCheckForUpdates
+		this.doCheckForUpdates(context);
+	}
+```
+
+这里这个 `doCheckForUpdates` 是一个 abstract 函数即需要子类继承的
+
+##### win doCheckForUpdates
+
+1. 判断 url 是否存在，这个 url 是一个当前平台包的下载地址
+
+##### linux doCheckForUpdates
