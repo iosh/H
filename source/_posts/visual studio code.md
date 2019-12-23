@@ -228,7 +228,7 @@ UpdateChannel 类作为一个通用接口，在实例化的时候接受的参数
  * Ready: Code will be updated as soon as it restarts (win32, darwin).
  * Ready  Code 将在重新启动时立即更新
  * Donwloaded: There is an update ready to be installed in the background (win32).
- *  Donwloaded： 有一个就绪的更新在后台安装
+ * Donwloaded： 有一个就绪的更新在后台安装
  */
 ```
 
@@ -306,6 +306,70 @@ export interface IUpdateService {
 
 ##### win doCheckForUpdates
 
-1. 判断 url 是否存在，这个 url 是一个当前平台包的下载地址
+1. 判断 url 是否存在，这个 url 是一个类似于:
+
+```text
+https://update.code.visualstudio.com/api/update/win32-x64-user/stable/26076a4de974ead31f97692a0d32f90d735645c0
+```
+
+由下面这个函数生成,可以看到由平台,版本,commit 组成.
+
+```typescript
+export function createUpdateURL(platform: string, quality: string): string {
+  return `${product.updateUrl}/api/update/${platform}/${quality}/${product.commit}`;
+}
+```
+
+请求这个 url,如果没有新版本就会返回一个 204 ,而且不包含 body,如果有新版本那么就会包含一个类似于下面这样的结果
+
+```json
+{
+  "url": "https://vscode.cdn.azure.cn/stable/26076a4de974ead31f97692a0d32f90d735645c0/VSCodeSetup-ia32-1.41.1.exe",
+  "name": "1.41.1",
+  "version": "26076a4de974ead31f97692a0d32f90d735645c0",
+  "productVersion": "1.41.1",
+  "hash": "089b1c71b884ef42a74e0dc0a5eb107eaa19d608",
+  "timestamp": 1576680705440,
+  "sha256hash": "d72dfa1e4644e0bbe7ebe7243a2ac59f51b2d2ca261bb24936f2879ad1d6aac3",
+  "supportsFastUpdate": true
+}
+```
+
+2. 修改当前状态为的 `checking for updates`
+
+```typescript
+this.setState(State.CheckingForUpdates(context));
+```
+
+3. 请求上面那个地址
+   ```typescript
+   this.requestService.request({ url: this.url }, CancellationToken.None)
+   ``
+
+   1. 如果没有更新修改状态值为 `Idle` 然后结束
+   2. 这里还会根据程序目录有没有 `unins000.exe` 这个程序来决定是否进行下载
+   3. 如果没有 `unins000.exe` 标记状态为 `available for download`
+   4. 如果有那么先清理系统中可能存在的临时文件,之后判断有本地有没有下载好的安装程序,有就终止下载,没有就下载安装包
+   5. 下载完成之后会判断包是否支持快速更新,以及用户是否允许后台更新.如果都允许那么进行更新,并且会判断当前 product.target 的值是否为 user
+   6. 如果是 user 就调用 `doApplyUpdate` 函数进行更新否则修改状态值为 `downloaded`
+
+###### doApplyUpdate
+
+这个函数是 win 下才有的
+1. 判断状态不等于 `downloaded` 和 `downloaded`
+2. 判断本地安装包存在
+3. 然后调用 child_process.spawn 执行静默安装
+4. 安装完毕之后将状态修改为 Idle 
 
 ##### linux doCheckForUpdates
+
+1. 和 win 一样
+2. 和 win 一样
+3. 请求更新地址
+   1. 和 win 一样
+   2. 如果有更新就将状态标记为 `available for download`
+
+##### darwin(macOS)
+
+1. 修改状态为
+   vs code 在 macOS 下直接使用 electron.autoUpdater.checkForUpdate
