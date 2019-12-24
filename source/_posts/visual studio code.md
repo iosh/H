@@ -8,7 +8,7 @@ tags: vs code
 
 <!-- more -->
 
-## 安装与编译
+# 安装与编译
 
 1. 下载源码
 
@@ -39,7 +39,7 @@ tags: vs code
 
    ```
 
-## 目录结构
+# 目录结构
 
 ```txt
 E:/vscode
@@ -68,7 +68,7 @@ E:/vscode
 
 ```
 
-## VS code 如何更新
+# VS code 如何更新
 
 通过搜索关键字，可以定位到 `src\vs\platform\update\electron-main\abstractUpdateService.ts` , 然后会发现这是一个 TS 的 `abstract` class 同目录下还有 `updateServeice.[平台名称].ts` 说明具体更新是根据环境不同而基于抽象方法的具体执行，之后可以找到 `updateIpc.ts` 文件，在通过搜索这个文件名称，就可以找到 Code Application 文件 `src\vs\code\electron-main\app.ts`.
 
@@ -137,7 +137,7 @@ createServices 方法会在 openFirstWindow 方法之前被调用， openFirstWi
 
 那么核心代码就是 `src\vs\platform\update` 这个模块了
 
-### UpdateService 实例化
+## UpdateService 实例化
 
 在`app.ts` 创建 `updateChannel`
 
@@ -196,12 +196,12 @@ export class UpdateChannel implements IServerChannel {
 
 UpdateChannel 类作为一个通用接口，在实例化的时候接受的参数，是具体执行方法。而具体的执行方法，会根据平台不同传入不同的参数。
 
-### AbstractUpdateService
+## AbstractUpdateService
 
 从名字上来看，这是一个 abstract 类，在 TS 中 abstract 类不允许直接 new 得到实例， 而是需要通过继承，这个函数定义 `IUpdateService` 接口所列出的方法，并定义了一些 abstract 方法需要子类实现。
 这种方式抹平了平台差异，调用者无需关心细节
 
-#### update.ts
+### update.ts
 
 `AbstractUpdateService` 类继承了 `IUpdateService` 接口，这个接口描述了 `AbstractUpdateService` 需要实现的方法，也是外部调用所调用的方法。
 
@@ -288,7 +288,7 @@ export interface IUpdateService {
 }
 ```
 
-#### checkForUpdates
+### checkForUpdates
 
 ```typescript
 	async checkForUpdates(context: any): Promise<void> {
@@ -304,7 +304,7 @@ export interface IUpdateService {
 
 这里这个 `doCheckForUpdates` 是一个 abstract 函数即需要子类继承的
 
-##### win doCheckForUpdates
+#### win doCheckForUpdates
 
 1. 判断 url 是否存在，这个 url 是一个类似于:
 
@@ -342,6 +342,7 @@ this.setState(State.CheckingForUpdates(context));
 ```
 
 3. 请求上面那个地址
+
    ```typescript
    this.requestService.request({ url: this.url }, CancellationToken.None)
    ``
@@ -352,16 +353,18 @@ this.setState(State.CheckingForUpdates(context));
    4. 如果有那么先清理系统中可能存在的临时文件,之后判断有本地有没有下载好的安装程序,有就终止下载,没有就下载安装包
    5. 下载完成之后会判断包是否支持快速更新,以及用户是否允许后台更新.如果都允许那么进行更新,并且会判断当前 product.target 的值是否为 user
    6. 如果是 user 就调用 `doApplyUpdate` 函数进行更新否则修改状态值为 `downloaded`
+   ```
 
-###### doApplyUpdate
+##### doApplyUpdate
 
 这个函数是 win 下才有的
+
 1. 判断状态不等于 `downloaded` 和 `downloaded`
 2. 判断本地安装包存在
 3. 然后调用 child_process.spawn 执行静默安装
-4. 安装完毕之后将状态修改为 Idle 
+4. 安装完毕之后将状态修改为 Idle
 
-##### linux doCheckForUpdates
+#### linux doCheckForUpdates
 
 1. 和 win 一样
 2. 和 win 一样
@@ -369,7 +372,173 @@ this.setState(State.CheckingForUpdates(context));
    1. 和 win 一样
    2. 如果有更新就将状态标记为 `available for download`
 
-##### darwin(macOS)
+#### darwin(macOS)
 
 1. 修改状态为
    vs code 在 macOS 下直接使用 electron.autoUpdater.checkForUpdate
+
+### downloadUpdate
+
+```typescript
+
+	async downloadUpdate(): Promise<void> {
+		this.logService.trace('update#downloadUpdate, state = ', this.state.type);
+		if (this.state.type !== StateType.AvailableForDownload) {
+			return;
+		}
+		await this.doDownloadUpdate(this.state);
+	}
+```
+
+这里会判断状态是否等于 `AvailableForDownload` 这个状态只在 Linux 下存在. 所以这是一个 Linux 下的更新方法
+
+#### win doDownloadUpdate
+
+在上面的 doCheckForUpdates 方法中,会判断程序所在目录是否存在 `unins000.exe` 如果不存在那么就将状态置为 `AvailableForDownload`
+
+所以 win 的 doDownloadUpdate 方法很简单,就是直接调用浏览器打开下载链接.
+然后把状态设置为 Idle
+
+```typescript
+	protected async doDownloadUpdate(state: AvailableForDownload): Promise<void> {
+		if (state.update.url) {
+			shell.openExternal(state.update.url);
+		}
+		this.setState(State.Idle(getUpdateType()));
+	}
+
+```
+
+#### linux doDownloadUpdate
+
+也是打开链接下载安装包
+
+```typescript
+	protected async doDownloadUpdate(state: AvailableForDownload): Promise<void> {
+		// Use the download URL if available as we don't currently detect the package type that was
+		// installed and the website download page is more useful than the tarball generally.
+		if (product.downloadUrl && product.downloadUrl.length > 0) {
+			shell.openExternal(product.downloadUrl);
+		} else if (state.update.url) {
+			shell.openExternal(state.update.url);
+		}
+
+		this.setState(State.Idle(UpdateType.Archive));
+	}
+
+```
+
+#### darwin(macOS)
+
+macOS 无此方法
+
+### applyUpdate
+
+看代码会判断 状态 是否为 `Downloaded` , 这是一个 win 平台下更新的方法. 并且写了一个空的 doApplyUpdate 方法防止报错.
+
+```typescript
+
+	async applyUpdate(): Promise<void> {
+		this.logService.trace('update#applyUpdate, state = ', this.state.type);
+
+		if (this.state.type !== StateType.Downloaded) {
+			return;
+		}
+
+		await this.doApplyUpdate();
+	}
+
+	protected async doApplyUpdate(): Promise<void> {
+		// noop
+	}
+
+
+```
+
+### win doApplyUpdate
+
+doApplyUpdate 方法是 win 平台更新包的方法.主要做了以下事情:
+
+1. 判断当前状态是否为 Downloaded
+2. 判断 availableUpdate 是否为空 (doCheckForUpdates 方法会为其赋值)
+3. 之后想临时目录写入一个 `CodeSetup-${quality}-${version}.flag` 的一个文件,文件内容就是一个字符串`flag`
+4. 调用 child_process.spawn 执行安装包,进行静默安装, 并且添加启动参数, 安装参数区别于 下面的 doQuitAndInstall
+5. 坚挺 spawn 结束事件, 结束后做变量清理和状态设定为 Idle 工作
+6. 之后调用了 windows-mutex api 来判断,更新进程是否存在如果存在 while 循环 过 1 秒再看,如果更新进程不存在了设置状态值为 Ready
+
+#### linux doApplyUpdate
+
+linux 无此函数
+
+#### darwin(macOS) doApplyUpdate
+
+macOS 无此函数
+
+### quitAndInstall
+
+这里会判断 状态 是否为 Ready
+之后会告诉主进程要退出然后调用 doQuitAndInstall
+
+```typescript
+	quitAndInstall(): Promise<void> {
+		this.logService.trace('update#quitAndInstall, state = ', this.state.type);
+		if (this.state.type !== StateType.Ready) {
+			return Promise.resolve(undefined);
+		}
+		this.logService.trace('update#quitAndInstall(): before lifecycle quit()');
+
+		this.lifecycleMainService.quit(true /* from update */).then(vetod => {
+			this.logService.trace(`update#quitAndInstall(): after lifecycle quit() with veto: ${vetod}`);
+			if (vetod) {
+				return;
+			}
+			this.logService.trace('update#quitAndInstall(): running raw#quitAndInstall()');
+			this.doQuitAndInstall();
+		});
+		return Promise.resolve(undefined);
+	}
+```
+
+#### win doQuitAndInstall
+
+1. 判断状态是否符合
+2. 判断 doApplyUpdate 函数内创建的 flag 文件是否存在, 如果存在那么删除这个文件
+3. 如果这个 flag 文件不存在那么执行静默安装 这里静默安装的参数和 doApplyUpdate 不太相同
+
+#### linux doQuitAndInstall
+
+linux 无此函数
+
+### darwin(macOS)
+
+[electron 更新函数](https://electronjs.org/docs/api/auto-updater#autoupdaterquitandinstall)
+
+```typescript
+
+	protected doQuitAndInstall(): void {
+		this.logService.trace('update#quitAndInstall(): running raw#quitAndInstall()');
+		electron.autoUpdater.quitAndInstall();
+	}
+```
+
+### isLatestVersion
+
+这个函数用来检查是否为最新版本就是一个请求判断响应值是否为 204,如果是那么就代表没有更新,反之则有
+
+```typescript
+	isLatestVersion(): Promise<boolean | undefined> {
+		if (!this.url) {
+			return Promise.resolve(undefined);
+		}
+		return this.requestService.request({ url: this.url }, CancellationToken.None).then(context => {
+			// The update server replies with 204 (No Content) when no
+			// update is available - that's all we want to know.
+			if (context.res.statusCode === 204) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+	}
+
+```
