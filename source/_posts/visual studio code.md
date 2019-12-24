@@ -351,7 +351,7 @@ this.setState(State.CheckingForUpdates(context));
    2. 这里还会根据程序目录有没有 `unins000.exe` 这个程序来决定是否进行下载
    3. 如果没有 `unins000.exe` 标记状态为 `available for download`
    4. 如果有那么先清理系统中可能存在的临时文件,之后判断有本地有没有下载好的安装程序,有就终止下载,没有就下载安装包
-   5. 下载完成之后会判断包是否支持快速更新,以及用户是否允许后台更新.如果都允许那么进行更新,并且会判断当前 product.target 的值是否为 user
+   5. 下载完成之后会判断包是否支持快速更新,以及用户是否允许后台更新.如果都允许那么进行更新,并且会判断当前 product.target 的值是否为 user product.target 的值取决于安装包的版本,官网提供了 user 安装 system 安装
    6. 如果是 user 就调用 `doApplyUpdate` 函数进行更新否则修改状态值为 `downloaded`
    ```
 
