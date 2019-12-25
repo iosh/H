@@ -542,3 +542,20 @@ linux 无此函数
 	}
 
 ```
+
+# vs code debugger extension
+
+[vs code debugger extension 文档](https://code.visualstudio.com/api/extension-guides/debugger-extension)
+
+看文档 vs code 通过适配器进行 UI 和 Debugger 进行联动，下面是构架图。
+
+![debugging archiecture of vs code](https://code.visualstudio.com/assets/api/extension-guides/debugger-extension/debug-arch1.png)
+
+这里调试界面是固定的，Debugger 是固定的，这里就使用了 Debug Adapter 简称 DA ，在 DA 和 vs code 之间的抽象协议为适配器协议（debug adapter Protocol）， 适配器协议时独立于 VS code 的， 微软定义了一套[规范](https://microsoft.github.io/debug-adapter-protocol/)，用于脱离具体环境（不耦合与 vs code），可以被用于其他开发工具中
+
+vs code 提供了一套机制，用于控制调试器，当用户启动这个类型的调试会话时，vs code 就会启动一斤刚注册的 DA。
+
+因此 debugger extension 就是适配器的包装
+
+![示意图](https://code.visualstudio.com/assets/api/extension-guides/debugger-extension/debug-arch2.png)
+
