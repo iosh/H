@@ -559,3 +559,72 @@ vs code 提供了一套机制，用于控制调试器，当用户启动这个类
 
 ![示意图](https://code.visualstudio.com/assets/api/extension-guides/debugger-extension/debug-arch2.png)
 
+## 入门
+
+vs code 对学习开发 debugger extension 提供了一个 mock debug 插件，这个插件没有实现复杂的具体语言的 debugger ，也支持单步调试， 继续， 断点和变量访问等功能。
+
+```bash
+git clone https://github.com/Microsoft/vscode-mock-debug.git
+cd vscode-mock-debug
+npm install
+```
+
+安装依赖之后就可以执行编译命令
+
+然后选择 debug 模式里面的 Extension 就会打开一个新的 Extension Development Host 窗口，在这窗口打开插件目录下的 readme.md 文件或者任意一个也可以，按 F5 选择 mock debug 就可以看到进入了调试模式。
+
+如果遇到插件不支持的警告将 package.json 的 engines 做适当修改
+
+`package.json` 文件内有很多 vs code 的配置项
+
+contributes 字段下的 breakpoints 列出了将在哪些语言下启用设置断点的能力，如果没有这个将不能在 Markdown 文件中设置断点
+
+debugger 字段中添加了一个 mock 调试器，type 是在启动配置中的类型， 在 UI 界面中，有一个可选的 label 属性攻用户选择，由于调试扩展使用调试适配器，因此需要将其代码的相对路径作为 program 属性，为了使扩展程序自包含，program 必须位于扩展程序的文件夹中，一般按照惯例 program 放在 out 或者 bin 文件夹中，但是实际上放在哪里都可以。
+
+vs code 时候运行在不同平台的，因此 adapter 程序支持不同的平台，所以有以下选择。
+
+1. 如果程序实现与平台无关，作为在所有受支持平台都可以运行的应用程序，则可通过 runtime 指定其运行时， vs code 支持 node 和 mone 两种运行时
+2. 如果提供的 adapter 运行于不同平台，需要不同的可执行程序，可以按照以下的方式这顶不同的特定平台的 program 属性例如：
+
+```json
+"debuggers": [{
+    "type": "gdb",
+    "windows": {
+        "program": "./bin/gdbDebug.exe",
+    },
+    "osx": {
+        "program": "./bin/gdbDebug.sh",
+    },
+    "linux": {
+        "program": "./bin/gdbDebug.sh",
+    }
+}]
+```
+
+3. 方法 1 和方法 3 是可以组合使用的，例如 Mono DA ，这个 adapter 实现为 macOS 和 Linux 上运行但不在 windows 上运行的程序
+
+```json
+"debuggers": [{
+    "type": "mono",
+    "program": "./bin/monoDebug.exe",
+    "osx": {
+        "runtime": "mono"
+    },
+    "linux": {
+        "runtime": "mono"
+    }
+}]
+```
+
+configurationAttributes 属性声明 launch.json 调试器可用的属性的构架。launch.json 在编辑启动配置时， 次构架用于验证 IntelliSense 和提供字段的悬停帮助提示
+
+
+initialConfigurations 则提供了默认初始化的 launch.json 文件内容。
+
+configurationSnippets 提供了启动配置的片段，这些片段会出现在 launch.json 的 intelliSense ， 按照惯例 label 在调试环境名称的签名加上代码片段的属性，以便在许多的代码片段列表中进行区分
+
+variables  结合 variables 和 commands , 可以使用 ${command:xyz} 语法在 launch  配置中使用，在启动调试会话的时候，这些变量将被替换为用户设置
+
+
+command 的实现存在于扩展中，其范围可以从没有 UI 的简单表达式到基于扩展 API 中提供的 UI 功能的复杂功能
+
