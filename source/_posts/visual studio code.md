@@ -618,13 +618,39 @@ vs code 时候运行在不同平台的，因此 adapter 程序支持不同的平
 
 configurationAttributes 属性声明 launch.json 调试器可用的属性的构架。launch.json 在编辑启动配置时， 次构架用于验证 IntelliSense 和提供字段的悬停帮助提示
 
-
 initialConfigurations 则提供了默认初始化的 launch.json 文件内容。
 
 configurationSnippets 提供了启动配置的片段，这些片段会出现在 launch.json 的 intelliSense ， 按照惯例 label 在调试环境名称的签名加上代码片段的属性，以便在许多的代码片段列表中进行区分
 
-variables  结合 variables 和 commands , 可以使用 ${command:xyz} 语法在 launch  配置中使用，在启动调试会话的时候，这些变量将被替换为用户设置
-
+variables 结合 variables 和 commands , 可以使用 \${command:xyz} 语法在 launch 配置中使用，在启动调试会话的时候，这些变量将被替换为用户设置
 
 command 的实现存在于扩展中，其范围可以从没有 UI 的简单表达式到基于扩展 API 中提供的 UI 功能的复杂功能
 
+## vs code 注册和调用 debugger
+
+通过搜索，"Debug and Run" 就可以找到 vs code 国际化注册的地方，然后定位到 DebugViewlet
+
+### DebugViewPaneContainer
+
+```typescript
+//src\vs\workbench\contrib\debug\browser\debugViewlet.ts
+
+// 这里注册了开始按 "Start Debugging" 按钮
+@memoize
+private get startAction(): StartAction {
+	return this._register(this.instantiationService.createInstance(StartAction, StartAction.ID, StartAction.LABEL));
+}
+```
+
+之后触发于 getActionViewItem 方法 创建了 StartDebugActionViewItem class 的实例
+
+```typescript
+//src\vs\workbench\contrib\debug\browser\debugActionViewItems.ts
+
+this.toDispose.push(
+  dom.addDisposableListener(this.start, dom.EventType.CLICK, () => {
+    this.start.blur();
+    this.actionRunner.run(this.action, this.context);
+  })
+);
+```
