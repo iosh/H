@@ -13,6 +13,7 @@ React 学习
 1. [React 代码库组成](https://reactjs.org/docs/codebase-overview.html)
 2. [React core API 设计简介](https://reactjs.org/docs/implementation-notes.html)
 3. [从零开始构建 React 2016](https://www.youtube.com/watch?v=_MAD4Oly9yg)
+4. [Dan 讲解 Fiber](https://www.youtube.com/watch?v=aS41Y_eyNrU&feature=youtu.be)
 
 # React API
 
@@ -146,3 +147,57 @@ setState 函数内部调用了 this.updater.enqueueSetState() 方法, updater �
 forceUpdate 函数内部直接调用了 this.updater.enqueueForceUpdate() 同上, updater 还不明确
 
 PureComponent 在 prototype 原型链中多了一个属性 `isPureReactComponent` 值为 true, 表明这是一个 PureComponent
+
+## ReactDOM.render
+
+函数签名
+
+```jsx
+function render(
+  element: React$Element<any>,
+  container: Container,
+  callback: ?Function
+) {}
+```
+
+函数做了一些检查,例如检查 container 是否为 DOM 容器, 之后会调用 legacyRenderSubtreeIntoContainer
+
+### legacyRenderSubtreeIntoContainer
+
+```jsx
+function legacyRenderSubtreeIntoContainer(
+  parentComponent: ?React$Component<any, any>, // 指定父容器, 用于 ReactDOM.unstable_renderSubtreeIntoContainer 这个api
+  children: ReactNodeList, // node tree
+  container: Container, // 容器
+  forceHydrate: boolean, // 服务端渲染
+  callback: ?Function
+) {}
+```
+
+之后函数内部开始生成 root 节点, 这个时候的 children 还是 createElement 生成的描述对象
+
+- Initial mount
+
+调用 legacyCreateRootFromDOMContainer 来生成 root 对象
+
+legacyCreateRootFromDOMContainer 函数首先会清除 container 节点的所有子节点, 服务端渲染应该使用 ReactDOM.hydrate 所以这里只看客户端渲染. 删除了所有子节点(如果存在), 之后调用 createLegacyRoot 函数
+
+createLegacyRoot 函数直接 new ReactDOMBlockingRoot(container, LegacyRoot); LegacyRoot = 0;
+
+这个类有几个核心的东西:
+
+- \_internaRoot 的值是由 createContainer 函数 调用 createFiberRoot 来生成的.看名字生成的是一个 fiber 对象
+
+这里就第一次接触到 fiber 对象. 这个对象记录了一些需要用到的信息,暂不明确上面的信息都有什么用.
+之后将这个 dom 节点进行标记,添加一个私有属性,用来说明已经已经生成了 fiber 对象,并且将 fiber 对象添加给这个属性.React.render 方法会检查这个属性是否存在,不存在就会直接生成,存在就会复用.
+
+- render 方法
+
+render 方法调用 updateContainer 方法,该方法是一个调度程序
+
+- unmount 方法
+
+UNmount 方法也是调用 updateContainer 方法额外添加了一个回调函数用于去掉 dom 上的标记
+
+之后就会通过 unbatchedUpdates 来调用 updateContainer 来将 dom 转化为实际 dom
+
