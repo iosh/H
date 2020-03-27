@@ -282,11 +282,11 @@ export type Fiber = {|
   tag: WorkTag, //组件类型标记
 
   // Unique identifier of this child.
-  key: null | string, // key 
+  key: null | string, // key
 
   // The value of element.type which is used to preserve the identity during
   // reconciliation of this child.
-  elementType: any, // createElement 的第一个参数, 
+  elementType: any, // createElement 的第一个参数,
 
   // The resolved function/class/ associated with this fiber.
   type: any,
@@ -305,6 +305,7 @@ export type Fiber = {|
   // This is effectively the parent, but there can be multiple parents (two)
   // so this is only the parent of the thing we're currently processing.
   // It is conceptually the same as the return address of a stack frame.
+  // 父节点的 Fiber 对象
   return: Fiber | null,
 
   // Singly Linked List Tree Structure.
@@ -434,4 +435,108 @@ export type Update<State> = {|
 |};
 
 ```
+
+第一次渲染是直接使用 unbatchedUpdates 函数然后将 updateContainer 函数所谓回调函数传入, 然后在 try catch 内执行 updateContainer 函数, 最后 调用 flushSyncCallbackQueue 函数
+
+### unbatchedUpdates
+
+函数记录当前执行 executionContext, 从 NoContext 变化到 LegacyUnbatchedContext, 执行完 updateContainer 之后再讲状变回去.
+
+### updateContainer
+
+函数 updateContainer 调用 热区 setCurrentTimeForUpdate
+
+而 requestCurrentTimeForUpdate 调用了 msToExpirationTime 来从时间戳获得 currentTime
+
+```jsx
+//  ms 参数 来源有两个 如果当前浏览器支持 performance.now() 就使用,如果不支持就使用 Date().now()
+// performance.now  to see https://developers.google.com/web/updates/2012/08/When-milliseconds-are-not-enough-performance-now?hl=en
+
+// 1 unit of expiration time represents 10ms.
+// / UNIT_SIZE (值为10) 是为了抹平 10ms内的误差, 10ms内都是为一致
+export function msToExpirationTime(ms: number): ExpirationTime {
+  // Always subtract from the offset so that we don't clash with the magic number for NoWork.
+  // MAGIC_NUMBER_OFFSET 的值是 32位二进制最大值 - 2
+  // 最后的 | 0 是将 ms 强制转换为 32位,因为 Date.now() 获得的值必然超过 32位能表示的最大值,所以用 | 0 转换
+  return MAGIC_NUMBER_OFFSET - ((ms / UNIT_SIZE) | 0);
+}
+
+// 这个函数是上面的逆运算将过期时间转换为 ms
+export function expirationTimeToMs(expirationTime: ExpirationTime): number {
+  return (MAGIC_NUMBER_OFFSET - expirationTime) * UNIT_SIZE;
+}
+```
+
+之后调用 computeExpirationForFiber 计算 expirationTIme
+
+computeExpirationForFiber 会判断当前是否为 同步模式(还有新的异步模式),如果是同步模式直接返回了最大 31 bit int
+
+然后初始化一个 空的 对象作为 context 赋值给 FiberRootNode
+
+然后调用 createUpdate 函数生成一个 update 对象
+
+```jsx
+export type Update<State> = {|
+  expirationTime: ExpirationTime,
+  suspenseConfig: null | SuspenseConfig,
+
+  tag: 0 | 1 | 2 | 3,
+  payload: any,
+  callback: (() => mixed) | null,
+
+  next: Update<State> | null,
+
+  // DEV only
+  priority?: ReactPriorityLevel
+|};
+```
+
+之后就开始调用 enqueueUpdate 该函数就是把 fiber 对象上的 updateQueue 对象处理和赋值了一下.
+
+之后调用 scheduleUpdateOnFiber 函数内检查了更新时间,并且将值为 0(初次更新)的值更新为上面获取的时间
+
+之后调用了 createWorkInprogress 函数创建了当前 Fiber 的一个副本, 互相关联引用
+
+```jsx
+workInProgress.alternate = current;
+current.alternate = workInProgress;
+```
+
+源码中带注释的一些信息
+
+
+```jsx
+
+// Describes where we are in the React execution stack
+let executionContext: ExecutionContext = NoContext;
+// The root we're working on
+let workInProgressRoot: FiberRoot | null = null;
+// The fiber we're working on
+let workInProgress: Fiber | null = null;
+// The expiration time we're rendering
+let renderExpirationTime: ExpirationTime = NoWork;
+// Whether to root completed, errored, suspended, etc.
+let workInProgressRootExitStatus: RootExitStatus = RootIncomplete;
+// A fatal error, if one is thrown
+let workInProgressRootFatalError: mixed = null;
+// Most recent event time among processed updates during this render.
+// This is conceptually a time stamp but expressed in terms of an ExpirationTime
+// because we deal mostly with expiration times in the hot path, so this avoids
+// the conversion happening in the hot path.
+let workInProgressRootLatestProcessedExpirationTime: ExpirationTime = Sync;
+let workInProgressRootLatestSuspenseTimeout: ExpirationTime = Sync;
+let workInProgressRootCanSuspendUsingConfig: null | SuspenseConfig = null;
+// The work left over by components that were visited during this render. Only
+// includes unprocessed updates, not work in bailed out children.
+let workInProgressRootNextUnprocessedUpdateTime: ExpirationTime = NoWork;
+
+// If we're pinged while rendering we don't always restart immediately.
+// This flag determines if it might be worthwhile to restart if an opportunity
+// happens latere.
+let workInProgressRootHasPendingPing: boolean = false;
+// The most recent time we committed a fallback. This lets us ensure a train
+// model where we don't commit new loading states in too quick succession.
+
+```
+
 
