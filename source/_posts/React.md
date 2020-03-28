@@ -504,9 +504,7 @@ current.alternate = workInProgress;
 
 源码中带注释的一些信息
 
-
 ```jsx
-
 // Describes where we are in the React execution stack
 let executionContext: ExecutionContext = NoContext;
 // The root we're working on
@@ -536,7 +534,34 @@ let workInProgressRootNextUnprocessedUpdateTime: ExpirationTime = NoWork;
 let workInProgressRootHasPendingPing: boolean = false;
 // The most recent time we committed a fallback. This lets us ensure a train
 // model where we don't commit new loading states in too quick succession.
+```
 
+函数 constructClassInstance 会实例化 class 组件
+
+```jsx
+function constructClassInstance(
+  workInProgress: Fiber,
+  ctor: any,
+  props: any
+): any {}
 ```
 
 
+adoptClassInstance 会给实例添加 updater 对象,这个对象是 setState 更新的核心对象.
+```jsx
+function adoptClassInstance(workInProgress, instance) {
+  instance.updater = classComponentUpdater;
+  workInProgress.stateNode = instance; // The instance needs access to the fiber so that it can schedule updates
+
+  set(instance, workInProgress);
+
+  {
+    instance._reactInternalInstance = fakeInternalInstance;
+  }
+}
+```
+
+
+接下来就是 finishSyncRender 函数了
+
+函数 workLoopSync 调用 performUnitOfWork 递归自顶向下将 reactElenemt 对象渲染为带有实际值的 Fiber 实际值是指 class 的实例, dom 对象.
