@@ -546,8 +546,8 @@ function constructClassInstance(
 ): any {}
 ```
 
-
 adoptClassInstance 会给实例添加 updater 对象,这个对象是 setState 更新的核心对象.
+
 ```jsx
 function adoptClassInstance(workInProgress, instance) {
   instance.updater = classComponentUpdater;
@@ -561,7 +561,18 @@ function adoptClassInstance(workInProgress, instance) {
 }
 ```
 
-
 接下来就是 finishSyncRender 函数了
 
-函数 workLoopSync 调用 performUnitOfWork 递归自顶向下将 reactElenemt 对象渲染为带有实际值的 Fiber 实际值是指 class 的实例, dom 对象.
+函数 workLoopSync 调用 performUnitOfWork 递归自顶向下将 reactElenemt 对象渲染为带有实际值的 Fiber 实际值是指 class 的实例, dom 对象. 之后会处理 组件的 props 属性. 例如 style clasName onClick 等.
+
+对于普通的 html 属性会使用例如 node.setAttribute('class', 'App') 来给 dom 添加属性.
+
+对于 onClick 这种时间会通过 legacyListenToEvent 函数来进行添加
+
+```jsx
+// element 是 document DOM , eventType 是具体的事件名称, listener 是 dispatchDiscreteEvent 函数
+function addEventBubbleListener(element, eventType, listener) {
+  element.addEventListener(eventType, listener, false);
+}
+```
+
