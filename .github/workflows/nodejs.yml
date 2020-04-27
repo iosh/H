@@ -46,6 +46,7 @@ jobs:
       run: |
         cd ./public
         git init
+        git remote add origin git@github.com:HiMrHu/H.git
         git add --all .
         git commit -m "自动生成 于 `date +"%Y-%m-%d %H:%M"`"
         git push --force --quiet master:gh-pages
