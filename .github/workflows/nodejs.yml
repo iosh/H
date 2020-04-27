@@ -29,7 +29,7 @@ jobs:
     - name: set environment
       env:
         HEXO_DEPLOY_KEY:${{secrets.hexo_deploy_key}}
-      run:
+      run: |
         mkdir -p ~/.ssh/
         echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
@@ -43,11 +43,9 @@ jobs:
       run: npm run build
     
     - name: push to github
-      run:|
+      run: |
         cd ./public
         git init
         git add --all .
         git commit -m "自动生成 于 `date +"%Y-%m-%d %H:%M"`"
         git push --force --quiet master:gh-pages
-        
-     
