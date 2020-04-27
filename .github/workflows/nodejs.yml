@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -28,10 +28,10 @@ jobs:
 
     - name: set environment
       env:
-        HEXO_DEPLOY_KEY:${{secrets.hexo_deploy_key}}
+        hexo_deploy_key: ${{secrets.hexo_deploy_key}}
       run: |
         mkdir -p ~/.ssh/
-        echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
+        echo "$hexo_deploy_key" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan github.com >> ~/.ssh/known_hosts
         git config --global user.name "HiMrHu"
