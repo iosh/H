@@ -490,44 +490,147 @@ function toArray(children: ?ReactNodeList): Array<React$Node> {
 
 ## Fragments
 
+[ReactSymbols](https://github.com/facebook/react/blob/master/packages/shared/ReactSymbols.js)
+
 ### React.Fragment
+
+Fragment 比较简单就是一个 React 指定的标签.
+
+```js
+// like this
+REACT_FRAGMENT_TYPE = symbolFor("react.fragment");
+// or
+export let REACT_FRAGMENT_TYPE = 0xeacb;
+```
 
 ## Refs
 
+在 React 中可以通过给组件添加 ref 属性来来获得:
+
+- 如果组件是一个 class 组件那么 ref 将获得组件实例
+- 如果组件是一个 dom 组件那么 ref 将获得实际 dom
+
 ### React.createRef
 
+[ReactCreateRef](https://github.com/facebook/react/blob/master/packages/react/src/ReactCreateRef.js)
+
+代码很简单就是返回了一个对象
+
+```js
+// an immutable object with a single mutable value
+// 一个具有可变值的不可变对象
+export function createRef(): RefObject {
+  const refObject = {
+    current: null,
+  };
+  if (__DEV__) {
+    Object.seal(refObject);
+  }
+  return refObject;
+}
+```
+
 ### React.forwardRef
+
+React.forwardRef 会创建一个 React 组件, 这个组件能够将其接受的 ref 转发到其组件数的另一个组件中
+
+```ts
+export function forwardRef<Props, ElementType: React$ElementType>(
+  render: (props: Props, ref: React$Ref<ElementType>) => React$Node,
+) {
+  // 省略一些检查检查
+  const elementType = {
+    $$typeof: REACT_FORWARD_REF_TYPE,
+    render,
+  };
+  // 省略一些检查检查
+  return elementType;
+}
+```
+
+核心就是返回一个对象 \$\$typeof 值为 REACT_FORWARD_REF_TYPE 属性, 普通 React element 对象的值为 REACT_ELEMENT_TYPE
+
+所以 React 通过给与这个属性不同的值来创建不同的独特元素,实现不同的功能.
 
 ## Suspense
 
 ### React.lazy
 
+React.lazy() 允许你定义一个动态加载的组件。
+
+```ts
+export function lazy<T>(
+  ctor: () => Thenable<{default: T, ...}>,
+): LazyComponent<T, Payload<T>> {
+  const payload: Payload<T> = {
+    // We use these fields to store the result.
+    // 我们使用这些组件来储存结果
+    _status: -1,
+    _result: ctor,
+  };
+
+  const lazyType: LazyComponent<T, Payload<T>> = {
+    $$typeof: REACT_LAZY_TYPE, // 独特类型表明自己是 lazy 组件
+    _payload: payload, // 信息存储对象
+    _init: lazyInitializer, // lazyInitializer 是一个函数
+  };
+
+  // 省略一些开发检查
+  return lazyType;
+}
+```
+
+省略掉一些开发代码可以看到整体代码流程:
+
+- 构造一个 payload 对象对象有两个属性 \_status 表明当前状态, \_result 就是 lazy 接收到的回调函数
+- 构造一个 lazyType 对象, 同样的对象 \$\$typeof 属性表明了自己是一个 react lazy type
+- lazyType 的 \_init 属性值是一个函数, 函数 lazyInitializer 被调用后会尝试执行回调函数得到函数的返回值进行执行,然后修改\_payload 对象的 \_status 属性和 \_result 属性,如果 Promise 函数执行错误会抛出错误
+
 ### React.Suspense
+
+React.Suspense 是配合 lazy 使用的, suspense 也是一个 React 提供的类型
+
+```js
+// 支持 symbol
+REACT_SUSPENSE_TYPE = symbolFor("react.suspense");
+// or
+REACT_SUSPENSE_TYPE = 0xead1;
+```
 
 ## Hook
 
+[ReactHooks](https://github.com/facebook/react/blob/master/packages/react/src/ReactHooks.js)
+Hooks 是什么就不多做介绍了,文档上都有.
+
 base hooks
 
-### useState
+在 React core 部分 Hooks 的是形式都如下
 
-### useEffect
+```ts
+export function useHook() {
+  const dispatcher = resolveDispatcher();
+  return dispatcher.useHook();
+}
+```
 
-### useContext
+都是通过 调用 resolveDispatcher 来获得一个 dispatcer 对象, 然后调用该对象上的方法
 
-additional Hooks
+resolveDispatcher
 
-### useReducer
+```ts
+function resolveDispatcher() {
+  const dispatcher = ReactCurrentDispatcher.current;
+  invariant(
+    dispatcher !== null,
+    "Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for" +
+      " one of the following reasons:\n" +
+      "1. You might have mismatching versions of React and the renderer (such as React DOM)\n" +
+      "2. You might be breaking the Rules of Hooks\n" +
+      "3. You might have more than one copy of React in the same app\n" +
+      "See https://fb.me/react-invalid-hook-call for tips about how to debug and fix this problem."
+  );
+  return dispatcher;
+}
+```
 
-### useCallback
-
-### useMemo
-
-### useRef
-
-### useImperativeHandle
-
-### useLayoutEffect
-
-### useLayoutEffect
-
-### useDebugValue
+ReactCurrentDispatcher 是一个不可变对象,current 由 实际渲染器对其赋值例如 ReactDOM
