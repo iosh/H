@@ -8,6 +8,8 @@ React 学习
 
 <!-- more -->
 
+主要是了解 React DOM 初次渲染的过程,不涉及更新部分.
+
 # ReactDOM
 
 ReactDOM 是 React 的 DOM 和 server 的 `renderers`
