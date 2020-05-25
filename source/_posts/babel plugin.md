@@ -4,7 +4,7 @@ date: 2020-05-23 19:56:17
 tags: babel
 ---
 
-learning how to create babel plugin
+learn how to create babel plugin
 
 <!-- more -->
 
