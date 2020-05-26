@@ -179,6 +179,14 @@ this.getTokenFromCode(this.input.codePointAt(this.state.pos));
 
 之后更新 this.state 对象, 更新上下文
 
+## this.finishToken
+
+函数更新当前 state 内的位置信息, type value 之类的信息. 然后条件调用 updateContext,
+
+## this.updateContext
+
+updateContext 函数主要是判断 type 是否为关键字以及是否为需要单独处理的一些关键字.
+
 this.nextToken 执行完毕
 
 ## this.parseTopLevel
@@ -191,6 +199,271 @@ parserTopLevel 调用了 this.parseBlockBody 函数, 别的是一些模块 expor
 
 函数也很简单, 给 Node 赋值了 body 和 directives 空数组, 之后调用了 this.parseBlockOrModuleBlockBody
 
-
 ## this.parseBlockOrModuleBlockBody
+
+函数调用 this.parseStatement 解析语句,这里需要被解析的语句是 `const`, 这个函数还是个循环,会不断遍历到结尾.
+
+## this.parseStatement
+
+parseStatement 首先会判断是不是 `@` 开头,如果是那么就是 `Directive`, 是不是 `let`
+
+如果不是,那么会 进行 进行一个 switch case 匹配, 这里需要匹配 `const` 就先来看 `const`
+
+```ts
+case _types2.types._const:
+case _types2.types._var:
+  kind = kind || this.state.value;
+
+  if (context && kind !== "var") {
+    this.raise(this.state.start, _location.Errors.UnexpectedLexicalDeclaration);
+  }
+  return this.parseVarStatement(node, kind);
+```
+
+## this.parseVarStatement
+
+```ts
+
+  parseVarStatement(node, kind) {
+    this.next();
+    this.parseVar(node, false, kind);
+    this.semicolon();
+    return this.finishNode(node, "VariableDeclaration");
+  }
+```
+
+这里调用 this.next 这个函数调整了 state 的一些位置信息. 例如 lastTokenEnd, 之后调用了 this.nextToken 上面写了 this.nexToken, 之后调用 this.pareVar 来解析声明
+
+## this.parseVar
+
+```ts
+  parseVar(node, isFor, kind) {
+    const declarations = node.declarations = [];
+    // 判断有没有 ts 插件, 因为 ts 的声明 有类型
+    const isTypescript = this.hasPlugin("typescript");
+    node.kind = kind;
+
+    for (;;) {
+      const decl = this.startNode();
+      this.parseVarId(decl, kind);
+      // 判断是不是 = 入股欧式调用 this.next 读取后面的值
+      if (this.eat(_types2.types.eq)) {
+        decl.init = this.parseMaybeAssign(isFor);
+      } else {
+        if (kind === "const" && !(this.match(_types2.types._in) || this.isContextual("of"))) {
+          if (!isTypescript) {
+            this.unexpected();
+          }
+        } else if (decl.id.type !== "Identifier" && !(isFor && (this.match(_types2.types._in) || this.isContextual("of")))) {
+          this.raise(this.state.lastTokEnd, _location.Errors.DeclarationMissingInitializer, "Complex binding patterns");
+        }
+
+        decl.init = null;
+      }
+
+      declarations.push(this.finishNode(decl, "VariableDeclarator"));
+      if (!this.eat(_types2.types.comma)) break;
+    }
+
+    return node;
+  }
+```
+
+## parseVarId
+
+```ts
+  parseVarId(decl, kind) {
+    decl.id = this.parseBindingAtom();
+    this.checkLVal(decl.id, kind === "var" ? _scopeflags.BIND_VAR : _scopeflags.BIND_LEXICAL, undefined, "variable declaration", kind !== "var");
+  }
+```
+
+可以看到这里调用了 this.parseBindingAtom , 内部有一些判断, 之后又调用了 this.next,主要是判断是否为 ts ,是否为 async 之类的.
+
+## 解析 "a |> b"
+
+解析 "a |> b", 相同的步骤就不再说了.看看不同之处, 这个管道操作符部署于正是规范,需要插件,所以 Parser 没有插件的时候回报错,主要看看他怎么解决这个问题的.
+
+前面都一样 parseBlockOrModuleBlockBody 开始解析. 它在 parseStatementContent 函数的 大 switch 中匹配不到合适的关键字, 那么因为他可能是个解析式,所以调用 parseExpression 函数进行处理
+
+## parseExpression
+
+```ts
+ parseExpression(noIn, refExpressionErrors) {
+   // 获得位置信息
+    const startPos = this.state.start;
+    const startLoc = this.state.startLoc;
+    // 猜测这也许是个 赋值
+    const expr = this.parseMaybeAssign(noIn, refExpressionErrors);
+     //....
+    return expr;
+  }
+```
+
+```ts
+parseMaybeAssign(noIn, refExpressionErrors, afterLeftParse, refNeedsArrowPos) {
+    // ... 省略
+    // 猜测这也许是个分配符
+    let left = this.parseMaybeConditional(noIn, refExpressionErrors, refNeedsArrowPos);
+
+    // ...
+
+    return left;
+  }
+
+```
+
+```ts
+ parseMaybeConditional(noIn, refExpressionErrors, refNeedsArrowPos) {
+   // 取到位置
+    // 当做操作符解析, |>
+    const expr = this.parseExprOps(noIn, refExpressionErrors);
+    //...
+  }
+
+```
+
+```ts
+  parseExprOps(noIn, refExpressionErrors) {
+    //.. 尝试解析为一元运算符
+    const expr = this.parseMaybeUnary(refExpressionErrors);
+    // ...
+
+
+   return this.parseExprOp(expr, startPos, startLoc, -1, noIn);
+
+```
+
+```ts
+parseMaybeUnary(refExpressionErrors) {
+    // 省略一些判断,主要是判断  await throw  之类的
+
+    const startPos = this.state.start;
+    const startLoc = this.state.startLoc;
+
+    let expr = this.parseExprSubscripts(refExpressionErrors);
+    return expr;
+  }
+
+
+```
+
+```ts
+parseExprAtom(refExpressionErrors) {
+   parseExprAtom(refExpressionErrors) {
+    debugger;
+    if (this.state.type === _types.types.slash) this.readRegexp();
+    const canBeArrow = this.state.potentialArrowAt === this.state.start;
+    let node;
+
+    switch (this.state.type) {
+      // 省略一些匹配
+      case _types.types.name:
+        {
+          node = this.startNode();
+          const containsEsc = this.state.containsEsc;
+          const id = this.parseIdentifier();
+
+          if (!containsEsc && id.name === "async" && this.match(_types.types._function) && !this.canInsertSemicolon()) {
+            const last = this.state.context.length - 1;
+
+            if (this.state.context[last] !== _context.types.functionStatement) {
+              throw new Error("Internal error");
+            }
+
+            this.state.context[last] = _context.types.functionExpression;
+            this.next();
+            return this.parseFunction(node, undefined, true);
+          } else if (canBeArrow && !containsEsc && id.name === "async" && this.match(_types.types.name) && !this.canInsertSemicolon()) {
+            const oldMaybeInArrowParameters = this.state.maybeInArrowParameters;
+            const oldMaybeInAsyncArrowHead = this.state.maybeInAsyncArrowHead;
+            const oldYieldPos = this.state.yieldPos;
+            const oldAwaitPos = this.state.awaitPos;
+            this.state.maybeInArrowParameters = true;
+            this.state.maybeInAsyncArrowHead = true;
+            this.state.yieldPos = -1;
+            this.state.awaitPos = -1;
+            const params = [this.parseIdentifier()];
+            this.expect(_types.types.arrow);
+            this.checkYieldAwaitInDefaultParams();
+            this.state.maybeInArrowParameters = oldMaybeInArrowParameters;
+            this.state.maybeInAsyncArrowHead = oldMaybeInAsyncArrowHead;
+            this.state.yieldPos = oldYieldPos;
+            this.state.awaitPos = oldAwaitPos;
+            this.parseArrowExpression(node, params, true);
+            return node;
+          }
+
+          if (canBeArrow && this.match(_types.types.arrow) && !this.canInsertSemicolon()) {
+            this.next();
+            this.parseArrowExpression(node, [id], false);
+            return node;
+          }
+          // 这里都不匹配 , 返回了 一个 node 对象
+          return id;
+        }
+
+      // 省略一些匹配
+      // 最后匹配不到就抛出错误
+      default:
+        throw this.unexpected();
+    }
+  }
+}
+
+```
+
+```ts
+ parseExprSubscripts(refExpressionErrors) {
+    const startPos = this.state.start;
+    const startLoc = this.state.startLoc;
+    const potentialArrowAt = this.state.potentialArrowAt;
+    // atom 解析
+    const expr = this.parseExprAtom(refExpressionErrors);
+
+    if (expr.type === "ArrowFunctionExpression" && expr.start === potentialArrowAt) {
+      return expr;
+    }
+
+    return this.parseSubscripts(expr, startPos, startLoc);
+  }
+```
+
+```ts
+
+
+  parseExprOp(left, leftStartPos, leftStartLoc, minPrec, noIn) {
+    let prec = this.state.type.binop;
+
+    if (prec != null && (!noIn || !this.match(_types.types._in))) {
+      if (prec > minPrec) {
+        const operator = this.state.value;
+        // 判断操作符是否为 |>
+        if (operator === "|>" && this.state.inFSharpPipelineDirectBody) {
+          return left;
+        }
+       // 生成一个节点
+        const node = this.startNodeAt(leftStartPos, leftStartLoc);
+        node.left = left;
+        node.operator = operator;
+
+        if (operator === "**" && left.type === "UnaryExpression" && (this.options.createParenthesizedExpressions || !(left.extra && left.extra.parenthesized))) {
+          this.raise(left.argument.start, _location.Errors.UnexpectedTokenUnaryExponentiation);
+        }
+
+        const op = this.state.type;
+        const logical = op === _types.types.logicalOR || op === _types.types.logicalAND;
+        const coalesce = op === _types.types.nullishCoalescing;
+
+        if (op === _types.types.pipeline) {
+          // 这里判断存在不存在处理 |> 的插件, 不存在就抛出错误, 到这里就截止了
+          this.expectPlugin("pipelineOperator");
+          this.state.inPipeline = true;
+          this.checkPipelineAtInfixOperator(left, leftStartPos);
+        } else if (coalesce) {
+          prec = _types.types.logicalAND.binop;
+        }
+        //...
+  }
+```
 
