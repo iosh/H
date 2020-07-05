@@ -4,7 +4,7 @@ date: 2020-07-04 21:50:56
 tags: Nginx
 ---
 
-NGIXN with lua
+Nginx with lua
 
 <!-- more -->
 
@@ -156,8 +156,8 @@ http {
     tcp_nopush on; # #为了防止网络堵塞,需要开启 sendfile
     tcp_nodelay on; #为了防止网络堵塞需要开启 sendfile
     keepalive_timeout  90s; # 长连接超时时间, 单位是秒
-    upstream  backend {}  # upstream 块, weight 代表权重, 权重越高,则请求的比例越高
-    server 192.168.1.12:9000 weight=2;
+    upstream  backend {}  # upstream 块,
+    server 192.168.1.12:9000 weight=2;#weight 代表权重, 权重越高,则请求的比例越高
     server 192.168.1.23:9000 weight=3;
 
 
@@ -191,3 +191,156 @@ http {
 
 
 ```
+
+## 常见内置变量
+
+Nginx 提供了一些用来获取 HTTP 和 TCP 的信息
+
+| 变量名                   | 说明                                                                          |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| \$arg_name               | 值 URL 请求中的参数,name 是参数的名字                                         |
+| \$args                   | 代表 URL 中所有的请求的参数                                                   |
+| \$binary_remote_addr     | 客户端地址以二进制数据的形式出现,通常回合一些限速模块一起使用                 |
+| \$body_bytes_sent        | 发给客户端的字节数,不包含响应头                                               |
+| \$bytes_sent             | 发给客户端的总字节数                                                          |
+| \$document_uri           | 设置\$uri 的别名                                                              |
+| \$hostname               | 运行 Nginx 的服务器名                                                         |
+| \$http_referer           | 表示请求是从哪个页面链接过来的                                                |
+| \$http_user_agent        | 客户端浏览器的相关信息                                                        |
+| \$remote_addr            | 客户端 IP 地址                                                                |
+| \$remote_port            | 客户端端口号                                                                  |
+| \$remote_user            | 客户端名,通常在 author basic 模块中使用                                       |
+| \$request_filename       | 请求的文件路径, 基于 root alias 指令和 URI 请求生成                           |
+| \$request_time           | 请求被 Nginx 接收后,一只相应数据返回给客户端所使用的时间                      |
+| \$request_uri            | 请求的 URI,带参数                                                             |
+| \$request                | 记录请求的 URL 和 hTTP                                                        |
+| \$request_length         | 请求的长度,包括请求行,请求头和正文                                            |
+| \$server_name            | 虚拟主机的 server_name 值,通常是域名                                          |
+| \$server_port            | 端口号                                                                        |
+| \$server_addr            | 服务器的 IP 地址                                                              |
+| \$request_method         | 请求的方式 例如 post get                                                      |
+| \$schema                 | 请求协议, http https                                                          |
+| \$sent_http_name         | 任意响应头,name 为响应头的名字,name 是小写                                    |
+| \$realip_remote_addr     | 保留原来的客户地址,在 real_ip 中使用                                          |
+| \$server_protocol        | 请求采用的协议名称和版本号                                                    |
+| \$uri                    | 当前请求的 URI 在请求过程中 URI 可能会变化,例如内部重定向或使用索引文件的时候 |
+| \$nginx_version          | Nginx 版本号                                                                  |
+| \$pid                    | worker 进程的 PID                                                             |
+| \$pipe                   | 如果请求是 HTTp 流水线 piplined 发送的 pipe 值为 p 否则为.                    |
+| \$connection_requests    | 当前通过一个连接获得的请求数量                                                |
+| \$cookie_name            | name 即 COokie 的名称, 可以得到 Cookie 的信息                                 |
+| \$status                 | http 请求状态                                                                 |
+| \$msec                   | 日志写入的时间,单位为秒,精度是毫秒                                            |
+| \$time_local             | 在通用日志可是下的本地时间                                                    |
+| \$upstream_addr          | 请求反向代理到后端服务器的 IP 地址                                            |
+| \$ upstream_port         | 请求到反向代理后服务器的端口号                                                |
+| \$upstream_response_time | 请求在后端服务器消耗的时间                                                    |
+| \$upstream_status        | 请求在后端服务器的 HTTP 响应状态                                              |
+| \$geoip_city             | 城市名称, 在 geoip 模块中使用                                                 |
+
+## upstream 使用手册
+
+利用 proxy_pass 可以将请求转发到后端服务器, 如果需要指向多台服务器就要用到 ngx_http_upstream_module ,它为反向代理提供了负载均衡以及故障转移等重要功能
+
+代理多台服务器
+
+```nginx
+# 定义一组服务器
+
+upstream test_servers{
+    server 172.0.0.1:80 max_fails=5  fail_timeout=10s weight = 10;
+    server  172.0.0.1:81 max_fails=5  fail_timeout=10s weight = 5;
+    server 172.0.1.2 backup;
+    server 172.0.0.3 down;
+}
+
+server {
+    listen 80;
+    location / {
+        # 通过代理将请求发送给 upstream 命名的 HTTP 服务
+
+        proxy_pass  http:/test_servers;
+    }
+}
+
+```
+
+指令 upstream
+语法 upstream name {}
+环境 http
+含义 定义一组 htpp 服务器, 这些服务器可以监听不同的端口,以及 TCP 和 UNIX 套接字, 在以一个 upstream 中可以浑噩使用不同的端口 TCP 和 UNIX 套接字
+
+# 常见模块
+
+## 使用 ngx_http_headers_module 设置响应头
+
+这是个默认自带的模块, 主要包含 add_header 和 expires 两个指令
+
+1. expires 用法 expires 30d; expires epoch max | off 等 , 默认值为 off
+   设置 Expires 和 Cache-Control 响应字段,主要用于控制缓存时间例如
+   expires -1; # 输出响应头是 cache-control: no-cache, 表示不缓存
+   expires 1h; # 输出的响应头是 cache-control: max-age=3600
+
+2. add_header 用法 add_header Cache-Contron no-cache always;
+   用来添加响应头字段. 最后的 always 字段表示在所有的响应中都加入这个响应头, Nginx 默认不会再 404 500 等状态码中添加响应头.
+
+# 缓存系统
+
+缓存在整个服务系统中都是极为重要的存在,既能提升请求的访问速度, 又可以减少后端请求的压力.
+
+```nginx
+# 设置缓存空间的名字及其存放路径和存放方式
+proxy_cache_path  /data/nginxcahe levels=1:2  keys_zone=cachedata:100m  inactive=7d max_size=50g use_temp_path=off;
+
+server {
+    listen 80;
+    location / {
+        # 指定缓存空间和大小
+        proxy_cache  cachedata;
+        # 指定缓存的 HTTP 状态和缓存时间
+        proxy_cache_valid   200  304  10s;
+        proxy_cache_valid 301 302 100s;
+
+
+        # 请求最少访问两次才会被缓存
+        proxy_cache_min_uses  2;
+
+        # 指定换粗的 key
+        proxy_cache_key  $scheme$host$is_args$args;
+        # 缓存 HTTP 请求方法类型
+        proxy_cache_methods  GET HEAD;
+
+        # 添加一个响应头, 用来标识请求是否命中缓存
+        add_header  N-Cahe-Status  @upstream_cache_status;
+
+
+        # 设置 on标识允许将请求的 HEAD 方法改成 GET 方法缓存;
+        proxy_cache_convert_head  on;
+
+        sendfile on;
+
+        proxy_set_header  Host  $host:$server_port;
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header  X-Forwarded-For  $proxy_add_x_forwarded_for;
+
+        # 当缓存失效时,回去后端服务器获取数据, 然后,将返回给用户并缓存;
+        proxy_pass http://192.168.1.1
+    }
+}
+```
+
+# lua
+
+在 Nginx 中引入 lua 的几个原因:
+
+1. Nginx 缺少 if elseif else 这种简单的逻辑, 通常需要使用很多 if,繁琐且可读性差
+2. Nginx 缺少大小判断等表达式,导致实现一些简单的功能也比较复杂
+3. Nginx 缺少动态限速功能, 如需相关规则生效需要重启 Nginx 且第三方和原生的配置都缺乏灵活性
+4. Nginx 缺少冬天路由功能,如需要根据请求的路由动态调整服务器的转发规则则需要重启 Nginx
+5. Nginx 在 API 网关系统中未实现智能化
+6. Nginx 与数据库交互能理有限
+7. 大多数 Nginx 模块都是使用 C 语言开发的, 且开发人员还需要了解 Nginx 内部构造,开发难度较大.
+
+目前比较有名的 Nginx 框架有:
+1. Tengine 由淘宝出品的 2011 年开源, 其由 Nginx + Lua 开发的优点凸显出了,并在淘宝网中拥有广泛事件
+2. openRest 由国人章亦春发起, Tengine 和 openRest 区别在于 openRest 是完全开源产品与 Nginx 紧密配合, 而 Tengine 内部的 Nginx 更新会慢
