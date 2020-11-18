@@ -279,3 +279,49 @@ how to connect a MongoDB.
 
 in mongo shell can input `help` to get the MongoDB help tips
 
+database-leve help is provided by db.help() and collection-level help by db.collection.help()
+
+## Running Scripts with the Shell
+
+In addition to using the shell interactively, we can also pass the shell javaScrip files to execute. Simply pass in your script at the command line
+
+# CRUD Documents
+
+# inserting Document
+
+MongoDB provided the `insertOne` and `insetMany`
+
+## insert Validation
+
+all document must be smaller than 16MB,
+
+## insert
+
+in vdrsions of MongoDB prior to 3.0 insert was the primary method for inserting documents into MongoDb.
+
+we should instead prefet insertOne and insertMany for createing documents.
+
+## Removing Document
+
+MongoDB provided `deleteOne` and `deleteMany`
+
+use the `deleteMay({})` to delete all document.
+
+## Updating Documents
+
+MongoDb provided `updateOne` and `updateMany` and `replaceOne`, updateOne and UpdateMany each take a filter document as their first parameter and a modifier document. rep;aceOne also takes a filter as the first parameter, but as the second parameter replaceOne expects a document with which it will rep;ace the document matching the filter
+
+## getting started with the \$set modifier
+
+\$set sets the value of a field , if the field does not yet exist, it will be created. this can be handy for updateing schemas or adding userdfined keys.
+
+\$unset can remove the key altogether
+
+## incrementing and decrementing
+
+the `$inc` operator can be used to change the value for an existing key or to create a new key of it does not already exist.
+
+`$inc` is similar to `$set` but it is designed for incrementing and decrementing numbers.
+
+`$inc` can be used only one values of type integer long double or if iit used on any other tyoe of value it will fail this includes types that many languages will autmatically cast into numbers like nulls boolens or string of numeric characters.
+
