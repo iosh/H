@@ -325,3 +325,42 @@ the `$inc` operator can be used to change the value for an existing key or to cr
 
 `$inc` can be used only one values of type integer long double or if iit used on any other tyoe of value it will fail this includes types that many languages will autmatically cast into numbers like nulls boolens or string of numeric characters.
 
+## array operators
+
+`$push` adds elements to the end of an array if the array exists and created a new array if it does not.
+
+we can use the `$each` modifer for push multiple values in one operation.
+
+# Querying
+
+this chapter goal at follows:
+
+1. we can query for ranges. set inclusion, inequalities, and more by using $ conditionals.
+2. Queries return a database cursor, which lazily return batches of documents as we need them.
+3. there are a lot of metaoperations we can perform on a cursor, including skoping a certaion number of results, linmiting the number of results retured and sorting result.
+
+## find
+
+the find method is used to perform queries in MongoDB. Querying returns a subset of ducuments at all to the entire collection. which documents get returned is determined by the first argument to find. which is a document specifying the query criteria.
+
+if find isn;t given a query document, it dfaults to ,(find() === find({}))
+
+the query works is a straightforward way for most types: numbers match number , booleans match booleans, and strings match strings.
+
+## specifying which keys to return
+
+we can pass the second argument to the find to find a specifying document in the query return.
+
+we can also use this second parameter to exclude specific key/value pairs from this results of a query.
+
+## query criteria
+
+queries can go beyond the exact matching described in the previous section. the can match more complex criteria, such as ranges, or claues and negation
+
+`$lt` `$lte` `$gt` and `$gte` are all comparison operatirs, corresponding to < <= > and >=
+
+```ts
+db.users.find({age: {'%gte': 18 "$lte": 50}})
+```
+
+
