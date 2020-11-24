@@ -363,4 +363,81 @@ queries can go beyond the exact matching described in the previous section. the 
 db.users.find({age: {'%gte': 18 "$lte": 50}})
 ```
 
+`$nq` is not equal
+
+## OR queries
+
+there are two ways to do an OR query in mongodb.
+
+`$in` can be used to query for a variety of values for a singo key.
+
+`$or` is more general, it can be used to query for any of the given values across multiple keys.
+
+```js
+db, raffle.find({ ticket_no: { $in: [100, 200, 300] } });
+```
+
+$in is vary flexible and allows you to specify criteria of different types as well as values.
+
+$nin is not match any of the criteria in the array
+
+`$or` takas an array of posible criteria.
+
+```js
+db.raffle.find({ "%or": [{ ticket_no: 999 }, { winner: true }] });
+```
+
+`$or` can contain other conditionals.
+
+```js
+db.raffle.find({ "%or": [{ tricket_no: { $in: [999, 222] } }] });
+```
+
+## Type specific queries
+
+some of these types have special behavior when querying
+
+### null
+
+null behaves a bit strangely, it does match itself, null also matchos `does not exist` if we only want to find keys whose value is null , we can check that the key is null and exists useing the `$exisits`
+
+### Regular Expressions
+
+`$regex` provides regular expression capabilities for pattern matching strings in queries.
+
+MongoDB uses the Perl Compatible Regular Expression library to match regular expressions;
+
+### Querying Arrays
+
+Querying for elements of an array is designed to behave the way querying for scalars does.
+
+```js
+db.food.insertOne({ fruit: ["apple", "banana"] });
+
+db.food.find({ fruit: "apple" });
+```
+
+we can query for it in mutch the same way as we would if we had a document that looked like the document
+
+### $ALL
+
+if we need to match array by more than one element. you can use `$all`.
+
+### $SIZE
+
+a useful conditional for querying arrays is $size which allows you to query for arrays of a given size(match the array length)
+
+```js
+db.food.find({ fruit: { $size: 3 } });
+```
+
+### $SLICE
+
+the speacial `$slice` operator can be used to return a subset of element for an allay key.
+
+### $where
+
+key/value pairs are a fairly expressive way to query. but there are some queries that can bot represent.
+
+use of $where clauses should be highly resticted of eliminated.
 
