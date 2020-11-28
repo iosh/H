@@ -441,3 +441,59 @@ key/value pairs are a fairly expressive way to query. but there are some queries
 
 use of $where clauses should be highly resticted of eliminated.
 
+## Cursors
+
+the dotabase returns from `find` using a cursor
+
+```js
+const cursor = db.test.find();
+
+while (cursor.hasNext()) {
+  const obj = cursor.next();
+  print(obj.x);
+}
+```
+
+cursor.hasNext checks that the nest result exists, and cursor.nest fetches it;
+
+# Designing your applicatin
+
+## Indexes
+
+this chapter introdces MongoDB indexes. Indexes enable you to perform queries efficiently.
+
+they're an important part of application development and are event required for certain types of queries, in this chapter we weill cover:
+
+- what indexes are and why you'd want to use them
+- how to choose which fields to index
+- how to enforce and evaluate index usage
+- adminisrtative details on creating and removing indexes
+
+choosing the right indexes for you collections is critical to perfromance
+
+## introduction to indexes
+
+a databbase index is similar to a book's index. instead of looking trough the whole book, the database takes a shortcut and just looks at an ordered list with references to the content. this allows MongoDB to query orders of magnitude faster.
+
+### creating an index
+
+```js
+db.test.createIndex({ x: 1 });
+```
+
+### introduction to compound indexes
+
+the purpose of an index is to make your queries as efficient.
+
+An index can only help with sotring ,
+
+### how mongoDB selects an index
+
+MongoDB can use several query plan, and cache the query result, next the query can select the cache plan
+
+### using compound indexes
+
+```js
+db.test.createIndex({ a: 1, b: 1 });
+```
+
