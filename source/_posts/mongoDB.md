@@ -456,9 +456,7 @@ while (cursor.hasNext()) {
 
 cursor.hasNext checks that the nest result exists, and cursor.nest fetches it;
 
-# Designing your applicatin
-
-## Indexes
+# Indexes
 
 this chapter introdces MongoDB indexes. Indexes enable you to perform queries efficiently.
 
@@ -497,3 +495,160 @@ MongoDB can use several query plan, and cache the query result, next the query c
 db.test.createIndex({ a: 1, b: 1 });
 ```
 
+when designing a compound index:
+
+- keys for equality filters should appear first.
+
+- key used for sorting should appear befor multivalue fields.
+
+- key for multivalue filters should appear last
+
+## explain output
+
+explain gives you lots of information about the queries. it's one of the most important diagnostic tools there is for slow queries.
+
+for any query , we can add a call to explain at the end.
+
+there are tow types of explain output that you'll see most commonly: for indexed and nonindex queries.
+
+## special index abd cikkectuibs types
+
+this chapter covers the special collections and index tyes mongoDB hash available ,including:
+
+- Capped collections for queue-like data
+
+- TTL indexes for caches
+
+- Full-text indexes for simple string searching
+
+- Geospatial index for 2D and spherical geometries
+
+- GridFS fro storing large files
+
+### Geospatioal indexes
+
+MongoDB has two types of geospatial indexes: 2dsphere and 2d.
+
+2dsphere indexs work with spherical geometries that model the surface of the earth based ont the WGS84
+datum.
+
+### Indexes for Full Text Search
+
+text indexes in mongoDB support full-text search requirements.
+
+this type of text index should not be confused with the mongoDB Atlas Full-Text Search Indexes. wtich utilize Apache Lucene for additional text search capbilities when compared to mongoDB text indexes. use a text index if you application need to enable users to submit keyword queries that should match titles ,decriptions and text in other fields within a collection.
+
+string will be tokenized and stemmed and the index updated in. potentially, many place, for this reason , writes involving text indexes are usually more expensive than writes to single-fild, compound, or enven moltikey index.
+
+thus, weill tend to see poorer writer performance on text-indexed collections than on tohers, they will also slow down data movement if sharding : all text must be reindexed when it is migated to a new shard.
+
+#### create a text index
+
+```js
+db.test.createIndex({ title: "text", body: "text" });
+```
+
+this is not like a normal compound index where there is an ordering on the keys. by default, each is given equal consideration in a text index.
+
+we can control the relative importance mongoDb attaches to each field by specifying weights:
+
+```js
+db.text.createIndex(
+  { title: "text", body: "text" },
+  { weights: { title: 3, body: 2 } }
+);
+```
+
+we cannot change field weights after index creation .
+
+for some collections, you may not know which fields a documents will contain, so we can create a full-text index on all string fields in a document by create an index on $\*\* this not only indexes all top-;level string fields , but also searches embedded documents and array for dtring fields
+
+#### text search
+
+use the $text query operator to perform text searches on a collection with a text index.
+
+```ts
+db.test.find({ $text: { $search: "hello word" } });
+```
+
+#### optimizing full-text search
+
+there are a couple of way sto optimize full-text searches .
+
+if you can first narrow you search result by other criteria, you can create a compound index with a prefix of those criteria and then the full-text fields
+
+```ts
+db.test.createIndex({ data: 1, post: "text" });
+```
+
+#### searching in other languages
+
+we can set the text indexes a default_language opthin
+
+```ts
+db.test.createIndex({ title: "text" }, { default_language: "chinese" });
+```
+
+```ts
+db.test.inster({title: '你好'}， language: 'chinese')
+```
+
+## capped collections
+
+mongoDB normal collections are dynamcally and automatically grow in size to fit additional data.
+
+mongoDB also supports a different type of collections, called a capped collection wich is created in advace and is fiexd in size
+
+having fixed-size collections brings up an interesting questions: what happens when we try to insert into a capped collection that is already full?
+
+the answer is that capped collections behave like circular queuess: if we're out of space the oldest document will be deleted, and the new one will take its lace.
+
+### creating capped collections
+
+```ts
+db.createCollection("mycappedCollection", { capped: true, size: 100000 });
+```
+
+the command create a capped collection. mycappedCollection that has fixed size of 100000 bytes, that also specify a limit on the number of document is a capped collectios:
+
+```ts
+db.createCollection("test", { capped: true, size: 1000, max: 10 });
+```
+
+# Introduction to the Aggregation Framework
+
+many applications require data analysis of one form or another . mongoDB provides powerful support for running analytice natively using the aggregation framework. in this chapter we introduce this framework and some of the fundamental tools it provides we'll cover;
+
+- the aggregation framework
+
+- aggregation stages
+
+- aggregation expressions
+
+- aggregation accumulatiors
+
+```ts
+db.companies.aggregate([
+  { $match: { founded_year: 2004 } },
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      founded_year: 1,
+    },
+  },
+]);
+```
+
+the command to match the founded_year of the document and use the pipeline to reduce the output to just a few fields per document. will exclude the \_id and include the name and founded_year
+
+many pipeline
+
+```ts
+db.test.aggregate([
+  { $match: { founded_year: 2000 } },
+  { $sort: { name: 1 } },
+  { $limit: 5 },
+  { $project: { _id: 0, name: 1 } },
+]);
+```
