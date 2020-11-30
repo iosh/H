@@ -652,3 +652,27 @@ db.test.aggregate([
   { $project: { _id: 0, name: 1 } },
 ]);
 ```
+
+## expressions
+
+the aggregation framework supports many different classes of expressions:
+
+- boolean expressions allow us to use AND OR and Not expressions
+
+- set expressions allow us to work with arrays as sets, in particular, we can get the intersection or union of two or more sets, we can also take the difference of two sets and perform a number of other set perations.
+
+- comparison expressions enable us to express many different types of range filters
+
+- arithmetic expressions enable us to calculate the ceiling, floor natureal log and log, as well as perform simple arthmetic operations like multiplication, division, addition , and subtraction, we can event do more complex operations, such as calculationg the square root of a value.
+
+- string expressions allow us to concatenate find substrings,and preform operations having to do with case and text search operations.
+
+- array expressions provide a lot of power for manipulating arrays, including the ability to filter array elements. slice an array, or just take a range of values form a specific array.
+
+- variable expressions which we won't dive into too deeply, allow us to work with literals, expressions for parsing date values, and conditional expressions.
+
+- Accumulators provide the ability to calculate sums, descriptive statistics, and many other types of values.
+
+## $unwind
+
+
