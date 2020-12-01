@@ -675,4 +675,32 @@ the aggregation framework supports many different classes of expressions:
 
 ## $unwind
 
+when workin with array fields n an aggregation pipeline.
+
+1. match - match some document
+2. unwind - handle previous documents
+3. project - handle previous documents
+
+```ts
+db.test.aggregate([{$match: someName: "somevalue"}, {$unwind: $someKey}, {$project: {_id: 0, name: 1, somekey: 1
+}}])
+
+```
+
+## Array Expressions
+
+$filter operator is designed to work with array fields and specifies the options we must supply .
+
+selects a subset of an array to return based on the specified conition , returns an arry with only those elements that match the condition. the returned element are in orginal order.
+
+## Accumulators
+
+the Accumulatro provides enable us to proform operations such as summing all values in al particular field ($sum). calcalation an average ($avg), etc, we also consider $first and $last to be accumulatiors bacause these consider values in all documents that pass through the stage in which they are used. $max and $min are tow more examples of accumulatros that consider a stream of documents and save just one of the values they see. we can use $mergeObject to combine multiple document into a single document.
+
+we also have accumulators for arrays, we can $push values onto an array as documents pass through a pipeline stage. $addToSet is very similar to $push except that is ensures no duplicate values are included in the resulting array.
+
+## introduction to grouping
+
+
+the group stage performs a function that is similar to the SQL GROUP BY command. in a group stage ,we can aggregate together value form multiple documents and perform some type of aggregation ioertation on them. such as calculating an average
 
