@@ -701,6 +701,48 @@ we also have accumulators for arrays, we can $push values onto an array as docum
 
 ## introduction to grouping
 
-
 the group stage performs a function that is similar to the SQL GROUP BY command. in a group stage ,we can aggregate together value form multiple documents and perform some type of aggregation ioertation on them. such as calculating an average
+
+# Transactions
+
+Transactions are logical groups of processing in a database, and each group or transaction can contain one or more operations such as reads and/or writers across multiple documents. mongoDB supprts ACID-compliant transactions acroos multiple operations , collections, databases, documents, and shards, in this chapter , we introduce transactions , define what ACID means for a database, highlight how you use these in you applications, and provide tip for tuning transactions in mongoDB . cover following:
+
+- what a transaction is
+
+- hot to use transactions
+
+- tuning transaction limits for you application
+
+## introduction to transactions
+
+as we mentioned above. a transaction is a logical unit of processing in database that includes one or more database operations, which can be read or write operations, there are stuations whre your application may require reads and writes to multiple documents as part of this logical unit of precessing, an improtant aspect of a transaction is that it is never partially completed it either succeeds or fails.
+
+## a definition oa ACID
+
+ACID is the accepted set of properties a transaction must meet to be a true transaction, ACID is an acronym for Atomicity Consistency isolation and Durability. ACID transactions guarantee the validity of you data and of you database's state even power failures or other errors occur.
+
+Atomicity ensures that all operations inside a transaction will either be applied or noting will be applied. a transaction can never be portially applied, either it is committed or aborts.
+
+Consistency ensures that if a transaction succeeds, that database will move form one consisitent state to the next consisint state.
+
+Isolation is the property that permits multiple transactions to run at the same time in your database . it guarantees that a transaction wile not view the partial results of any other transaction, which means multiple transactions will have the same results as running each of the ransactions sequentially.
+
+Durability ensures that when a transaction is coommitted all data will presist event in the case of a system failure
+
+## How to Use Transactions
+
+MongoDb provides two APIs to use transactions. The first is a similar syntax to relational databases(example: start_transaction and commit_transaction) and called the core API and the second is called the callback API, which is the recommended to using to using transactions.
+
+the core API does not provide retry logic for the majority of errors and requires the developer to code the logic for the operations. the transaction commit function and any retry and error logic required.
+
+the callback API provides a single function that wraps a large degree of functonality when compared the core API including staring a transacion assocated with a specified logical session , execution a function supplied as the callback function , and then committing the transaction (or aborting on error) this funciton also includes retry logic that handle commit errors, this callback API was added in MongoDB 4.2 to simplify application develppment with transactions as well as make it easier to add application retry logic to handle andy transaction error.
+
+in both APIs, the developer is responsiblefor staring ht logical session that will be used by the transaction. Both APIs require operations in a transaction to be associated with a specific logical seeion . aA logical session in MongoDB tracks the time and sequencing of the operations in the context of the entre MongoDB deployment, A logical seeion or sever seeion is part of the underlying framework used by client sessions to suuport retryable writers and causal consistency in MongoDB both of these features were added in MongoDB version 3.6 as part of te foundation required to support transactions,, a specitfuc squence of read and write operations tha have a cauale relationship relected by theri ordering is defined as a causally consistent client session in mongoDB . a calient session is started by an applicaition and used to interact with a server session
+
+| Core API                                                                                                                                                                                           | Callback API                                                                                                      |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Requires explicit call to start the transaction and commit the transaction                                                                                                                         | Starts a transaction, executes the spectified operation, and commits (or aborts on erro)                          |
+| Does not incorporate error handling logic for transientTranactionEroor and UnkonwoTranasctinCommitResult, and instead provides the filxbility to incorporate custom error handling for these error | Automatically incorporeate error-handling logic for TransientTransactionError and unkonwnTransaction-commitResult |
+| Requires explict logical sesion to be passed toAPI for the specific trasaction                                                                                                                     | Requires explicit logical session tobe pased to API for the specific transaction                                  |
+
 
