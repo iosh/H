@@ -745,4 +745,45 @@ in both APIs, the developer is responsiblefor staring ht logical session that wi
 | Does not incorporate error handling logic for transientTranactionEroor and UnkonwoTranasctinCommitResult, and instead provides the filxbility to incorporate custom error handling for these error | Automatically incorporeate error-handling logic for TransientTransactionError and unkonwnTransaction-commitResult |
 | Requires explict logical sesion to be passed toAPI for the specific trasaction                                                                                                                     | Requires explicit logical session tobe pased to API for the specific transaction                                  |
 
+# Application Design
+
+- Schema design considerations
+
+- Trade-offs when deciding whether to embed data or to reference it
+
+- Tips for optimization
+
+- Consistency consideration
+
+- How to migrate schemas
+
+- How to manage schemas
+
+- When MongoDB isn't a good choice of data store
+
+## Schema Design Considerations
+
+A Key aspect of data representation is the design of the schema. which is the way your data is represented in your documents. the best approach to this design is to represent the data the way your application wants to see it . Thus , unlike in relational databases, you first need to understand your queries and data access patterns brfore modeling you scahema
+
+here are the key aspects you need to consider when designing a schema:
+
+### Constraints
+
+you need to understand any database or hardware limitations.. you also need to consider a number of MongoDB's specific aspects. such as the maximum document size of 16 MB, that full documents get read and written from disk, that an update rewrites the whole docment , and that atomic updates are at the document level
+
+### Access patterns of your queries and of your writes
+
+you will need to identify and quantify the workload of your application and of the wider system. the workload encompasses both the reads and the writes in your application. once you know when queries are running and how frequently, you can identify the most common queries. these are the queries you need to design your schema to supprot. once you have identified these queries you should try to minimize the number of queries and ensure in your design that data that gets queried together is stored in the same document.
+
+Data not used in these queries should be put into a different collections.Data tha is infrequently used should also be moved to a different collection, it is worth considering if you can separate your dynamic (read/write) data and your staic data. the best preformance results occur when you priorize your schema design for your most common queries.
+
+### Relation types
+
+you should consider which data is related in terms of your application's needs, as well as the relationships's. needs, as well as the relationships between documents, you can then deteremine the best approaches to embed or reference the data or documents. you will need to work out how you can reference documents without having to perform addtional queries, and how many documents are updated when there is a relationship change, you must also consider if the data sthructure is easy to query , such as tith nested array, thich suprot modeling certain relationships.
+
+### Cardinality
+
+once you have determined how your documents and your data are related , you should consider the cardinality of these relationships specifically is it one to one , one to many many to many, ont to minlions or many to bilions
+
+it is very improtant to establish the cardinlity of the relationships to ensure you use the best format to model them in your MongoDB schema You should also consider whether the object on the many/monlions side is accessed sparately or only on the context of the parent object as well as the ratio of pdates to reads for the data field in question, the answers to these questions will help you to detemine whether you should embed document or reference documents and if you should be denmoealizing data acoss documents.
 
