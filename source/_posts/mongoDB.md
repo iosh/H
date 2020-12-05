@@ -787,3 +787,134 @@ once you have determined how your documents and your data are related , you shou
 
 it is very improtant to establish the cardinlity of the relationships to ensure you use the best format to model them in your MongoDB schema You should also consider whether the object on the many/monlions side is accessed sparately or only on the context of the parent object as well as the ratio of pdates to reads for the data field in question, the answers to these questions will help you to detemine whether you should embed document or reference documents and if you should be denmoealizing data acoss documents.
 
+## Schema Design patterns
+
+Schema design is important in MongoDB.
+
+Scheme design patterns that migth apply include:
+
+- polymorphic pattern
+
+this is suitable where all documents in al collection have a similar, but not identical, strcutre, it involves identifying the common fields across the documents that support the common queries that will be run by the appliction, tracking specific fields in the documents or subdocuments will help identify the diffrerences between the data and different code paths or claaes/ subclasses that can be coded in you application to manage these differences. this allows for the use of simple queries in al single collection of not quite -identical documents to improve quer performance.
+
+- Attribute pattern
+
+this is suitable when there are a subset of fields in a document that share commonfeatures on which you want to sort or query, or when the fields you need to sort on only exist in a subset of the documents, or when both of these conditions are true, it involves reshaping the data into an array of key/value pairs and creating an index on the elements in this array, Qualifirers can be added as additional fields to these key/value pairs this pattern assists in targeting many similar fields per document so that fewer indexes are required and queries become simpler to write.
+
+- Bucket pattern
+
+this is suitable for time series data where the data is captured as a stream over a period of time. it is much more efficient in MongoDB to 'bucket' this data into a set of documents each holding the data for a particular time range than it is to create a doument per point in time/data poing. for example you might use a one-hour buket and place all readings for that hour in a array in a single document . the document tiself will have start and end times indication the period this bucket covers.
+
+- Outlier pattern
+
+this addresses the rare instances where a few queries of documents fall outside the noremal partten for the application . it is an advanced schema pattern designed for situations wheere popularity is a factor . this can be seen in social netwoks with major influences, book sales, movie reviews etc it uses a flage to indicate the document is an outlier and stores the addtitonal overflow into one or monre documents that refer back to the firest document via the \_id the flage will be uesd by your applicaiton code to make the additonal queries to retrieve the overflow documents.
+
+- Computed pattern
+
+this is used when data needs to be computed frequently, and it can also be used when the data access pattern is read-intensive. this pattern recommends that the calculations be done in the backround , whith the main document being update peridically. this provides a valid approximation of the computed fields or document without having to continuousl generate these for individual queries, this can significantly reduce the starin on the CPU by avoiding repetition of the same calulations, particularly in use cases where reads trigger the calculation and you have a high read-to-write ratio.
+
+- Subset pattern
+
+this is used when you have a working set that exceeds the available RAM of the macehine. this can be caused by large documents that contain a lot of information that isn't being used by your application. this pattern suggests that you split frequently used data and infrequently used data into two separate collections. A typical example mingth be an ecommerce applicaiton keeping to 10most recent reviews of a prooduce in the main requentl accessed collection and moveing all the older reviews into a second collection querid oly of the application need more than the loast 10reviews.
+
+- Extended Reference pattern
+
+this is used for scenarios where you have many different logical entities or things. each with their own collection, but you may want to gether these entities together for a specific function . A typical ecommerce shema might have separate collectins for orders customers and inventory. this can have a negative performance impact when we want to collect together all the information for a single order from these separate collections. the solution is to identify the frequenly accessed fields and duplcate these within the order this would be the name and address or the customer we are shipping the item to . this pattern trades off the number of queries necessary to collate the information together.
+
+- Approximation pattern
+
+this is useful for situation where resouce expensive (time memory CPU cycles) calculations are needed but where exact is not absolutely required, an example of this is an image or post like/love counter or a pag view conunter where knowing the exact count isn't necessary. in these situations aapplying this pattern can applying this pattern can greatly reduce the number of writers for exmlo by only updating the counter agter every 100 or more views instead of after every view.
+
+- Tree pattern
+
+this can be applied when you hanve a lot of queryies and have data theat is parmarily hierarchical in structure , it follows the earlier concaept of storing data together that is typilcally queryied together , in MongoDB you can easily sotre a hierarchy in an array within the same documents, in the exple of the ecmmoerce site , specifically its produce catelog, there are ofen producets that belong to multiple cate gories or to categoris thea are part of other cateres .
+
+- preallocation pattern
+
+this was primarily used with the MMAP storage engine, but there are still uses for this pattern . the pattern recommmends createing an initial empty structure that will be populated later.
+
+- Document versioning pattern
+
+this provides a machanism to enable retention of older versions of documents, it requires an extra field to be added to each document to track the documents version in the main collection, and an dadditional collection that contains all the revisions of the documents thie pattern make a few assumptions specficall, that each document has a limited number of vevisions. that there are not large numbers of documents that need to be versioned and that the queries are promarily done on the current version of each documents . in situations where these assumptions are not valid, you may need to modify the pattern or consider a different schema desion pattern
+
+# Normalization Versus Denormalization
+
+there are many ways to represent data. and noe of the most important issues to consider is how much you should normalize your data. Normalization refers to dividing up date into multiple collections with references between collections. Each piece of data lives in one collections. although multiple documents may reference it. thus t change the data only one documents must be upodated the MongoDB aggreation Framework offers joins with tthe $lookuo stage. which performs a left outer join by adding documents to the joined collection where there is a matching document in the source collection it add a new array field to each matched document in the joined collection with the datils of he doucment from the source ollectin these reshaped documents are then available in the next stage for further processing.
+
+Denormalization is the opposite of normalization : embedding all of the data in a single document. instead of document containing references to one definitive copy of the data this means that multiple documents need to be updated if the information changes but enables all related data be fetched with a single query
+
+Deciding when to normalize and when to denormalize can be difficult: typically normalizing makes writers faster and denormalizing makes reads fater thus you need to decide what trade offs make sensu for you application
+
+conparison of embedding versus references
+
+| Embedding is better for...                                     | References are better for...                   |
+| -------------------------------------------------------------- | ---------------------------------------------- |
+| Small subdocuments                                             | Large subdocuments                             |
+| Date that does not change                                      | Volatile data                                  |
+| When eventual consistency is accptable                         | When immediate consisitncy is necessary        |
+| Documents that grow by a smail amount                          | Documents that grow by a large amount          |
+| Data that you'll often need to perform a second query to fetch | Data that you'll often exclude from the result |
+| Fast reads                                                     | Fast writers                                   |
+
+## Cardinality
+
+Cardinality is an indication of how many references a collection has no another collection. common relationships are one-to-one, one-to-many. or many-to-many.
+
+# Optimization for Data Manipulation
+
+to optimize your application, you must first datermine what its bottleneck is by evaluation its read and write performance. optimozomg reads gemerll involves having the correct indexes and retuning as much of the information as possible in a single document. optimizing writers usully invlues minimingzin the number of indexs you have and making updates as efficient as possible
+
+## Removing Old Data
+
+Some data is only important for a brief time: after a few weeks or months it is just wasting storage space . There are three popular optinins for removing old data: using capped collection, using TTL collections. and dropping collections per time period.
+
+# Setting Up a Replica Set
+
+MongoDB high-avaliability system: replica sets. it covers:
+
+- what replica sets are
+
+- How to set up a replica set
+
+- What configuration options are available for relica set members
+
+## Introduction to Replication
+
+Since the first chapter , we've been using a standalone server. a single mongod server. it's an easy way to get started but a dangerous way to run in production . what if your server crashes or becones unavailable , your database will be unavailable for at least a little while . if there are problems with the hardware, you minght have to move your data to another machine. in the worst case disk or network issues could leave you with corrupt or inaccessible data
+
+## Setting Up a Replica Set
+
+we start run three mongodb look like this:
+
+```sh
+mongod --replSet mdbDefGuide --dbpath ~/data/rs1 --port 27017 \
+    --smallfiles --oplogSize 200
+mongod --replSet mdbDefGuide --dbpath ~/data/rs2 --port 27018 \
+    --smallfiles --oplogSize 200
+mongod --replSet mdbDefGuide --dbpath ~/data/rs3 --port 27019 \
+    --smallfiles --oplogSize 200
+```
+
+then connects to ont of the running mongod instances
+
+```sh
+mongo --port 27017
+```
+
+then in the mongo shell . create a configuration document and pass the this to the rs.initiate() helper to initiate a replice set. this will initiate a replice set containing three members and propagate the configuration to the rest of the mongods so that a reploce set is formed:
+
+```ts
+rs.initiate(
+  rs.initiate({
+    _id: "mdbDefGuide",
+    members: [
+      { _id: 0, host: "172.18.0.5:27017" },
+      { _id: 1, host: "172.18.0.4:27018" },
+      { _id: 2, host: "172.18.0.2:27019" },
+    ],
+  })
+);
+```
+
+there are several important parts of a relica set configuration document . the config's "\_id" is the name of the replica set that you passed in on the command line , make sure that this name matches exactly.
+
