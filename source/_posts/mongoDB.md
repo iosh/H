@@ -904,17 +904,99 @@ mongo --port 27017
 then in the mongo shell . create a configuration document and pass the this to the rs.initiate() helper to initiate a replice set. this will initiate a replice set containing three members and propagate the configuration to the rest of the mongods so that a reploce set is formed:
 
 ```ts
-rs.initiate(
-  rs.initiate({
-    _id: "mdbDefGuide",
-    members: [
-      { _id: 0, host: "172.18.0.5:27017" },
-      { _id: 1, host: "172.18.0.4:27018" },
-      { _id: 2, host: "172.18.0.2:27019" },
-    ],
-  })
-);
+rs.initiate({
+  _id: "mdbDefGuide",
+  members: [
+    { _id: 0, host: "172.18.0.3:27017" },
+    { _id: 1, host: "172.18.0.4:27018" },
+  ],
+});
 ```
 
 there are several important parts of a relica set configuration document . the config's "\_id" is the name of the replica set that you passed in on the command line , make sure that this name matches exactly.
 
+rs is a global variable that contains replication helper function (run rs.help()) to the the helpers it pexposes.
+
+# Obeserving Replication
+
+if your relica set elected the mongod on port 27017 as primary, hten the mongo shell used to initiate the relica set is currentlly connected to the primary
+
+we can use the db.isMaster() command to show the status of the replica set. is a much more concise form tha rs.status() it is also a convenient means of determining which member is promary when writing application
+
+if you attempt to query a secondary, you'll get an error staring that it's not the promary, this is to protect you application from accidentally connection to a secondary and reading stale data, to allow queries on the secondary , we can set an "i'am okay with reading from secondaries" flag like so
+
+```ts
+secondaryCoon = new Mongo("localhost:27018");
+secondaryDB = secondaryConn.getDB("test");
+secondaryCoon.setSecondaryOk();
+```
+
+the secondary does not accept the writer, it will only perform writes that it gets through relication, not from clicents.
+
+automatic fail-over , if the primary goes down, one of the secondaries will automatically be elected parimary
+
+there are a few key concepts to remember:
+
+- Clients can send a primary all the same operations they could send a standlalone server(reads, writers ,commands, index builds)
+
+- Clients cannot write to secondaries
+
+- Clients, by default connot read from secondaries , you can enable this explicitly setting an "i know i'm reading from a secondary" setting on the connection.
+
+# Changing your Replica Set Configuration
+
+Replica set configurations can be changed at any time: members can be added removed or modified there are shell helpers for some common operations:
+
+- rs.add
+
+```ts
+rs.add("localhost:27020");
+```
+
+- rs.remove
+
+```ts
+rs.remove("localhost:27020");
+```
+
+- rs.config() check a reconfiguration
+
+```ts
+rs.config();
+```
+
+each time you change the configuration , the “version” field will increase.
+
+you can also modify existing members, not just add and remove them. to make modifications, create the configuration document that you want in the shell and call rs.reconfig
+
+```ts
+const config = rs.config();
+config.members[0].host = "localhost:27022";
+rs.reconfig(config);
+```
+
+# How to Design a Set
+
+There are a couple of common configurations that are recommended:
+
+- A majority of the set in on data center, This is a good design if you have a primary data center where you always want you replica set's primary to be located, so long as you primary data center in healthy , you will have a primary. however if that data center becomes unaveliable , your secondary data center will not be able to elect a new primary.
+
+- An equal number of servers in each data center , plus a tie-breaking server in a third location , this is a good design if your data centers are equal in preference since fenerall servers from either data center will be able to see a majority of the set however it invlove having three separate locations for servers.
+
+# Component of a Replica Set
+
+this chapter covers how this pieces of a replica set fit together including:
+
+- How replica set members replicate new data
+
+- How bringing up new members works
+
+- How elections work
+
+- Possible server and network failure scenarios
+
+# Syncing
+
+Replication is concerned with keeping an identical copy of data on multiple servers. the way MongoDb accomplishes this is by keeping a log of operations , or oplog. contaning ever writer that a primary performs this is a capped collection that lives in the local database on the primary the secondaries query this collection for opeartions to replicate
+
+Each secondary maintains its own oplog recording each operation is relicates from the primary. this allows any member to be used as a sync source for any other member , secondaries fetch operations from the member they are syncing from . apply the operations to their dataset and then write be operation to their oploog if applying an operation fails the secondary will exit
