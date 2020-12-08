@@ -995,8 +995,66 @@ this chapter covers how this pieces of a replica set fit together including:
 
 - Possible server and network failure scenarios
 
-# Syncing
+## Syncing
 
 Replication is concerned with keeping an identical copy of data on multiple servers. the way MongoDb accomplishes this is by keeping a log of operations , or oplog. contaning ever writer that a primary performs this is a capped collection that lives in the local database on the primary the secondaries query this collection for opeartions to replicate
 
 Each secondary maintains its own oplog recording each operation is relicates from the primary. this allows any member to be used as a sync source for any other member , secondaries fetch operations from the member they are syncing from . apply the operations to their dataset and then write be operation to their oploog if applying an operation fails the secondary will exit
+
+## Heartbeats
+
+Members need to know about the other members states who's primary, who they can sync from , and who's down, to keep an up-to-data view of the set, a member sends out a heartbeat request to every other member of the set every two seconds, a heartbeat request is a short message tha checks everone's state
+
+## Nenver States
+
+members also communicate what state they are in via hearbeats, we've already discussed two states primary and secondary thre are several other normal states that you'll often see members be in:
+
+- STARTUP
+  the member isfirst started. while MongoDB is attempting to load its replice set configuration.
+
+- STARTUP2
+  this state lasts throughout the initial sync process.
+
+- RECOVERING
+  this tate indicates that the member is operation correctly but is not available for reads.
+
+- ARBITER
+  ARbiters have a special state and should alwayys be in the state druing normal opration
+
+- DOWN
+  if a member was up but then becomes unereachablel. it will enter this state. note that a member repported as down might in fact still be up just unreachable doue to network issues.
+
+- UNKNOWN
+  if a member has never been able to reach another member, it will not know what state it's in, so it will report it as UNKOWSN this generally indicates that the unkonwn member is down or that there are network problems between the two members.
+
+- REMOVED
+  this is the state of a member that hash been removed from the set if a removed member is added back into the set it will transition back into its normal state.
+
+- ROLLBACK
+  this tate is used when a member is rolling back data .
+
+## Elections
+
+a member will seek election of it cannot reach a primary , a member seeking election will send out a notice to all of the members it can reach these members may know why thi memebr is an unsuitable ppromiary it may be behind in replication or there many alread be a primary that the member seeking election cannot reache in these cases, the other memebers will vote against the candidate.
+
+# Connection to a Replica Set from Your Application
+
+this chapter covers how applicaitons interact with replica sets, including:
+
+- How connections and failovers work
+
+- Waiting for replicaiton on writes
+
+- Routing reads to the correct member
+
+## Client-to Replica Set Connnection Behavior
+
+MongoDB client libaries are designed to manage communication with MongoDB servers regardless of whether the server is standalone MongoDB instance or a replica set, for replica sets, by default drivers will connect to the primary and rout all traffic to it , you application can perform reads and writes as though it were talking to sandalon server while your replica set quietly keeps hot standbys ready in the background
+
+```ts
+`mongodb://server-1:27017,server-2:27017,server-3:27017`;
+```
+
+# Wating for Replication on Writes
+
+Depending on the needs of you application , you might want to require that all writes are replicated to a majority of the replica set before they are acknowledged by the server. in the rare circumstance where the promary of a set goes down and the newly elected promary primary did not relicate the very last writes to the former primary, those writers will be rolled back when the former primary comes back up, they can be recovered but it requires manual inter vaention for many appliaciton having a small number or writes rolled back is not a problem , in a bolg appliaciton for example there is litter read dinger in rolling back one or two comments from ont reader
