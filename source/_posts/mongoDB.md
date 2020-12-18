@@ -1058,3 +1058,95 @@ MongoDB client libaries are designed to manage communication with MongoDB server
 # Wating for Replication on Writes
 
 Depending on the needs of you application , you might want to require that all writes are replicated to a majority of the replica set before they are acknowledged by the server. in the rare circumstance where the promary of a set goes down and the newly elected promary primary did not relicate the very last writes to the former primary, those writers will be rolled back when the former primary comes back up, they can be recovered but it requires manual inter vaention for many appliaciton having a small number or writes rolled back is not a problem , in a bolg appliaciton for example there is litter read dinger in rolling back one or two comments from ont reader
+
+# Sharding
+
+## Interdoction to Sharding
+
+- What sharding is and the components of a cluster
+
+- How to configure sharding
+
+- The basics of how sharding interacts with your application
+
+### Waht is sharding
+
+sharding refers to the process of splitting date up across machines; the term partitioning is also sometimes used to describe this concept. By putting a subset oa date on each machine , it becomes possible to shore more data and handle more load without requireing larger or more powerfull machines just a larger quanitiy of less powerful machines, sharding may be used for other puposes as well ,including placing more frequently accesssed data on more performant hardware or splitting a dataset based on geograplhy to locate a subset of documents in a collction close to the application servers from which they are most commonly accessed.
+
+MongoDB supports autosharding, which tries to both abstract the archiecture away from the application and simplify the administration of such a system.
+
+## Understanding the components of a cluster
+
+MongoDB's sharding allows you to create a cluster of many machines and break up a collection across them, putting a subset of data on eache shard this allows your application to grow beyond the resource limits of a sandalone server or replica set
+
+## Sharding on a Single-Machine Cluster
+
+start cluster on a single machine.
+
+```sh
+mongo --nodb --norc
+```
+
+to create a cluster, use the ShardingTest class.
+
+```ts
+st = ShardingTest({
+  name: "one-min-shards",
+  chunkSize: 1,
+  shards: 2,
+  rs: {
+    nodes: 3,
+    oplogSize: 10,
+  },
+  other: {
+    enableBalancer: true,
+  },
+});
+```
+
+now use the new mongo shell
+
+```ts
+// use the mongo shell , not connect the DB
+mongo --nodb
+```
+
+```ts
+db = new Mongo("localhost:20009").getDB("accounts");
+
+for (let i = 0; i < 10000; i++) {
+  db.user.insert({ name: "user" + 1, create_at: new Date() });
+}
+
+// now the collection hash 10000 user
+
+db.user.count(); // 10000
+```
+
+```ts
+// show the sharding status
+sh.status();
+```
+
+# Configuring Sharding
+
+- How to set up config servers, shards, and mongos processes
+
+- How to add capactty to a cluster
+
+- How data is stored and distrubuted
+
+## When to shard
+
+deciding when to shard is a balancing act. you generally do not want to shard too early because it adds operational complexity to you deployment an forces you to make design decisions that are difficult to change later. on the other hand. you do not want to wait too long to shard because it is difficult to shard an overloaded system without downtime.
+
+in general, sharding is used to:
+
+- Increase available RAM
+
+- Increase available disk space
+
+- Reduce load on a server
+
+- Read ot write data with greater throughput than a single mongod an hanlde
+
