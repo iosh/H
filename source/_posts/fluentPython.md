@@ -157,3 +157,133 @@ huahua = cat('huahua',1, 'white')
 ## Slicing
 
 a common featue of list , tuple, str and all sequence types in pyton is the support of slicing operations, which are more powerful than most people realize
+
+### Why slice and range exclude the last item
+
+the slice and ranges works weill with the zero-based indexing in python, c and many other language, some conveenient features of the convention are:
+
+1. it's easy to see the length of a slice or range when onley the stop prosition in given: range(3) and my_list[:3] both produce three items
+
+2. it's easy to compute the length of a slice or range when start and strop are given: just subtract stop - start
+
+3. it's easy to split a sequence in two parts at any index x, without orverlapping : simply get my_list[:x] and my_list[x:]
+
+## Slice object
+
+this is no secret, bot worth repeating just in case: a[a:b:c] can be used to specify a stride or step c, causing the resulting slice to skip items. the stride can also be negative, returning items in reverse,
+
+## Assigning to slices
+
+mutable sequences can be grafted , excised, and otherwise modified in place using slice notation on the left side of an assignment statement or as the target of a del statement.
+
+```py
+
+ls = [1,2,3,4,5,6]
+ls[2:5] = [9, 10]
+print(ls) #[1, 2, 9, 10, 6]
+
+```
+
+## Using + and \* with sequences
+
+python expect the sequences support + and \*, usually both operands of + must be of the same sequnece type, and neither of them is modified but a new sequence of the same type is created as result of the concatenation
+
+```py
+ls = [1,2,3]
+
+ls = ls *5
+
+ls = ls + ls
+```
+
+both + and \* alway create a new object , and never change their operands
+
+## Building lists of lists
+
+sometimes we need to initialize a list with a certain number of nested list
+
+```py
+board = [["_"] *3 for i in range(3)]
+
+```
+
+## Augmented assignment with sequences
+
+the augmented assignment operatore += and \*= behave very defferently depending on the first operand.
+
+the special method that makes += work is `__iadd__` (for in place addiition ) however, if `__iadd__` is not impemented python falls back to call `__add__`
+
+```py
+l =[1,2,3]
+id(l)
+l *=2
+id(l) # object id is not changed
+
+t =(1,2,3)
+id(t)
+t *= 2
+id(t) # id is changed
+
+```
+
+1. ID of the initial list
+
+2. After multiplication, the list is the same object, with new items appended.
+
+3. ID of the initial tuple
+
+4. After multiplication , a new tuple was created
+
+## list.sort and the sorted Built-in function
+
+the list.sort method sorts a list in place - that is, without making a copy. it returns note to remind us that is changes the traget object , and does not create a new list. this is an important python API convention: functions or metods that change an object in place should return None to make it clear to the caller that the object itself was changed. and no new object wes created, the some behavior can be seen.
+
+in contrast, the built-in function sorted creates a new list and return it, in fact, it appects any interable object as an arguments. includeing immutable sequnces and generators, regardless of the type ofiterable given to sorted , it always returns a newly created list.
+
+reverse: it true ,the items are returned in descending order. the default is False
+
+key: a one argument function that will be applied to eache item to produce its sortns key,
+
+## Managing ordered sequences with bisect
+
+the bisect module offers two main functions bisect and insort that use the binnary serach algrotm to quickly finde and insert item in any sorted sequence
+
+## when a list is not the answer
+
+the list type is flexible and easy to use, but depending on specific requirements, there are better options. for example , if you need to store 10 million floating-point values, an array is much more efficient, because an array does not actually hold full-fledged float objects, but only the packed bytes representing their machine values -- just lick an array in the c language , one ht other hand, if you are constantly adding and removing items form the ends of a list a FIFO or LIFO data structure, a dequen workd faser
+
+## Array
+
+if the list will only contain numbers, an array.array is more efficitent than a list: it supports all mutable sequence operations (including pop insert and extend ) and additional menthods for fast loading and saving suah as formbytes and tofile
+
+a python array is as lean as c array , when creatg an array you provide a typecode, a letter to datarmine th underlying c type used to store each item in the array
+
+```py
+from array import array
+floats = array('i', (x for x in range(10000)))
+```
+
+## Memorty views
+
+the built-in memorview class is a shared-memory sequence type that lets you handle slices of array without copying bytes, it was inspired by the numpy library.
+
+```py
+form array inport array
+
+mumbers =  array('h', [1,2,3,4,5,6])
+memv = memoryview(mumbers)
+print(len(memv))
+
+memv[1] = 100
+
+print(memv.tolist())
+
+```
+
+## Numpy and Scipy
+
+Numpy implements multidimensional, homogeeous arrays and matrix types that hold not only numbers but also user0defined records, and provides efficient elementwise operations.
+
+Scipy is a libary , written on top of Numpy,offering many scientific computing algorithms from form linear algebar, numerical calculus and statistics, scipy is fast and reliable because it leverages the widely used c and fortran code base for the netlib repository ,
+
+
