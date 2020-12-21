@@ -286,4 +286,87 @@ Numpy implements multidimensional, homogeeous arrays and matrix types that hold 
 
 Scipy is a libary , written on top of Numpy,offering many scientific computing algorithms from form linear algebar, numerical calculus and statistics, scipy is fast and reliable because it leverages the widely used c and fortran code base for the netlib repository ,
 
+## Deques and orher queues
+
+the append and pop methods make a list usable as a stack or queue (if you use append and pop(0) you get LIFO behavior) but inserting and removing form the left of a list (the 0 index end) is costly because the entire list must be shifted
+
+the class collections.deque is a thread-safe double-ended queue designed for fast inserting and removing form both end, it is also the way to go if you need to keep a list fo "last seen items" or something like that , because a deque can be bounded , creatd with a maximum lenghtn and then, when it is full , it discard items form the opposite end when you append new oned.
+
+```py
+ from collections import deque
+ dq = deque(range(10), maxlen=10)
+ dq.rotate(3)
+ dq.rotate(-3)
+ dq.appendleft(-1)
+ dq.extend([1, 2, 3])
+ dq.extendleft([3, 2, 1])
+ print(dq)
+```
+
+baside deque, other python standard library packages implement queues:
+
+queue:
+this provides the synchronized (thread-safe) classes Queue, LifoQueue, and PriortyeQueue, these are used for safe communication between threads, all three classes can be bounded py providing a maxsizi argument greater then 0 to ther constructor however thery don't discard items to make room as deque does, instead when the queue is full the insertion of a new item blocak, it waits until some other tread make room b taing an item from the queue, wihich is useful to throttl the number of live threads.
+
+multiprocessing :
+impoements its own bounded queue, very similar to queue, queue but disigned for interprocess communicaiton,. a specialized multiprocessing.jinablequeue is also aviliable easier task managerment.
+
+ayncio:
+newly added to python 3.4 asyncio provides queue, Lifoqueue, priortyrQueue, and joinableQueue with APIs inspired by the classes contained in the queue and multiprocessing modules, but adapted for managing task in ayncchronous programming
+
+heapq:
+in contrast to the previous three modules, heapq does not implement a queue class, but provides function like heappush and heappop that let you use a mutable sequeces as heao queue or priority queue.
+
+# Dictionaries and Stes
+
+## Generic mapping types
+
+the collections.abc module provides the mapping and mutableMaping ABCs to formalize the interface of dict and similar type
+
+## dic comprehensions
+
+```py
+DIAL_CODES = [(86, 'China'),
+             (91, 'India'),
+             (1, 'United States'),
+             (62, 'Indonesia'),
+             (55, 'Brazil'),
+             (92, 'Pakistan'),
+             (880, 'Bangladesh'),
+             (234, 'Nigeria'),
+             (7, 'Russia'),
+             (81, 'Japan'),
+             ]
+
+country_code = {country: code from code, country in DIAL_CODES}
+```
+
+## Handing missing keys with setdefault
+
+in line with the fail-fast pholosophy, dict access with d[k] raises error when k is not existing kye, every pythonista knows that d.get(key, default) is an alternative to d[k] whenerer a default value is more convenient than dhanding keyerror.
+
+## Mapping with filexible key lookup
+
+Sometimes it is convenient to have mappings that return some made-up value when a missing key is searched. There are two main approaches to this: one is to use a default dict instead of a plain dict. The other is to subclass dict or any other mapping type and add a `__missing__`method. Both solutions are covered next.
+
+## defaultdic: another take on missing keys
+
+use collections.defaultdict to provide another elegant solution to the problem, a defultdic is configured to create items on demand whenever a missing key is searched.
+
+## Set Theory
+
+```py
+l = ['a','b','a']
+
+set(l)# ['a','b']
+
+```
+
+the set type is not hashable, but frozenset is, so you can have frozenset elements inside a set
+
+## set literals
+
+```py
+l ={1,2,3}
+```
 
