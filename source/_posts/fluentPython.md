@@ -370,3 +370,74 @@ the set type is not hashable, but frozenset is, so you can have frozenset elemen
 l ={1,2,3}
 ```
 
+# Text Versus Bytes
+
+- Characters code points, and byte representations.
+
+- Unique featres of binaray sequence: bytes, bytearray, and memoryview
+
+- Codecs for full Unicode and legace character sets
+
+- Avoiding and dealing with encoding errors
+
+- Best practices when handing text files
+
+- The default encoding trap and standard I/O issues
+
+- Safe Unicode text comparisons with normalization
+
+- Utility function for normalization , case folding and brute-force diacritic removal
+
+- Proper sorting of Unicode text with locale and the PyUCA library
+
+- Character metadata in the Unicode database
+
+- Dual-mode APIs that handle str and byutes
+
+## Chharacter issues
+
+the concept of "string" is simple enough: a string is a squence of characters, the problem lies in the definition of "character"
+
+## Byte Essentials
+
+the immutable types type interoduced in python 3 and the mutable bytearrray
+
+each item in bytes or bytearray is an interger from 0 to 255, and not a one-character stering.
+
+Although binary sequnences are really sequences of intergers, therir literal notaion reflects the fact that ASSCII text is often embedded in them , therefore, three different displays are used, depending on each btye value:
+
+- for bytes in the printable ASCII range from space to the ASSCII character itself is used
+
+- for bytes corresponding to tab, newline , carriage return, and \, the escape sequences \t \n \r and \\ are used
+
+- for every other byte value , a hexadecimal escape sequence is used
+
+binary sequences hanve a class method that str doesn't have , called formhex. which builds a binary sequence by parsing pairs of hex digits optionally separated by spaes:
+
+```py
+bytes.fromhex('31 4b CE A9') # b'1K\xce\xa9'
+```
+
+## Structs and Memory Views
+
+the struct module provides functions to parse packed bytes into a tuple of fields of different types and to perform the opposite conversion, from a tuple into packed bytes, struct is used with bytes , bytearray, and memoryview objects.
+
+## Basic Encoders/Decoders
+
+the python distribution bundles more than 100codecs(encoder/decoder) for text to byte conversion and vice veras, each codec has na name, like 'utf_8' and ofte aliases such as 'ftf8' 'utf-8' and 'U8' , which you can use as the encoding argument in function like open() , str.encode byte.decode and so on
+
+## Understanding Encode/Decode Problems
+
+Although there is a generic UnicodeError exception, the error reported is almost alway more specific: either a UnicodeEncodeError(when converting str to binary sequences) or a UnicodeDecodeError(when reading binary sequnces into str) loading python modules may also generate a SyntaxError when the source encoding is unexpected. we'll show how to handle all of these errors in the next sections.
+
+## Handding Text Files
+
+the base practice for handling text is the "Unicode sandwich" this means the bytes should be decoded to str as early as possible on input, the meat of the sandwich is the business logic of you program where text handling is done exclusivey on str objects, you shuould never be encoding or decoding in the middle of other processing , on output the str are endoded to bytes as late as possible most web frameworks work like that and we rarely touch bytes when using them in django .
+
+```text
+
+input ==Decode bytex on input ==> bytes  == process text only ==> 100% str == pencode text on output ==> bytes
+
+```
+
+
