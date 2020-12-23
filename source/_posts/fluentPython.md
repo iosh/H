@@ -440,4 +440,78 @@ input ==Decode bytex on input ==> bytes  == process text only ==> 100% str == pe
 
 ```
 
+# First-Class Function
 
+function in python are first-class object. programming language throists define a "first-class object " as a program entiry that can be:
+
+- Created at runtime
+
+- Assigned to a variable or element in a data structure
+
+- Passed as an arugment to a function
+
+- Returned as the result of a function
+
+## Treating a function like an object
+
+we can create an function in runtime, and can called `__doc__` get the doc.
+
+a function object can assign it a variable and call it that name.
+
+## Higher-Order function
+
+a function that takes a function as argment or return a function as the result is a higher-order function .
+
+## Anonymous functions
+
+the lambda keyword creates an anonymous function withon a python expression.
+
+the simple syntax of python limits the body of lambda function to be pure expressions. in other words, the body of a lambda canot make assignments or use any other python statment such as while tyr etc.
+
+## the seven flavors of callable objects
+
+the call operator (i.e., ()) may be applied to other objects beyond user-defined functions. to determine whether an object is callable , use the callable() built-in function.
+
+the python data model documentation lists seve callable types:
+
+- user-defined function
+  created with def statements or lambda expressions
+
+- built-in function
+  a function implemented in c(for Cpython), like len or time.strftime
+
+- built-in methods
+  methods impomented in c, like dic.get
+
+- method
+  functions defined in the body of a calls
+
+- classes
+  when invoked, a class its `__new__` method to create an instance, then `__init__` to initialize it, and finally the instance is returned to the caller, because there is no new operator in python, calling a class is like calling a function
+
+- class instances
+  if a class defines a `__call__` method , hten its instances may be invoked as function
+
+- generator functiion
+  functions or methods that use the yield keyword, when calld, generator function return a generator object
+
+## user defined callable types
+
+not only are python functions real objects, but arbitrary python objects may also be made to behave like function , implementing a `__call__` instance method is all it takes.
+
+```py
+
+    class Text:
+        def __init__(self):
+            self.list = []
+
+        def __call__(self, *args, **kwargs):
+            print(self.list)
+            return self.list.append(*args)
+
+
+    test = Text()
+    test(100)
+    test(200)
+
+```
