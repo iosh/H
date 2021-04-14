@@ -57,7 +57,7 @@ export default APP;
 ```
 
 以上代码逻辑上点击按钮会触发 OnClick 函数，但是实际上只会报错。
-解决方法(推荐度由高至低)： 1.使用提案阶段语法静态属性的[提案](https://github.com/tc39/proposal-class-fields)，改提案在写累的实例属性的时候可以使用等式，从而将属性和方法写入类中。（提案阶段语法，需要单独的[babel 插件](http://babeljs.io/docs/plugins/transform-class-properties/) 官方脚手架 create-react-app 已有此项配置(需要使用 antd，sass，代码检查功能的可以参考这个[脚手架](https://gitee.com/HiMrHu/ReactGuanFangJiaoShouJia)
+解决方法(推荐度由高至低)： 1.使用提案阶段语法静态属性的[提案](https://github.com/tc39/proposal-class-fields)，改提案在写累的实例属性的时候可以使用等式，从而将属性和方法写入类中。（提案阶段语法，需要单独的[babel 插件](http://babeljs.io/docs/plugins/transform-class-properties/) 官方脚手架 create-react-app 已有此项配置(需要使用 antd，sass，代码检查功能的可以参考这个[脚手架](https://gitee.com/iosh/ReactGuanFangJiaoShouJia)
 
 ```jsx
 import React, { Component } from "react";
@@ -221,7 +221,7 @@ return Promise.reject(error.data.error.message); } );
 
 ### 有什么 React+Redux+Router 学习项目吗
 
-偷偷放上自己的[代码](https://github.com/HiMrHu/cnode)
+偷偷放上自己的[代码](https://github.com/iosh/cnode)
 
 ### nginx 部署
 

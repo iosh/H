@@ -10,7 +10,7 @@ tags: 源码学习
 
 # 前置条件
 
-注解[Redux 源码](https://github.com/HiMrHu/Redux)
+注解[Redux 源码](https://github.com/iosh/Redux)
 
 # Redux
 
@@ -47,9 +47,9 @@ store.subscribe(render);
 
 ### createStore
 
-redux 的[入口文件](https://github.com/HiMrHu/Redux/blob/master/Redux/index.js),判断当前运行代码是是否为开发版本代码,以及引入并导出了所有的模块
+redux 的[入口文件](https://github.com/iosh/Redux/blob/master/Redux/index.js),判断当前运行代码是是否为开发版本代码,以及引入并导出了所有的模块
 
-[createStore 注释版本源码](https://github.com/HiMrHu/Redux/blob/master/Redux/createStore.js)
+[createStore 注释版本源码](https://github.com/iosh/Redux/blob/master/Redux/createStore.js)
 
 createStore 函数接受 reducer 作为参数, 并且最终返回一个对象:
 
@@ -271,7 +271,7 @@ export default combineReducers({
 之后将函数返回结果传递给 createStore 生成 store
 ```
 
-[带注释源码](https://github.com/HiMrHu/Redux/blob/master/Redux/combineReducers.js)
+[带注释源码](https://github.com/iosh/Redux/blob/master/Redux/combineReducers.js)
 
 源码中, combineReducers 在开发环境下会对每个 reducers 属性进行检查,如果其中某个 reducer 的
 返回值为 undefined 那么抛出错误,以及 reducer 的值是否为函数,如果再生产环境下,会忽略所有 reducers 里面值
@@ -320,11 +320,11 @@ bindActionCreators(actionCreators, dispatch)
 
 源码非常简单就不过多笔记凑字数了
 
-[带注释源码](https://github.com/HiMrHu/Redux/blob/master/Redux/bindActionCreators.js)
+[带注释源码](https://github.com/iosh/Redux/blob/master/Redux/bindActionCreators.js)
 
 #### compose
 
-[带注释源码](https://github.com/HiMrHu/Redux/blob/master/Redux/compose.js)
+[带注释源码](https://github.com/iosh/Redux/blob/master/Redux/compose.js)
 
 代码写的很巧妙,也没什么好说的
 
@@ -396,7 +396,7 @@ import { Provider, connect } from "react-redux";
 
 ## Provider
 
-[带注释源码](https://github.com/HiMrHu/Redux/blob/master/React-Redux/components/Provider.js)
+[带注释源码](https://github.com/iosh/Redux/blob/master/React-Redux/components/Provider.js)
 
 源码也比较简单
 

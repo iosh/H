@@ -34,7 +34,7 @@ jobs:
         echo "$hexo_deploy_key" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan github.com >> ~/.ssh/known_hosts
-        git config --global user.name "HiMrHu"
+        git config --global user.name "iosh"
         git config --global user.email "454053152@qq.com"
     - name: install dependencies
       run: npm install
@@ -46,7 +46,7 @@ jobs:
       run: |
         cd ./public
         git init
-        git remote add origin git@github.com:HiMrHu/H.git
+        git remote add origin git@github.com:iosh/H.git
         git add --all .
         git commit -m "自动生成 于 `date +"%Y-%m-%d %H:%M"`"
         git push --force --quiet  origin master:gh-pages 
