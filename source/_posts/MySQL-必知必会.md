@@ -34,4 +34,28 @@ SQL 是一种结构化的查询语言, SQL 是专门用来与数据库通信的�
 - SQL 是几乎所有 DBMS 都支持的
 - 看上去简单, 实际上很强力的语言,可以进行非常复杂和高级的数据库操作
 
+## 基础使用
 
+```sql
+# 显示数据库
+show databases;
+
+# 显示表
+show table;
+
+# 显示表中的列
+show columns from tablename;
+
+# 显示广泛的服务器状态
+show status;
+
+# 显示可以用来授予用户的安全权限
+show grants;
+
+# 显示错误和警告
+show errors;
+show warnings;
+
+# 显示 show 命令帮助
+help show;
+```
