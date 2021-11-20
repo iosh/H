@@ -814,7 +814,7 @@ mermaid:
 # Use Animate.css to animate everything.
 # For more information: https://animate.style
 motion:
-  enable: true
+  enable: false
   async: false
   transition:
     # All available transition variants: https://theme-next.js.org/animate/
@@ -828,7 +828,7 @@ motion:
 # Progress bar in the top during page loading.
 # For more information: https://github.com/rstacruz/nprogress
 nprogress:
-  enable: false
+  enable: true
   spinner: true
 
 # Canvas ribbon
