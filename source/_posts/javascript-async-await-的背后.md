@@ -542,3 +542,10 @@ function a() {
 }
 
 ```
+
+## 总结
+
+async 会被 babel 首先转化为 Promise, 然后创建一个 Generator, 并且先调用一次 next 来获取结果.
+
+普通的 Generator 就没有辅助函数, 单纯使用 regeneratorRuntime 来进行执行, babel 会拆解每个步骤作为 switch 的一个 case, regeneratorRuntime 实现标准的 next throw 等方法, 自身维护相关状态, 调用回调函数获取返回值.
+
