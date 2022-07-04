@@ -4,7 +4,7 @@ date: 2022-07-03 12:46:38
 tags: React
 ---
 
-实现要给简单的 React
+实现一个简单的 React
 
 <!-- more -->
 
