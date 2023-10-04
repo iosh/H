@@ -5,7 +5,7 @@ tags: web3
 ---
 
 在区块链的世界中，公钥和私钥是用户身份的唯一标识和证明，Conflux 分为两个不同的 `space`: **Core Space** 和 **eSpace**，其中 eSpace 与 Ethereum 是完全兼容的，所以下面主要了解 Conflux Core Space 和 Ethereum 是如何生成极为重要的私钥和公钥，以及如何确定用户地址的。
-
+<!-- more -->
 # 私钥和公钥是什么？
 
 Conflux 和 Ethereum 中私钥都是由64个hex字符组成的字符串。
