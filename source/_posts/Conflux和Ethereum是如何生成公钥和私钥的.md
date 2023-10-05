@@ -168,10 +168,3 @@ checksum 的计算是 [5bit的网络前缀,0(:分隔符),payload,0,0,0,0,0,0,0,0
 
 这样就形成了Conflux Core的账户地址
 
-最后一步就是删除130位公钥前面的96位，剩余40位
-
-0x0E6147b9099c3e51e5F590DEe17e4bFd626092C9
-0x0E6147b9099c3e51e5F590DEe17e4bFd626092C9
-cfx:aatgcv73bgsd6ytf80jr72n8kt80e2ew3e4rn5nj0n
-cfx:aatgcv73bgsd6ytf80jr72n8kt80e2ew3e4rn5nj0n
-cfxtest:aatgcv73bgsd6ytf80jr72n8kt80e2ew3eug2nrcwb
