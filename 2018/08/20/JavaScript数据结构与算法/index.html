@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"github.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="认真学习 JavaScript 数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 算法与数据结构">
+<meta property="og:url" content="https://github.com/iosh/H.git/2018/08/20/JavaScript%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="胡先生">
+<meta property="og:description" content="认真学习 JavaScript 数据结构">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/6/6d/Singly-linked-list.svg">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/5/5e/Doubly-linked-list.svg">
+<meta property="article:published_time" content="2018-08-20T22:26:38.000Z">
+<meta property="article:modified_time" content="2024-07-06T12:26:18.041Z">
+<meta property="article:author" content="H">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/6/6d/Singly-linked-list.svg">
+
+
+<link rel="canonical" href="https://github.com/iosh/H.git/2018/08/20/JavaScript%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://github.com/iosh/H.git/2018/08/20/JavaScript%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/","path":"2018/08/20/JavaScript数据结构与算法/","title":"JavaScript 算法与数据结构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaScript 算法与数据结构 | 胡先生</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">胡先生</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">链表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">2.1.</span> <span class="nav-text">复杂度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">2.2.</span> <span class="nav-text">空间复杂度</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">双向链表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">构成双向链表的基本方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">相关复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6-2"><span class="nav-number">5.1.</span> <span class="nav-text">空间复杂度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%94%E8%AE%B0"><span class="nav-number">5.2.</span> <span class="nav-text">笔记</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">H</p>
+  <div class="site-description" itemprop="description">个人学习笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/iosh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;iosh" rel="noopener me"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/iosh/H.git/2018/08/20/JavaScript%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="H">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡先生">
+      <meta itemprop="description" content="个人学习笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaScript 算法与数据结构 | 胡先生">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript 算法与数据结构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-08-20 22:26:38" itemprop="dateCreated datePublished" datetime="2018-08-20T22:26:38+00:00">2018-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-06 12:26:18" itemprop="dateModified" datetime="2024-07-06T12:26:18+00:00">2024-07-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>认真学习 JavaScript 数据结构</p>
+<span id="more"></span>
+<h1>准备工作</h1>
+<p><strong>比较器</strong></p>
+<p>一个比较器类拥有以下方法:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 类接收一个可选的比较函数作为参数</span></span><br><span class="line"><span class="attr">compare</span>: <span class="function">(<span class="params">a, b</span>) =&gt;</span> <span class="built_in">number</span></span><br><span class="line"><span class="comment">// 判断两个参数是否相等</span></span><br><span class="line"><span class="attr">equal</span>: <span class="function">(<span class="params">a: (<span class="built_in">number</span> | <span class="built_in">string</span>), b: (<span class="built_in">number</span> | <span class="built_in">string</span>)</span>) =&gt;</span> <span class="built_in">boolean</span></span><br><span class="line"><span class="comment">// 判断a是否小于b</span></span><br><span class="line"><span class="attr">lessThan</span>: <span class="function">(<span class="params">a: (<span class="built_in">number</span> | <span class="built_in">string</span>), b: (<span class="built_in">number</span> | <span class="built_in">string</span>)</span>) =&gt;</span> <span class="built_in">boolean</span></span><br><span class="line"><span class="comment">// 判断a是否大于b</span></span><br><span class="line"><span class="attr">greaterThan</span>: <span class="function">(<span class="params">a: (<span class="built_in">number</span> | <span class="built_in">string</span>), b: (<span class="built_in">number</span> | <span class="built_in">string</span>)</span>) =&gt;</span> <span class="built_in">boolean</span></span><br><span class="line"><span class="comment">// 判断a是否小于等于b</span></span><br><span class="line"><span class="attr">lessThanOrEqual</span>: <span class="function">(<span class="params">a: (<span class="built_in">number</span> | <span class="built_in">string</span>), b: (<span class="built_in">number</span> | <span class="built_in">string</span>)</span>) =&gt;</span> <span class="built_in">boolean</span></span><br><span class="line"><span class="comment">// 判断a是否大于等于b</span></span><br><span class="line"><span class="attr">greaterThanOrEqual</span>: <span class="function">(<span class="params">a: (<span class="built_in">number</span> | <span class="built_in">string</span>), b: (<span class="built_in">number</span> | <span class="built_in">string</span>)</span>) =&gt;</span> <span class="built_in">boolean</span></span><br><span class="line"><span class="comment">// 反转比较函数的两个参数即从a,b转换为b,a</span></span><br><span class="line"><span class="attr">reverse</span>: <span class="function">() =&gt;</span> <span class="built_in">void</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>构造一个这样的比较器函数之后可以在后面的数据结构中进行使用</p>
+<h1>链表</h1>
+<p>在计算机科学中,链表是数据元素的线性集合,其中每个元素的顺序并不是由它们在内存中的物理位置给出的,而是每个元素都持有下一个元素的指针,它是一组节点组成的数据结构,这些节点一起表示序列,在最简单的形式下,每个节点由<code>数据</code>和<code>到序列中下一个节点的引用</code>组成的,这种结构允许在迭代的时候在任意位置有效的插入或者移除元素,更复杂的变体添加了额外的连接,允许有效插入或从任意元素引用删除,列表的缺点是访问时间是线性的(O(n),并且无法优化),例如数组的随机访问,在链表中是不可行的,与链表相比,数组局域更好的缓存局部性.</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Singly-linked-list.svg" alt="Linked List"></p>
+<p>其支持一下几种主要的方法:</p>
+<ul>
+<li>插入</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这个插入节点非常有趣</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">  <span class="title function_">append</span>(<span class="attr">value</span>: any): <span class="title class_">LinkedListInterface</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 首先根据参数生成一个节点这里假设 value = 1</span></span><br><span class="line">    <span class="comment">// 那么生成的节点就是 &#123;value:1, next: null&#125;</span></span><br><span class="line">    <span class="keyword">const</span> newNode = <span class="keyword">new</span> <span class="title class_">LinkedListNode</span>(value)</span><br><span class="line">    <span class="comment">// 假如一开始链表是空的</span></span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="property">head</span>) &#123;</span><br><span class="line">      <span class="comment">// 那么头节点和尾节点指向的是同一个对象 this.head = &#123;value:1, next: null&#125;</span></span><br><span class="line">      <span class="comment">// this.tail = &#123;value: 1, next: null&#125; 注意这里引用的是同一个对象</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">head</span> = newNode</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">tail</span> = newNode</span><br><span class="line">      <span class="keyword">return</span> <span class="variable language_">this</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 那么第二次添加节点链表头结点不为空执行下面的赋值 这里假设 value参数为2</span></span><br><span class="line">    <span class="comment">// 首先this.tail.netx = &#123;value:2,next:null&#125;</span></span><br><span class="line">    <span class="comment">// 那么this.tail 完整储存的内容就是 &#123;value:1, next: &#123;value:2,next:null&#125;&#125;</span></span><br><span class="line">    <span class="comment">// 因为this.head 和 this.tail 指向的是同一个对象所以完整的的链表是这样的</span></span><br><span class="line">    <span class="comment">// this.head的值  &#123;value:1, next: &#123;value:2,next:null&#125;&#125;</span></span><br><span class="line">    <span class="comment">// this.tail的值   &#123;value:1, next: &#123;value:2,next:null&#125;&#125;</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">tail</span>.<span class="property">next</span> = newNode</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 接下来将tali 赋值为 &#123;value: 2, next:null&#125;</span></span><br><span class="line">    <span class="comment">// 此时链表结构为</span></span><br><span class="line">    <span class="comment">// this.head = &#123;value:1, next: &#123;value:2,next:null&#125;&#125;</span></span><br><span class="line">    <span class="comment">// this.tail = &#123;value: 2, next:null&#125;</span></span><br><span class="line">    <span class="comment">// 这里this.head.next引用的对象和tail引用的对象是同一个对象</span></span><br><span class="line">    <span class="comment">// 所以下次赋值会重复这个过程,即最后一个节点和tail节点引用的是同一个对象</span></span><br><span class="line">    <span class="comment">// 所以重复</span></span><br><span class="line">    <span class="comment">// this.tail.next = newNode</span></span><br><span class="line">    <span class="comment">// this.tail = newNode</span></span><br><span class="line">    <span class="comment">// 即可完成添加新的节点</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">tail</span> = newNode</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>搜索</li>
+<li>删除</li>
+<li>反转</li>
+<li>反向遍历</li>
+</ul>
+<h2 id="复杂度">复杂度</h2>
+<p>时间复杂度</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>访问</th>
+<th>搜索</th>
+<th>插入</th>
+<th>删除</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>列表</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+<tr>
+<td>数组</td>
+<td>O(1)</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(n)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="空间复杂度">空间复杂度</h2>
+<p>O(n)</p>
+<h1>双向链表</h1>
+<p>在计算机科学中,双向链表是一种线性数据结构,由一组被称为节点的顺序连接记录组成,每个节点包含两个字段,称为链接,节点中有上一个节点和下一个节点的引用,可以被概念化为由两个相同数据形成的两个链表,但是以相反的顺序组成</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Doubly-linked-list.svg" alt="Doubly Linked List"></p>
+<h1>构成双向链表的基本方法</h1>
+<ul>
+<li>insert</li>
+<li>delte</li>
+<li>reverse traversal</li>
+</ul>
+<h1>相关复杂度</h1>
+<table>
+<thead>
+<tr>
+<th>Access(访问)</th>
+<th>Search</th>
+<th>insertin</th>
+<th>deleteion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="空间复杂度-2">空间复杂度</h2>
+<p>O(n)</p>
+<h2 id="笔记">笔记</h2>
+<p>双向链表顾名思义,就是每个节点都由<code>三个部分</code>组成</p>
+<ul>
+<li>上个节点的引用</li>
+<li>下个节点的引用</li>
+<li>节点存储的值</li>
+</ul>
+<p><code>prepend</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 向节点头部插入值 */</span></span><br><span class="line"><span class="title function_">prepened</span>(<span class="attr">value</span>: any): <span class="title class_">DoublyLinkedListInterface</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 生成节点</span></span><br><span class="line">  <span class="keyword">const</span> newNode = <span class="keyword">new</span> <span class="title class_">DoublyLinkedListNode</span>(value)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 如果头结点存在值那么就给它的pervious节点赋值</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 使用实际值来带入比较好理解</span></span><br><span class="line">  <span class="comment">// 假设链表为空,第一次插入值,并且假设值为1</span></span><br><span class="line">  <span class="comment">// 那么就是hand 和 tali 节点指向同一个对象值都为&#123;value:1,next:null,previous:null&#125;</span></span><br><span class="line">  <span class="comment">// 第二次调用该方法传入一个假设值为2</span></span><br><span class="line">  <span class="comment">// 首先hand不为空则对pervious进行赋值,由于hand tali指向的是同一个对象那么赋值之后</span></span><br><span class="line">  <span class="comment">// this.hand: &#123;value:1, next: null, pervious: &#123;value:1, next: null, previous: null&#125;&#125;</span></span><br><span class="line">  <span class="comment">// this.tali: &#123;value:1, next: null, pervious: &#123;value:1, next: null, previous: null&#125;&#125;</span></span><br><span class="line">  <span class="comment">// 然后修改hand的值为 &#123;value:1, next: null, previous: null&#125;</span></span><br><span class="line">  <span class="comment">// 这样 this.hand: &#123;value:1, next: null, previous: null&#125;</span></span><br><span class="line">  <span class="comment">// this.tali : &#123;value:1, next: null, pervious: &#123;value:1, next: null, previous: null&#125;&#125;</span></span><br><span class="line">  <span class="comment">// 从而实现向链表头部添加了一个节点</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">hand</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">hand</span>.<span class="property">pervious</span> = newNode</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">hand</span> = newNode</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="property">tail</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">tail</span> = newNode</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他的方面和单向链表差不多,写完之后代码测试就错了三处,可喜可贺</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/08/17/HTTP/" rel="prev" title="HTTP">
+                  <i class="fa fa-angle-left"></i> HTTP
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/06/%E5%B8%B8%E8%A7%81POST%E6%8F%90%E4%BA%A4%E6%95%B0%E6%8D%AE%E6%96%B9%E5%BC%8F%E4%B8%8ECORS%E8%B7%A8%E5%9F%9F%E8%B5%84%E6%BA%90%E5%85%B1%E4%BA%AB/" rel="next" title="常见 POST 提交数据方式与 CORS 跨域资源共享">
+                  常见 POST 提交数据方式与 CORS 跨域资源共享 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">H</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

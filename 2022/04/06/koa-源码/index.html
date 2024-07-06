@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"github.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="koa 源码学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="koa 源码">
+<meta property="og:url" content="https://github.com/iosh/H.git/2022/04/06/koa-%E6%BA%90%E7%A0%81/index.html">
+<meta property="og:site_name" content="胡先生">
+<meta property="og:description" content="koa 源码学习">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-06T14:20:15.000Z">
+<meta property="article:modified_time" content="2024-07-06T12:26:18.045Z">
+<meta property="article:author" content="H">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/iosh/H.git/2022/04/06/koa-%E6%BA%90%E7%A0%81/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://github.com/iosh/H.git/2022/04/06/koa-%E6%BA%90%E7%A0%81/","path":"2022/04/06/koa-源码/","title":"koa 源码"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>koa 源码 | 胡先生</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">胡先生</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">hello koa</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#listen"><span class="nav-number">1.1.</span> <span class="nav-text">listen</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#callback"><span class="nav-number">1.1.1.</span> <span class="nav-text">callback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#createContext"><span class="nav-number">1.1.2.</span> <span class="nav-text">createContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#handleRequest"><span class="nav-number">1.1.3.</span> <span class="nav-text">handleRequest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#respond"><span class="nav-number">1.1.4.</span> <span class="nav-text">respond</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#use"><span class="nav-number">1.2.</span> <span class="nav-text">use</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#compose-middleware"><span class="nav-number">1.2.1.</span> <span class="nav-text">compose middleware</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">@koa&#x2F;cors</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">H</p>
+  <div class="site-description" itemprop="description">个人学习笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/iosh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;iosh" rel="noopener me"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/iosh/H.git/2022/04/06/koa-%E6%BA%90%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="H">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡先生">
+      <meta itemprop="description" content="个人学习笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="koa 源码 | 胡先生">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          koa 源码
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-06 14:20:15" itemprop="dateCreated datePublished" datetime="2022-04-06T14:20:15+00:00">2022-04-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-06 12:26:18" itemprop="dateModified" datetime="2024-07-06T12:26:18+00:00">2024-07-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>koa 源码学习</p>
+<span id="more"></span>
+<h1>hello koa</h1>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">Koa</span> = <span class="built_in">require</span>(<span class="string">&#x27;koa&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> <span class="title class_">Koa</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// response</span></span><br><span class="line">app.<span class="title function_">use</span>(<span class="function"><span class="params">ctx</span> =&gt;</span> &#123;</span><br><span class="line">  ctx.<span class="property">body</span> = <span class="string">&#x27;Hello Koa&#x27;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>简单几行代码就可以运行一个 koa 服务. 使用 async await 的用法是这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="title function_">use</span>(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> start = <span class="title class_">Date</span>.<span class="title function_">now</span>();</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">next</span>();</span><br><span class="line">  <span class="keyword">const</span> ms = <span class="title class_">Date</span>.<span class="title function_">now</span>() - start;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;ctx.method&#125;</span> <span class="subst">$&#123;ctx.url&#125;</span> - <span class="subst">$&#123;ms&#125;</span>ms`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>首先使用 new 来初始化一个新的 koa 对象</p>
+<p>然后使用 <code>use</code> 来加载各个中间件, 最后使用 listen 监听端口.</p>
+<h2 id="listen">listen</h2>
+<p>这里先看简单的 listen , 随后在学习 use.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">listen (...args) &#123;</span><br><span class="line">   <span class="title function_">debug</span>(<span class="string">&#x27;listen&#x27;</span>)</span><br><span class="line">   <span class="keyword">const</span> server = http.<span class="title function_">createServer</span>(<span class="variable language_">this</span>.<span class="title function_">callback</span>())</span><br><span class="line">   <span class="keyword">return</span> server.<span class="title function_">listen</span>(...args)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>简单的几行代码, 可以看到使用 node http 模块创建一个 http 服务器, 将 Application 类的 callback 作为参数创建了一个监听指定端口的服务器.</p>
+<p>这里 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/debug">debug</a> 是一个包可以在 node 或者浏览器中作为控制台输出库.</p>
+<p><a target="_blank" rel="noopener" href="http://nodejs.cn/api/http.html#httpcreateserveroptions-requestlistener">http.createServer</a> 用来创建一个 http 服务器, 从文档得知函数基础使用如下.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建本地服务器来从其接收数据</span></span><br><span class="line"><span class="keyword">const</span> server = http.<span class="title function_">createServer</span>(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.<span class="title function_">writeHead</span>(<span class="number">200</span>, &#123; <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span> &#125;);</span><br><span class="line">  res.<span class="title function_">end</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123;</span><br><span class="line">    <span class="attr">data</span>: <span class="string">&#x27;Hello World!&#x27;</span></span><br><span class="line">  &#125;));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">8000</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>那么 koa 在这里传入的 <code>this.callback</code> 必然是返回一个处理 <code>req</code> <code>res</code> 的函数.</p>
+<h3 id="callback">callback</h3>
+<p>callback 的内容如下.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">callback () &#123;</span><br><span class="line">  <span class="comment">// 组合所有中间件, 这里稍后再看</span></span><br><span class="line">  <span class="keyword">const</span> fn = <span class="title function_">compose</span>(<span class="variable language_">this</span>.<span class="property">middleware</span>)</span><br><span class="line">  <span class="comment">// this 是 Application 继承于node event 的一个类, 这里判断有没有监听 error 的事件,如果没有就默认添加一个</span></span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="title function_">listenerCount</span>(<span class="string">&#x27;error&#x27;</span>)) <span class="variable language_">this</span>.<span class="title function_">on</span>(<span class="string">&#x27;error&#x27;</span>, <span class="variable language_">this</span>.<span class="property">onerror</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这就是返回一个 createServer 签名的函数</span></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">handleRequest</span> = (<span class="params">req, res</span>) =&gt; &#123;</span><br><span class="line">      <span class="comment">// 创建 context</span></span><br><span class="line">    <span class="keyword">const</span> ctx = <span class="variable language_">this</span>.<span class="title function_">createContext</span>(req, res)</span><br><span class="line">    <span class="comment">// 最终由此函数调用res.send 来返回内容</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">handleRequest</span>(ctx, fn)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> handleRequest</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="createContext">createContext</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   *  用来创建一个 context, 本质上就是一个存放当前请求各种信息和一些方法的对象</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">createContext (req, res) &#123;</span><br><span class="line">    <span class="comment">// 基础的context来自 context.js 最后看</span></span><br><span class="line">  <span class="keyword">const</span> context = <span class="title class_">Object</span>.<span class="title function_">create</span>(<span class="variable language_">this</span>.<span class="property">context</span>)</span><br><span class="line">  <span class="comment">// 同上来自 request.js</span></span><br><span class="line">  <span class="keyword">const</span> request = context.<span class="property">request</span> = <span class="title class_">Object</span>.<span class="title function_">create</span>(<span class="variable language_">this</span>.<span class="property">request</span>)</span><br><span class="line">  <span class="comment">// 同上来自 response.js</span></span><br><span class="line">  <span class="keyword">const</span> response = context.<span class="property">response</span> = <span class="title class_">Object</span>.<span class="title function_">create</span>(<span class="variable language_">this</span>.<span class="property">response</span>)</span><br><span class="line">  context.<span class="property">app</span> = request.<span class="property">app</span> = response.<span class="property">app</span> = <span class="variable language_">this</span></span><br><span class="line">  context.<span class="property">req</span> = request.<span class="property">req</span> = response.<span class="property">req</span> = req</span><br><span class="line">  context.<span class="property">res</span> = request.<span class="property">res</span> = response.<span class="property">res</span> = res</span><br><span class="line">  request.<span class="property">ctx</span> = response.<span class="property">ctx</span> = context</span><br><span class="line">  request.<span class="property">response</span> = response</span><br><span class="line">  response.<span class="property">request</span> = request</span><br><span class="line">  context.<span class="property">originalUrl</span> = request.<span class="property">originalUrl</span> = req.<span class="property">url</span></span><br><span class="line">  context.<span class="property">state</span> = &#123;&#125;</span><br><span class="line">  <span class="keyword">return</span> context</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="handleRequest">handleRequest</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">handleRequest (ctx, fnMiddleware) &#123;</span><br><span class="line">  <span class="keyword">const</span> res = ctx.<span class="property">res</span></span><br><span class="line">  <span class="comment">// 这里默认状态码设置为 404, 2014年经过讨论这里默认值设置为404</span></span><br><span class="line">  res.<span class="property">statusCode</span> = <span class="number">404</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这是一个默认的 error 处理函数</span></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">onerror</span> = err =&gt; ctx.<span class="title function_">onerror</span>(err)</span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">handleResponse</span> = (<span class="params"></span>) =&gt; <span class="title function_">respond</span>(ctx)</span><br><span class="line">  <span class="comment">// on-finished 是一个包,在http异常或者结束的时候都会调用回调函数</span></span><br><span class="line">  <span class="title function_">onFinished</span>(res, onerror)</span><br><span class="line">  <span class="comment">// 这里经过中间件处理ctx, 然后调用 respond 函数返回浏览器结果</span></span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">fnMiddleware</span>(ctx).<span class="title function_">then</span>(handleResponse).<span class="title function_">catch</span>(onerror)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="respond">respond</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">respond</span> (ctx) &#123;</span><br><span class="line">    <span class="comment">// 可以设置 ctx.respond 为 false 来绕过koa的respond函数</span></span><br><span class="line">  <span class="comment">// allow bypassing koa</span></span><br><span class="line">  <span class="keyword">if</span> (ctx.<span class="property">respond</span> === <span class="literal">false</span>) <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!ctx.<span class="property">writable</span>) <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> res = ctx.<span class="property">res</span></span><br><span class="line">  <span class="keyword">let</span> body = ctx.<span class="property">body</span></span><br><span class="line">  <span class="keyword">const</span> code = ctx.<span class="property">status</span></span><br><span class="line">    <span class="comment">// statuses 是一个状态的枚举包 https://www.npmjs.com/package/statuses</span></span><br><span class="line">  <span class="comment">// ignore body</span></span><br><span class="line">  <span class="keyword">if</span> (statuses.<span class="property">empty</span>[code]) &#123;</span><br><span class="line">    <span class="comment">// strip headers</span></span><br><span class="line">    ctx.<span class="property">body</span> = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">return</span> res.<span class="title function_">end</span>()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// HEAD 请求 https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/HEAD</span></span><br><span class="line">  <span class="keyword">if</span> (ctx.<span class="property">method</span> === <span class="string">&#x27;HEAD&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!res.<span class="property">headersSent</span> &amp;&amp; !ctx.<span class="property">response</span>.<span class="title function_">has</span>(<span class="string">&#x27;Content-Length&#x27;</span>)) &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; length &#125; = ctx.<span class="property">response</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="title class_">Number</span>.<span class="title function_">isInteger</span>(length)) ctx.<span class="property">length</span> = length</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.<span class="title function_">end</span>()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// status body</span></span><br><span class="line">  <span class="keyword">if</span> (body == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (ctx.<span class="property">response</span>.<span class="property">_explicitNullBody</span>) &#123;</span><br><span class="line">      ctx.<span class="property">response</span>.<span class="title function_">remove</span>(<span class="string">&#x27;Content-Type&#x27;</span>)</span><br><span class="line">      ctx.<span class="property">response</span>.<span class="title function_">remove</span>(<span class="string">&#x27;Transfer-Encoding&#x27;</span>)</span><br><span class="line">      ctx.<span class="property">length</span> = <span class="number">0</span></span><br><span class="line">      <span class="keyword">return</span> res.<span class="title function_">end</span>()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (ctx.<span class="property">req</span>.<span class="property">httpVersionMajor</span> &gt;= <span class="number">2</span>) &#123;</span><br><span class="line">      body = <span class="title class_">String</span>(code)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      body = ctx.<span class="property">message</span> || <span class="title class_">String</span>(code)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!res.<span class="property">headersSent</span>) &#123;</span><br><span class="line">      ctx.<span class="property">type</span> = <span class="string">&#x27;text&#x27;</span></span><br><span class="line">      ctx.<span class="property">length</span> = <span class="title class_">Buffer</span>.<span class="title function_">byteLength</span>(body)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.<span class="title function_">end</span>(body)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// responses</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">Buffer</span>.<span class="title function_">isBuffer</span>(body)) <span class="keyword">return</span> res.<span class="title function_">end</span>(body)</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> body === <span class="string">&#x27;string&#x27;</span>) <span class="keyword">return</span> res.<span class="title function_">end</span>(body)</span><br><span class="line">  <span class="keyword">if</span> (body <span class="keyword">instanceof</span> <span class="title class_">Stream</span>) <span class="keyword">return</span> body.<span class="title function_">pipe</span>(res)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// body: json</span></span><br><span class="line">  body = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(body)</span><br><span class="line">  <span class="keyword">if</span> (!res.<span class="property">headersSent</span>) &#123;</span><br><span class="line">    ctx.<span class="property">length</span> = <span class="title class_">Buffer</span>.<span class="title function_">byteLength</span>(body)</span><br><span class="line">  &#125;</span><br><span class="line">  res.<span class="title function_">end</span>(body)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="use">use</h2>
+<p>从下面代码可以看到 use 的实现非常简单, 就是判断 fn 是不是函数, 如果是的话放入 middleware 数组内.并且在 <code>createServer</code> 的 <a href="#callback">callback</a> 函数中可以看到使用了一个 <code>compose</code> 函数处理了这个 middleware 数组</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">use (fn) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;middleware must be a function!&#x27;</span>)</span><br><span class="line">  <span class="title function_">debug</span>(<span class="string">&#x27;use %s&#x27;</span>, fn.<span class="property">_name</span> || fn.<span class="property">name</span> || <span class="string">&#x27;-&#x27;</span>)</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">middleware</span>.<span class="title function_">push</span>(fn)</span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="compose-middleware">compose middleware</h3>
+<p>see: <a href="#callback">callback</a> 函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fn = <span class="title function_">compose</span>(<span class="variable language_">this</span>.<span class="property">middleware</span>)</span><br></pre></td></tr></table></figure>
+<p>see: <a href="#handleRequest">handleRequest</a> 函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fnMiddleware 就是上面的 fn</span></span><br><span class="line"><span class="title function_">fnMiddleware</span>(ctx).<span class="title function_">then</span>(handleResponse).<span class="title function_">catch</span>(onerror)</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>compose</code> 是使用的一个 <code>koa-compose</code> 的包源代码也很简单</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">compose</span> (middleware) &#123;</span><br><span class="line">    <span class="comment">// 判断是不是数组</span></span><br><span class="line">  <span class="keyword">if</span> (!<span class="title class_">Array</span>.<span class="title function_">isArray</span>(middleware)) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Middleware stack must be an array!&#x27;</span>)</span><br><span class="line">    <span class="comment">// 使用for of 可以遍历可迭代对象 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols</span></span><br><span class="line">    <span class="comment">// 判断其中的每一项是否都为函数, 如果不是那么抛出异常</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> fn <span class="keyword">of</span> middleware) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Middleware must be composed of functions!&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Object</span>&#125; <span class="variable">context</span></span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> &#123;<span class="type">Promise</span>&#125;</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@api</span> <span class="variable">public</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params">context, next</span>) &#123;</span><br><span class="line">    <span class="comment">// last called middleware #</span></span><br><span class="line">    <span class="keyword">let</span> index = -<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">dispatch</span>(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">dispatch</span> (i) &#123;</span><br><span class="line">      <span class="keyword">if</span> (i &lt;= index) <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">reject</span>(<span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;next() called multiple times&#x27;</span>))</span><br><span class="line">      index = i</span><br><span class="line">      <span class="keyword">let</span> fn = middleware[i]</span><br><span class="line">      <span class="keyword">if</span> (i === middleware.<span class="property">length</span>) fn = next</span><br><span class="line">      <span class="keyword">if</span> (!fn) <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">resolve</span>()</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">resolve</span>(<span class="title function_">fn</span>(context, dispatch.<span class="title function_">bind</span>(<span class="literal">null</span>, i + <span class="number">1</span>)))</span><br><span class="line">      &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">reject</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码的最终含义就是</p>
+<p>假如有一个 middleware 数组值为 [fn1, fn2,fn3,fn4]<br>
+那么经过这个 compose 函数得到的最终结果为</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">resolve</span>(</span><br><span class="line">  <span class="title function_">fn1</span>(</span><br><span class="line">    context,</span><br><span class="line">    <span class="title class_">Promise</span>.<span class="title function_">resolve</span>(</span><br><span class="line">      <span class="title function_">f2</span>(</span><br><span class="line">        context,</span><br><span class="line">        <span class="title class_">Promise</span>.<span class="title function_">resolve</span>(</span><br><span class="line">          <span class="title function_">f3</span>(context, <span class="title class_">Promise</span>.<span class="title function_">resolve</span>(<span class="title function_">f4</span>(context, <span class="title class_">Promise</span>.<span class="title function_">resolve</span>())))</span><br><span class="line">        )</span><br><span class="line">      )</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>整个 koajs 的源码都很简单, 本质上就是实现了一个中间件模型,通过组合不同的中间件,来解析和处理返回.</p>
+<h1>@koa/cors</h1>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">Koa</span> = <span class="built_in">require</span>(<span class="string">&#x27;koa&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;@koa/cors&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> <span class="title class_">Koa</span>();</span><br><span class="line">app.<span class="title function_">use</span>(<span class="title function_">cors</span>());</span><br></pre></td></tr></table></figure>
+<p>上面已经看了这个 use 的原理, cors 源码也很简单, 本质上就是收到 <code>OPTIONS</code> 请求之后添加对应的响应头.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">function</span>(<span class="params">options</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> defaults = &#123;</span><br><span class="line">    <span class="attr">allowMethods</span>: <span class="string">&#x27;GET,HEAD,PUT,POST,DELETE,PATCH&#x27;</span>,</span><br><span class="line">    <span class="attr">secureContext</span>: <span class="literal">false</span>,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  options = &#123;</span><br><span class="line">    ...defaults,</span><br><span class="line">    ...options,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 默认值处理</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(options.<span class="property">exposeHeaders</span>)) &#123;</span><br><span class="line">    options.<span class="property">exposeHeaders</span> = options.<span class="property">exposeHeaders</span>.<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(options.<span class="property">allowMethods</span>)) &#123;</span><br><span class="line">    options.<span class="property">allowMethods</span> = options.<span class="property">allowMethods</span>.<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(options.<span class="property">allowHeaders</span>)) &#123;</span><br><span class="line">    options.<span class="property">allowHeaders</span> = options.<span class="property">allowHeaders</span>.<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (options.<span class="property">maxAge</span>) &#123;</span><br><span class="line">    options.<span class="property">maxAge</span> = <span class="title class_">String</span>(options.<span class="property">maxAge</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  options.<span class="property">keepHeadersOnError</span> = options.<span class="property">keepHeadersOnError</span> === <span class="literal">undefined</span> || !!options.<span class="property">keepHeadersOnError</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">cors</span>(<span class="params">ctx, next</span>) &#123;</span><br><span class="line">    <span class="comment">// If the Origin header is not present terminate this set of steps.</span></span><br><span class="line">    <span class="comment">// The request is outside the scope of this specification.</span></span><br><span class="line">    <span class="keyword">const</span> requestOrigin = ctx.<span class="title function_">get</span>(<span class="string">&#x27;Origin&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Always set Vary header</span></span><br><span class="line">    <span class="comment">// https://github.com/rs/cors/issues/10</span></span><br><span class="line">    ctx.<span class="title function_">vary</span>(<span class="string">&#x27;Origin&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!requestOrigin) <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">next</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> origin;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> options.<span class="property">origin</span> === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">      origin = options.<span class="title function_">origin</span>(ctx);</span><br><span class="line">      <span class="keyword">if</span> (origin <span class="keyword">instanceof</span> <span class="title class_">Promise</span>) origin = <span class="keyword">await</span> origin;</span><br><span class="line">      <span class="keyword">if</span> (!origin) <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">next</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      origin = options.<span class="property">origin</span> || requestOrigin;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> credentials;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> options.<span class="property">credentials</span> === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">      credentials = options.<span class="title function_">credentials</span>(ctx);</span><br><span class="line">      <span class="keyword">if</span> (credentials <span class="keyword">instanceof</span> <span class="title class_">Promise</span>) credentials = <span class="keyword">await</span> credentials;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      credentials = !!options.<span class="property">credentials</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> headersSet = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">key, value</span>) &#123;</span><br><span class="line">      ctx.<span class="title function_">set</span>(key, value);</span><br><span class="line">      headersSet[key] = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 添加响应头</span></span><br><span class="line">    <span class="keyword">if</span> (ctx.<span class="property">method</span> !== <span class="string">&#x27;OPTIONS&#x27;</span>) &#123;</span><br><span class="line">      <span class="comment">// Simple Cross-Origin Request, Actual Request, and Redirects</span></span><br><span class="line">      <span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>, origin);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (credentials === <span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Allow-Credentials&#x27;</span>, <span class="string">&#x27;true&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (options.<span class="property">exposeHeaders</span>) &#123;</span><br><span class="line">        <span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Expose-Headers&#x27;</span>, options.<span class="property">exposeHeaders</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (options.<span class="property">secureContext</span>) &#123;</span><br><span class="line">        <span class="title function_">set</span>(<span class="string">&#x27;Cross-Origin-Opener-Policy&#x27;</span>, <span class="string">&#x27;same-origin&#x27;</span>);</span><br><span class="line">        <span class="title function_">set</span>(<span class="string">&#x27;Cross-Origin-Embedder-Policy&#x27;</span>, <span class="string">&#x27;require-corp&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (!options.<span class="property">keepHeadersOnError</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">next</span>();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">next</span>();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="keyword">const</span> errHeadersSet = err.<span class="property">headers</span> || &#123;&#125;;</span><br><span class="line">        <span class="keyword">const</span> varyWithOrigin = vary.<span class="title function_">append</span>(errHeadersSet.<span class="property">vary</span> || errHeadersSet.<span class="property">Vary</span> || <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;Origin&#x27;</span>);</span><br><span class="line">        <span class="keyword">delete</span> errHeadersSet.<span class="property">Vary</span>;</span><br><span class="line"></span><br><span class="line">        err.<span class="property">headers</span> = &#123;</span><br><span class="line">          ...errHeadersSet,</span><br><span class="line">          ...headersSet,</span><br><span class="line">          ...&#123; <span class="attr">vary</span>: varyWithOrigin &#125;,</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">throw</span> err;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// Preflight Request</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">// If there is no Access-Control-Request-Method header or if parsing failed,</span></span><br><span class="line">      <span class="comment">// do not set any additional headers and terminate this set of steps.</span></span><br><span class="line">      <span class="comment">// The request is outside the scope of this specification.</span></span><br><span class="line">      <span class="keyword">if</span> (!ctx.<span class="title function_">get</span>(<span class="string">&#x27;Access-Control-Request-Method&#x27;</span>)) &#123;</span><br><span class="line">        <span class="comment">// this not preflight request, ignore it</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">next</span>();</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      ctx.<span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>, origin);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (credentials === <span class="literal">true</span>) &#123;</span><br><span class="line">        ctx.<span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Allow-Credentials&#x27;</span>, <span class="string">&#x27;true&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (options.<span class="property">maxAge</span>) &#123;</span><br><span class="line">        ctx.<span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Max-Age&#x27;</span>, options.<span class="property">maxAge</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (options.<span class="property">privateNetworkAccess</span> &amp;&amp; ctx.<span class="title function_">get</span>(<span class="string">&#x27;Access-Control-Request-Private-Network&#x27;</span>)) &#123;</span><br><span class="line">        ctx.<span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Allow-Private-Network&#x27;</span>, <span class="string">&#x27;true&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (options.<span class="property">allowMethods</span>) &#123;</span><br><span class="line">        ctx.<span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Allow-Methods&#x27;</span>, options.<span class="property">allowMethods</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (options.<span class="property">secureContext</span>) &#123;</span><br><span class="line">        <span class="title function_">set</span>(<span class="string">&#x27;Cross-Origin-Opener-Policy&#x27;</span>, <span class="string">&#x27;same-origin&#x27;</span>);</span><br><span class="line">        <span class="title function_">set</span>(<span class="string">&#x27;Cross-Origin-Embedder-Policy&#x27;</span>, <span class="string">&#x27;require-corp&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">let</span> allowHeaders = options.<span class="property">allowHeaders</span>;</span><br><span class="line">      <span class="keyword">if</span> (!allowHeaders) &#123;</span><br><span class="line">        allowHeaders = ctx.<span class="title function_">get</span>(<span class="string">&#x27;Access-Control-Request-Headers&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (allowHeaders) &#123;</span><br><span class="line">        ctx.<span class="title function_">set</span>(<span class="string">&#x27;Access-Control-Allow-Headers&#x27;</span>, allowHeaders);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      ctx.<span class="property">status</span> = <span class="number">204</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/19/MySQL-%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" rel="prev" title="MySQL-必知必会">
+                  <i class="fa fa-angle-left"></i> MySQL-必知必会
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/07/%E9%80%9F%E8%A7%88%E5%87%A0%E4%B8%AA-node-web-%E6%A1%86%E6%9E%B6/" rel="next" title="速览几个 node web 框架">
+                  速览几个 node web 框架 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">H</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

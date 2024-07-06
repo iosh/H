@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"github.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="介绍如何解拥有多个不同账户的情况下使用ssh密钥使用Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在Git中使用不同的SSH密钥">
+<meta property="og:url" content="https://github.com/iosh/H.git/2024/07/06/HowToUseDifferentSShKeyForGit/index.html">
+<meta property="og:site_name" content="胡先生">
+<meta property="og:description" content="介绍如何解拥有多个不同账户的情况下使用ssh密钥使用Git">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-06T18:41:08.000Z">
+<meta property="article:modified_time" content="2024-07-06T12:26:18.041Z">
+<meta property="article:author" content="H">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/iosh/H.git/2024/07/06/HowToUseDifferentSShKeyForGit/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://github.com/iosh/H.git/2024/07/06/HowToUseDifferentSShKeyForGit/","path":"2024/07/06/HowToUseDifferentSShKeyForGit/","title":"如何在Git中使用不同的SSH密钥"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何在Git中使用不同的SSH密钥 | 胡先生</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">胡先生</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E5%AF%86%E9%92%A5"><span class="nav-number">2.</span> <span class="nav-text">创建一个新的密钥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86SSH%E5%AF%86%E9%92%A5%E6%B7%BB%E5%8A%A0%E5%88%B0GitHub"><span class="nav-number">3.</span> <span class="nav-text">将SSH密钥添加到GitHub</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-SSH"><span class="nav-number">4.</span> <span class="nav-text">修改 SSH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%BA%8C%E4%B8%AA%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">使用第二个配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">修改项目配置</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">H</p>
+  <div class="site-description" itemprop="description">个人学习笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/iosh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;iosh" rel="noopener me"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/iosh/H.git/2024/07/06/HowToUseDifferentSShKeyForGit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="H">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡先生">
+      <meta itemprop="description" content="个人学习笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何在Git中使用不同的SSH密钥 | 胡先生">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何在Git中使用不同的SSH密钥
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-07-06 18:41:08 / 修改时间：12:26:18" itemprop="dateCreated datePublished" datetime="2024-07-06T18:41:08+00:00">2024-07-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>介绍如何解拥有多个不同账户的情况下使用ssh密钥使用Git</p>
+<span id="more"></span>
+<h2 id="简介">简介</h2>
+<p>通常情况下一般我们只是用单一的ssh密钥进行Git仓库的代码推送，但是某些i情况下会使用多个账户进行多个项目的开发，这个时候就需要配置正确的SSH密钥，否则将无权限进行推送等。</p>
+<h2 id="创建一个新的密钥">创建一个新的密钥</h2>
+<p>通过命令行工具可以轻松生成一个新的 SSH 密钥, 将下方邮箱替换为自己的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t ed25519 -C <span class="string">&quot;your_email@example.com&quot;</span></span><br></pre></td></tr></table></figure>
+<p>输入命令后，会询问你想将文件存储在哪里, 他会有一个默认值，不同的系统路径不一样，如果没有其他要求直接回车，或者可以自己输入路径和名称然后进行回车</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Enter a file <span class="keyword">in</span> <span class="built_in">which</span> to save the key (/home/YOU/.ssh/id_ALGORITHM):</span><br></pre></td></tr></table></figure>
+<p>接下来会重复让你输入密码,密码是用来保护SSH密钥的，一般不需要直接回车即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; Enter passphrase (empty <span class="keyword">for</span> no passphrase):</span><br><span class="line">&gt; Enter same passphrase again:</span><br></pre></td></tr></table></figure>
+<h2 id="将SSH密钥添加到GitHub">将SSH密钥添加到GitHub</h2>
+<p><a target="_blank" rel="noopener" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account">https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account</a></p>
+<p>这里GitHub提供了一个详细文档。</p>
+<h2 id="修改-SSH">修改 SSH</h2>
+<p>下面基于Linux演示，Windows用户可以使用 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># use vim</span></span><br><span class="line"></span><br><span class="line">vim ~/.ssh/config</span><br><span class="line"></span><br><span class="line"><span class="comment"># use vscode</span></span><br><span class="line"></span><br><span class="line">code ~/.ssh/config</span><br></pre></td></tr></table></figure>
+<p>打开文件后一般是空的，现在我们添加配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Host *</span><br><span class="line">  IgnoreUnknown UseKeychain</span><br><span class="line"><span class="comment"># 这个用作为默认</span></span><br><span class="line">Host github.com</span><br><span class="line">  Hostname github.com</span><br><span class="line">  AddKeysToAgent <span class="built_in">yes</span></span><br><span class="line">  UseKeychain <span class="built_in">yes</span></span><br><span class="line">  IdentityFile ~/.ssh/id_ed25519</span><br><span class="line"></span><br><span class="line">Host github.com-forWork <span class="comment">#这里可以根据自己需要自己起名字</span></span><br><span class="line">  Hostname github.com</span><br><span class="line">  AddKeysToAgent <span class="built_in">yes</span></span><br><span class="line">  UseKeychain <span class="built_in">yes</span></span><br><span class="line">  IdentityFile ~/.ssh/id_forWork  <span class="comment">#这里选择你需要使用的私钥</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上面我们添加了两个配置，第一个id_ed25519作为默认，会应用于每一个GitHub仓库。接下来展示如何使用第二个配置。</p>
+<h2 id="使用第二个配置">使用第二个配置</h2>
+<p>首先我们克隆一个仓库, 一般使用如下格式命令进行克隆</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:user/repo.git</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>但是这里我们使用修改过的命令进行克隆</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com-forWork:user/repo.git</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="http://xn--github-947kw735alxd.com">这里将github.com</a> 修改成为 github.com-forWork, 这里的 github.com-forWork 是上面 config 里面定义的，根据自己的定义修改这个命令</p>
+<h2 id="修改项目配置">修改项目配置</h2>
+<p>如果直接推送，使用的还是默认SSH密钥，所以这里还需要修改一下当前项目远程地址</p>
+<p>直接使用命令进行修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote set-url origin git@github.com-forWork:user/repo.git</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>就是将这里的推送地址修改为我们在config中定义的。</p>
+<p>另外一种是使用编辑器修改项目的配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global core.editor <span class="string">&quot;code --wait&quot;</span></span><br></pre></td></tr></table></figure>
+<p>使用这条命令可以将Git使用的编辑器修改为 vscode 当然这条命令是可选的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config -e </span><br></pre></td></tr></table></figure>
+<p>这里会调用编辑器打开配置文件，将配置文件中的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[remote <span class="string">&quot;origin&quot;</span>]</span><br><span class="line">	url = git@github.com-forWork:user/repo.git  <span class="comment">#将这里的url修改一下</span></span><br></pre></td></tr></table></figure>
+<p>之后就可以正常的进行推送了</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/git/" rel="tag"># git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/05/Wallet-%E9%92%B1%E5%8C%85/" rel="prev" title="Wallet 钱包">
+                  <i class="fa fa-angle-left"></i> Wallet 钱包
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">H</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

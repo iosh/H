@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"github.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="learn babel parse how to work">
+<meta property="og:type" content="article">
+<meta property="og:title" content="babel parse">
+<meta property="og:url" content="https://github.com/iosh/H.git/2020/05/25/babel%20parser/index.html">
+<meta property="og:site_name" content="胡先生">
+<meta property="og:description" content="learn babel parse how to work">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-25T12:48:46.000Z">
+<meta property="article:modified_time" content="2024-07-06T12:26:18.045Z">
+<meta property="article:author" content="H">
+<meta property="article:tag" content="babel">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/iosh/H.git/2020/05/25/babel%20parser/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://github.com/iosh/H.git/2020/05/25/babel%20parser/","path":"2020/05/25/babel parser/","title":"babel parse"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>babel parse | 胡先生</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">胡先生</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">入口函数 parse</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#getParser"><span class="nav-number">2.1.</span> <span class="nav-text">getParser</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parser"><span class="nav-number">2.2.</span> <span class="nav-text">Parser</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BaseParser"><span class="nav-number">2.2.1.</span> <span class="nav-text">BaseParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CommentsParser"><span class="nav-number">2.2.2.</span> <span class="nav-text">CommentsParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LocationParser"><span class="nav-number">2.2.3.</span> <span class="nav-text">LocationParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tokenizer"><span class="nav-number">2.2.4.</span> <span class="nav-text">Tokenizer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UtilParser"><span class="nav-number">2.2.5.</span> <span class="nav-text">UtilParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NodeUtils"><span class="nav-number">2.2.6.</span> <span class="nav-text">NodeUtils</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LValParser"><span class="nav-number">2.2.7.</span> <span class="nav-text">LValParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExpressionParser"><span class="nav-number">2.2.8.</span> <span class="nav-text">ExpressionParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StatementParser"><span class="nav-number">2.2.9.</span> <span class="nav-text">StatementParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parser-2"><span class="nav-number">2.2.10.</span> <span class="nav-text">Parser</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">parse</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90-const-a-10"><span class="nav-number">3.1.</span> <span class="nav-text">解析 const a &#x3D; 10</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-nextToken"><span class="nav-number">3.2.</span> <span class="nav-text">this.nextToken</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-geTokenFromCode"><span class="nav-number">3.3.</span> <span class="nav-text">this.geTokenFromCode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-finishToken"><span class="nav-number">3.4.</span> <span class="nav-text">this.finishToken</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-updateContext"><span class="nav-number">3.5.</span> <span class="nav-text">this.updateContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-parseTopLevel"><span class="nav-number">3.6.</span> <span class="nav-text">this.parseTopLevel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-parseBlockBody"><span class="nav-number">3.7.</span> <span class="nav-text">this.parseBlockBody</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-parseBlockOrModuleBlockBody"><span class="nav-number">3.8.</span> <span class="nav-text">this.parseBlockOrModuleBlockBody</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-parseStatement"><span class="nav-number">3.9.</span> <span class="nav-text">this.parseStatement</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-parseVarStatement"><span class="nav-number">3.10.</span> <span class="nav-text">this.parseVarStatement</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-parseVar"><span class="nav-number">3.11.</span> <span class="nav-text">this.parseVar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#parseVarId"><span class="nav-number">3.12.</span> <span class="nav-text">parseVarId</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90-%E2%80%9Ca-b%E2%80%9D"><span class="nav-number">3.13.</span> <span class="nav-text">解析 “a |&gt; b”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#parseExpression"><span class="nav-number">3.14.</span> <span class="nav-text">parseExpression</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">H</p>
+  <div class="site-description" itemprop="description">个人学习笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/iosh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;iosh" rel="noopener me"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/iosh/H.git/2020/05/25/babel%20parser/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="H">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡先生">
+      <meta itemprop="description" content="个人学习笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="babel parse | 胡先生">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          babel parse
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-25 12:48:46" itemprop="dateCreated datePublished" datetime="2020-05-25T12:48:46+00:00">2020-05-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-06 12:26:18" itemprop="dateModified" datetime="2024-07-06T12:26:18+00:00">2024-07-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>learn babel parse how to work</p>
+<span id="more"></span>
+<h1>目标</h1>
+<p>学习 babel-parser 如何进行工作, 解决一个一个实际问题.</p>
+<h1>入口函数 parse</h1>
+<p>首先 babel 可以解析集中模块, 在 parse 函数的第二个参数可以进行指定代码所属模块, babel 默认代码为 <code>script</code> 即不带模块的方式解析.</p>
+<h2 id="getParser">getParser</h2>
+<p>函数签名</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getParser</span>(<span class="params">options: ?Options, input: <span class="built_in">string</span></span>): <span class="title class_">Parser</span> &#123;</span><br><span class="line">  <span class="comment">// Parser 是一个 class</span></span><br><span class="line">  <span class="keyword">let</span> cls = <span class="title class_">Parser</span>;</span><br><span class="line">  <span class="keyword">if</span> (options?.<span class="property">plugins</span>) &#123;</span><br><span class="line">    <span class="comment">// 插件验证函数</span></span><br><span class="line">    <span class="title function_">validatePlugins</span>(options.<span class="property">plugins</span>);</span><br><span class="line"></span><br><span class="line">    cls = <span class="title function_">getParserClass</span>(options.<span class="property">plugins</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 返回这个 class 的实例</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title function_">cls</span>(options, input);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Parser">Parser</h2>
+<p>Parser 是一个继承了很多 class 的 class, 它继承的每个 class 都负责 parse 的某个具体方面, 从最原始的 父级 class 开始看</p>
+<h3 id="BaseParser">BaseParser</h3>
+<p>BaseParser class 比较简单,主要是存储一些信息</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> <span class="title class_">BaseParser</span> &#123;</span><br><span class="line">  <span class="comment">// Properties set by constructor in index.js</span></span><br><span class="line">  <span class="attr">options</span>: <span class="title class_">Options</span>; <span class="comment">// 这是 parser 函数的第二个参数</span></span><br><span class="line">  <span class="attr">inModule</span>: <span class="built_in">boolean</span>; <span class="comment">// 是否为模块</span></span><br><span class="line">  <span class="attr">scope</span>: <span class="title class_">ScopeHandler</span>&lt;*&gt;; <span class="comment">// 另一个 class 追踪当前作用域, 以检测重复变量</span></span><br><span class="line">  <span class="attr">classScope</span>: <span class="title class_">ClassScopeHandler</span>;</span><br><span class="line">  <span class="attr">prodParam</span>: <span class="title class_">ProductionParameterHandler</span>; <span class="comment">// 一个有关 参数收集器的 class</span></span><br><span class="line">  <span class="attr">plugins</span>: <span class="title class_">PluginsMap</span>; <span class="comment">// 插件 Map</span></span><br><span class="line">  <span class="attr">filename</span>: ?<span class="built_in">string</span>; <span class="comment">//</span></span><br><span class="line">  <span class="attr">sawUnambiguousESM</span>: <span class="built_in">boolean</span> = <span class="literal">false</span>;</span><br><span class="line">  <span class="attr">ambiguousScriptDifferentAst</span>: <span class="built_in">boolean</span> = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Initialized by Tokenizer</span></span><br><span class="line">  <span class="attr">state</span>: <span class="title class_">State</span>; <span class="comment">//  由 Tokenizer 初始化</span></span><br><span class="line">  <span class="comment">// input and length are not in state as they are constant and we do</span></span><br><span class="line">  <span class="comment">// not want to ever copy them, which happens if state gets cloned</span></span><br><span class="line">  <span class="attr">input</span>: <span class="built_in">string</span>;</span><br><span class="line">  <span class="attr">length</span>: <span class="built_in">number</span>;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">hasPlugin</span>(<span class="attr">name</span>: <span class="built_in">string</span>): <span class="built_in">boolean</span> &#123;</span><br><span class="line">    <span class="comment">// 判断插件是否存在</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">plugins</span>.<span class="title function_">has</span>(name);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">getPluginOption</span>(<span class="params">plugin: <span class="built_in">string</span>, name: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">    <span class="comment">// 获取插件 options</span></span><br><span class="line">    <span class="comment">// $FlowIssue</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="title function_">hasPlugin</span>(plugin)) <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">plugins</span>.<span class="title function_">get</span>(plugin)[name];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CommentsParser">CommentsParser</h3>
+<p>主要是处理和解析<code>comment(注释的)</code> 基于 eslint 的 espree 而来的.</p>
+<h3 id="LocationParser">LocationParser</h3>
+<p>这个 class 主要处理解析错误,从而抛出一个错误和错误位置</p>
+<h3 id="Tokenizer">Tokenizer</h3>
+<p>词法分析</p>
+<h3 id="UtilParser">UtilParser</h3>
+<p>解析工具,一些解析相关的工具函数</p>
+<h3 id="NodeUtils">NodeUtils</h3>
+<p>node 和 处理 node 的工具函数</p>
+<h3 id="LValParser">LValParser</h3>
+<p>处理左值</p>
+<h3 id="ExpressionParser">ExpressionParser</h3>
+<p>表达式解析</p>
+<h3 id="StatementParser">StatementParser</h3>
+<p>语句解析, 组装成 progrm</p>
+<h3 id="Parser-2">Parser</h3>
+<p>初始化入口</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">                              Parser class</span><br><span class="line">Parser+--&gt;StatementParser+--&gt; ExpressionParser+--&gt; NodeUtils +----&gt; UtilParser+--+</span><br><span class="line">                                                                                 |</span><br><span class="line">                              CommentsParser&lt;-----+LocationParser&lt;-+Tokenizer&lt;---+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1>parse</h1>
+<p>上方调用实例化完成 Parser class 之后调用</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parse</span>(): <span class="title class_">File</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> paramFlags = <span class="variable constant_">PARAM</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="title function_">hasPlugin</span>(<span class="string">&quot;topLevelAwait&quot;</span>) &amp;&amp; <span class="variable language_">this</span>.<span class="property">inModule</span>) &#123;</span><br><span class="line">    paramFlags |= <span class="variable constant_">PARAM_AWAIT</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// scope 是一个 stack , 进入一个 scope 就将当前的 scope 添加到 stack 内, 退出 scope 之后随之 pop</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">scope</span>.<span class="title function_">enter</span>(<span class="variable constant_">SCOPE_PROGRAM</span>);</span><br><span class="line">  <span class="comment">//  也是一个相同的 stack 进入添加 exit pop</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">prodParam</span>.<span class="title function_">enter</span>(paramFlags);</span><br><span class="line">  <span class="comment">// file 和 program 都是调用函数生成了一个 Node</span></span><br><span class="line">  <span class="keyword">const</span> file = <span class="variable language_">this</span>.<span class="title function_">startNode</span>();</span><br><span class="line">  <span class="keyword">const</span> program = <span class="variable language_">this</span>.<span class="title function_">startNode</span>();</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">nextToken</span>();</span><br><span class="line">  file.<span class="property">errors</span> = <span class="literal">null</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">parseTopLevel</span>(file, program);</span><br><span class="line">  file.<span class="property">errors</span> = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">errors</span>;</span><br><span class="line">  <span class="keyword">return</span> file;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>函数返回 <code>File</code> 对象, 也就是说,整个解析过程是在这个函数周期内完成的.</p>
+<h2 id="解析-const-a-10">解析 const a = 10</h2>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parses.<span class="title function_">parse</span>(<span class="string">&quot;const a = 10&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>通过简单的例子来看 babel parse 过程.</p>
+<h2 id="this-nextToken">this.nextToken</h2>
+<p>this.nextToken 位于 Tokenizer 所以很明显就是进行词法分析的. 函数主要做如下工作:</p>
+<ol>
+<li>获得当前上下文, 并判断当前字符是否需要跳过(例如空格,tab 之类的不需要解析)</li>
+<li>获得当前字符串位置</li>
+<li>判断位置是否超出字符</li>
+<li>判断 context.overide 是否存在,如果存在就进行调用并将 this 当做参数传递</li>
+<li>调用 geTokenFromCode</li>
+</ol>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="title function_">getTokenFromCode</span>(<span class="variable language_">this</span>.<span class="property">input</span>.<span class="title function_">codePointAt</span>(<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">pos</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="this-geTokenFromCode">this.geTokenFromCode</h2>
+<p>函数是一个大的 switch 语句判断,例如判断当前是否为左括号,右括号之类的, 这里我们第一个字符是 <code>const</code> 的 <code>c</code>, 并不是一个完整的关键字之类的需要继续读取更多信息</p>
+<p>会调用 this.readWrod 函数根据 this.state.pos 位置信息继续向后读取直到读到 const 之后的空格, 确定了 <code>const</code> 是一个完整的部分</p>
+<p>调用了 type.keywords 来获取 const 匹配的对象, 然后调用 <code>this.finishToken(type, word);</code></p>
+<p>之后更新 this.state 对象, 更新上下文</p>
+<h2 id="this-finishToken">this.finishToken</h2>
+<p>函数更新当前 state 内的位置信息, type value 之类的信息. 然后条件调用 updateContext,</p>
+<h2 id="this-updateContext">this.updateContext</h2>
+<p>updateContext 函数主要是判断 type 是否为关键字以及是否为需要单独处理的一些关键字.</p>
+<p>this.nextToken 执行完毕</p>
+<h2 id="this-parseTopLevel">this.parseTopLevel</h2>
+<p>this.parseTopLevel 是 StatementParser 类下的.</p>
+<p>parserTopLevel 调用了 this.parseBlockBody 函数, 别的是一些模块 export 出来的变量处理, 和最后的 File 对象组装.</p>
+<h2 id="this-parseBlockBody">this.parseBlockBody</h2>
+<p>函数也很简单, 给 Node 赋值了 body 和 directives 空数组, 之后调用了 this.parseBlockOrModuleBlockBody</p>
+<h2 id="this-parseBlockOrModuleBlockBody">this.parseBlockOrModuleBlockBody</h2>
+<p>函数调用 this.parseStatement 解析语句,这里需要被解析的语句是 <code>const</code>, 这个函数还是个循环,会不断遍历到结尾.</p>
+<h2 id="this-parseStatement">this.parseStatement</h2>
+<p>parseStatement 首先会判断是不是 <code>@</code> 开头,如果是那么就是 <code>Directive</code>, 是不是 <code>let</code></p>
+<p>如果不是,那么会 进行 进行一个 switch case 匹配, 这里需要匹配 <code>const</code> 就先来看 <code>const</code></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> _types2.<span class="property">types</span>.<span class="property">_const</span>:</span><br><span class="line"><span class="keyword">case</span> _types2.<span class="property">types</span>.<span class="property">_var</span>:</span><br><span class="line">  kind = kind || <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">value</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (context &amp;&amp; kind !== <span class="string">&quot;var&quot;</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">raise</span>(<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">start</span>, _location.<span class="property">Errors</span>.<span class="property">UnexpectedLexicalDeclaration</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">parseVarStatement</span>(node, kind);</span><br></pre></td></tr></table></figure>
+<h2 id="this-parseVarStatement">this.parseVarStatement</h2>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="title function_">parseVarStatement</span>(<span class="params">node, kind</span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">next</span>();</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">parseVar</span>(node, <span class="literal">false</span>, kind);</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">semicolon</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">finishNode</span>(node, <span class="string">&quot;VariableDeclaration&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里调用 this.next 这个函数调整了 state 的一些位置信息. 例如 lastTokenEnd, 之后调用了 this.nextToken 上面写了 this.nexToken, 之后调用 this.pareVar 来解析声明</p>
+<h2 id="this-parseVar">this.parseVar</h2>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseVar</span>(<span class="params">node, isFor, kind</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> declarations = node.<span class="property">declarations</span> = [];</span><br><span class="line">  <span class="comment">// 判断有没有 ts 插件, 因为 ts 的声明 有类型</span></span><br><span class="line">  <span class="keyword">const</span> isTypescript = <span class="variable language_">this</span>.<span class="title function_">hasPlugin</span>(<span class="string">&quot;typescript&quot;</span>);</span><br><span class="line">  node.<span class="property">kind</span> = kind;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    <span class="keyword">const</span> decl = <span class="variable language_">this</span>.<span class="title function_">startNode</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">parseVarId</span>(decl, kind);</span><br><span class="line">    <span class="comment">// 判断是不是 = 入股欧式调用 this.next 读取后面的值</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="title function_">eat</span>(_types2.<span class="property">types</span>.<span class="property">eq</span>)) &#123;</span><br><span class="line">      decl.<span class="property">init</span> = <span class="variable language_">this</span>.<span class="title function_">parseMaybeAssign</span>(isFor);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (kind === <span class="string">&quot;const&quot;</span> &amp;&amp; !(<span class="variable language_">this</span>.<span class="title function_">match</span>(_types2.<span class="property">types</span>.<span class="property">_in</span>) || <span class="variable language_">this</span>.<span class="title function_">isContextual</span>(<span class="string">&quot;of&quot;</span>))) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!isTypescript) &#123;</span><br><span class="line">          <span class="variable language_">this</span>.<span class="title function_">unexpected</span>();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (decl.<span class="property">id</span>.<span class="property">type</span> !== <span class="string">&quot;Identifier&quot;</span> &amp;&amp; !(isFor &amp;&amp; (<span class="variable language_">this</span>.<span class="title function_">match</span>(_types2.<span class="property">types</span>.<span class="property">_in</span>) || <span class="variable language_">this</span>.<span class="title function_">isContextual</span>(<span class="string">&quot;of&quot;</span>)))) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">raise</span>(<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">lastTokEnd</span>, _location.<span class="property">Errors</span>.<span class="property">DeclarationMissingInitializer</span>, <span class="string">&quot;Complex binding patterns&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      decl.<span class="property">init</span> = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    declarations.<span class="title function_">push</span>(<span class="variable language_">this</span>.<span class="title function_">finishNode</span>(decl, <span class="string">&quot;VariableDeclarator&quot;</span>));</span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="title function_">eat</span>(_types2.<span class="property">types</span>.<span class="property">comma</span>)) <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="parseVarId">parseVarId</h2>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseVarId</span>(<span class="params">decl, kind</span>) &#123;</span><br><span class="line">  decl.<span class="property">id</span> = <span class="variable language_">this</span>.<span class="title function_">parseBindingAtom</span>();</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">checkLVal</span>(decl.<span class="property">id</span>, kind === <span class="string">&quot;var&quot;</span> ? _scopeflags.<span class="property">BIND_VAR</span> : _scopeflags.<span class="property">BIND_LEXICAL</span>, <span class="literal">undefined</span>, <span class="string">&quot;variable declaration&quot;</span>, kind !== <span class="string">&quot;var&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到这里调用了 this.parseBindingAtom , 内部有一些判断, 之后又调用了 this.next,主要是判断是否为 ts ,是否为 async 之类的.</p>
+<h2 id="解析-“a-b”">解析 “a |&gt; b”</h2>
+<p>解析 “a |&gt; b”, 相同的步骤就不再说了.看看不同之处, 这个管道操作符部署于正是规范,需要插件,所以 Parser 没有插件的时候回报错,主要看看他怎么解决这个问题的.</p>
+<p>前面都一样 parseBlockOrModuleBlockBody 开始解析. 它在 parseStatementContent 函数的 大 switch 中匹配不到合适的关键字, 那么因为他可能是个解析式,所以调用 parseExpression 函数进行处理</p>
+<h2 id="parseExpression">parseExpression</h2>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseExpression</span>(<span class="params">noIn, refExpressionErrors</span>) &#123;</span><br><span class="line">  <span class="comment">// 获得位置信息</span></span><br><span class="line">   <span class="keyword">const</span> startPos = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">start</span>;</span><br><span class="line">   <span class="keyword">const</span> startLoc = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">startLoc</span>;</span><br><span class="line">   <span class="comment">// 猜测这也许是个 赋值</span></span><br><span class="line">   <span class="keyword">const</span> expr = <span class="variable language_">this</span>.<span class="title function_">parseMaybeAssign</span>(noIn, refExpressionErrors);</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">   <span class="keyword">return</span> expr;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseMaybeAssign</span>(<span class="params">noIn, refExpressionErrors, afterLeftParse, refNeedsArrowPos</span>) &#123;</span><br><span class="line">    <span class="comment">// ... 省略</span></span><br><span class="line">    <span class="comment">// 猜测这也许是个分配符</span></span><br><span class="line">    <span class="keyword">let</span> left = <span class="variable language_">this</span>.<span class="title function_">parseMaybeConditional</span>(noIn, refExpressionErrors, refNeedsArrowPos);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> left;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseMaybeConditional</span>(<span class="params">noIn, refExpressionErrors, refNeedsArrowPos</span>) &#123;</span><br><span class="line">  <span class="comment">// 取到位置</span></span><br><span class="line">   <span class="comment">// 当做操作符解析, |&gt;</span></span><br><span class="line">   <span class="keyword">const</span> expr = <span class="variable language_">this</span>.<span class="title function_">parseExprOps</span>(noIn, refExpressionErrors);</span><br><span class="line">   <span class="comment">//...</span></span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseExprOps</span>(<span class="params">noIn, refExpressionErrors</span>) &#123;</span><br><span class="line">  <span class="comment">//.. 尝试解析为一元运算符</span></span><br><span class="line">  <span class="keyword">const</span> expr = <span class="variable language_">this</span>.<span class="title function_">parseMaybeUnary</span>(refExpressionErrors);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">parseExprOp</span>(expr, startPos, startLoc, -<span class="number">1</span>, noIn);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseMaybeUnary</span>(<span class="params">refExpressionErrors</span>) &#123;</span><br><span class="line">    <span class="comment">// 省略一些判断,主要是判断  await throw  之类的</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> startPos = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">start</span>;</span><br><span class="line">    <span class="keyword">const</span> startLoc = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">startLoc</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> expr = <span class="variable language_">this</span>.<span class="title function_">parseExprSubscripts</span>(refExpressionErrors);</span><br><span class="line">    <span class="keyword">return</span> expr;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseExprAtom</span>(<span class="params">refExpressionErrors</span>) &#123;</span><br><span class="line">   <span class="title function_">parseExprAtom</span>(<span class="params">refExpressionErrors</span>) &#123;</span><br><span class="line">    <span class="keyword">debugger</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">type</span> === _types.<span class="property">types</span>.<span class="property">slash</span>) <span class="variable language_">this</span>.<span class="title function_">readRegexp</span>();</span><br><span class="line">    <span class="keyword">const</span> canBeArrow = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">potentialArrowAt</span> === <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">start</span>;</span><br><span class="line">    <span class="keyword">let</span> node;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">type</span>) &#123;</span><br><span class="line">      <span class="comment">// 省略一些匹配</span></span><br><span class="line">      <span class="keyword">case</span> _types.<span class="property">types</span>.<span class="property">name</span>:</span><br><span class="line">        &#123;</span><br><span class="line">          node = <span class="variable language_">this</span>.<span class="title function_">startNode</span>();</span><br><span class="line">          <span class="keyword">const</span> containsEsc = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">containsEsc</span>;</span><br><span class="line">          <span class="keyword">const</span> id = <span class="variable language_">this</span>.<span class="title function_">parseIdentifier</span>();</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (!containsEsc &amp;&amp; id.<span class="property">name</span> === <span class="string">&quot;async&quot;</span> &amp;&amp; <span class="variable language_">this</span>.<span class="title function_">match</span>(_types.<span class="property">types</span>.<span class="property">_function</span>) &amp;&amp; !<span class="variable language_">this</span>.<span class="title function_">canInsertSemicolon</span>()) &#123;</span><br><span class="line">            <span class="keyword">const</span> last = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">context</span>.<span class="property">length</span> - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">context</span>[last] !== _context.<span class="property">types</span>.<span class="property">functionStatement</span>) &#123;</span><br><span class="line">              <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;Internal error&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">context</span>[last] = _context.<span class="property">types</span>.<span class="property">functionExpression</span>;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">next</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">parseFunction</span>(node, <span class="literal">undefined</span>, <span class="literal">true</span>);</span><br><span class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (canBeArrow &amp;&amp; !containsEsc &amp;&amp; id.<span class="property">name</span> === <span class="string">&quot;async&quot;</span> &amp;&amp; <span class="variable language_">this</span>.<span class="title function_">match</span>(_types.<span class="property">types</span>.<span class="property">name</span>) &amp;&amp; !<span class="variable language_">this</span>.<span class="title function_">canInsertSemicolon</span>()) &#123;</span><br><span class="line">            <span class="keyword">const</span> oldMaybeInArrowParameters = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">maybeInArrowParameters</span>;</span><br><span class="line">            <span class="keyword">const</span> oldMaybeInAsyncArrowHead = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">maybeInAsyncArrowHead</span>;</span><br><span class="line">            <span class="keyword">const</span> oldYieldPos = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">yieldPos</span>;</span><br><span class="line">            <span class="keyword">const</span> oldAwaitPos = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">awaitPos</span>;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">maybeInArrowParameters</span> = <span class="literal">true</span>;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">maybeInAsyncArrowHead</span> = <span class="literal">true</span>;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">yieldPos</span> = -<span class="number">1</span>;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">awaitPos</span> = -<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">const</span> params = [<span class="variable language_">this</span>.<span class="title function_">parseIdentifier</span>()];</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">expect</span>(_types.<span class="property">types</span>.<span class="property">arrow</span>);</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">checkYieldAwaitInDefaultParams</span>();</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">maybeInArrowParameters</span> = oldMaybeInArrowParameters;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">maybeInAsyncArrowHead</span> = oldMaybeInAsyncArrowHead;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">yieldPos</span> = oldYieldPos;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">awaitPos</span> = oldAwaitPos;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">parseArrowExpression</span>(node, params, <span class="literal">true</span>);</span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (canBeArrow &amp;&amp; <span class="variable language_">this</span>.<span class="title function_">match</span>(_types.<span class="property">types</span>.<span class="property">arrow</span>) &amp;&amp; !<span class="variable language_">this</span>.<span class="title function_">canInsertSemicolon</span>()) &#123;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">next</span>();</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">parseArrowExpression</span>(node, [id], <span class="literal">false</span>);</span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// 这里都不匹配 , 返回了 一个 node 对象</span></span><br><span class="line">          <span class="keyword">return</span> id;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 省略一些匹配</span></span><br><span class="line">      <span class="comment">// 最后匹配不到就抛出错误</span></span><br><span class="line">      <span class="attr">default</span>:</span><br><span class="line">        <span class="keyword">throw</span> <span class="variable language_">this</span>.<span class="title function_">unexpected</span>();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">parseExprSubscripts</span>(<span class="params">refExpressionErrors</span>) &#123;</span><br><span class="line">   <span class="keyword">const</span> startPos = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">start</span>;</span><br><span class="line">   <span class="keyword">const</span> startLoc = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">startLoc</span>;</span><br><span class="line">   <span class="keyword">const</span> potentialArrowAt = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">potentialArrowAt</span>;</span><br><span class="line">   <span class="comment">// atom 解析</span></span><br><span class="line">   <span class="keyword">const</span> expr = <span class="variable language_">this</span>.<span class="title function_">parseExprAtom</span>(refExpressionErrors);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (expr.<span class="property">type</span> === <span class="string">&quot;ArrowFunctionExpression&quot;</span> &amp;&amp; expr.<span class="property">start</span> === potentialArrowAt) &#123;</span><br><span class="line">     <span class="keyword">return</span> expr;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">parseSubscripts</span>(expr, startPos, startLoc);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="title function_">parseExprOp</span>(<span class="params">left, leftStartPos, leftStartLoc, minPrec, noIn</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> prec = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">type</span>.<span class="property">binop</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (prec != <span class="literal">null</span> &amp;&amp; (!noIn || !<span class="variable language_">this</span>.<span class="title function_">match</span>(_types.<span class="property">types</span>.<span class="property">_in</span>))) &#123;</span><br><span class="line">    <span class="keyword">if</span> (prec &gt; minPrec) &#123;</span><br><span class="line">      <span class="keyword">const</span> operator = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">value</span>;</span><br><span class="line">      <span class="comment">// 判断操作符是否为 |&gt;</span></span><br><span class="line">      <span class="keyword">if</span> (operator === <span class="string">&quot;|&gt;&quot;</span> &amp;&amp; <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">inFSharpPipelineDirectBody</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> left;</span><br><span class="line">      &#125;</span><br><span class="line">     <span class="comment">// 生成一个节点</span></span><br><span class="line">      <span class="keyword">const</span> node = <span class="variable language_">this</span>.<span class="title function_">startNodeAt</span>(leftStartPos, leftStartLoc);</span><br><span class="line">      node.<span class="property">left</span> = left;</span><br><span class="line">      node.<span class="property">operator</span> = operator;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (operator === <span class="string">&quot;**&quot;</span> &amp;&amp; left.<span class="property">type</span> === <span class="string">&quot;UnaryExpression&quot;</span> &amp;&amp; (<span class="variable language_">this</span>.<span class="property">options</span>.<span class="property">createParenthesizedExpressions</span> || !(left.<span class="property">extra</span> &amp;&amp; left.<span class="property">extra</span>.<span class="property">parenthesized</span>))) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">raise</span>(left.<span class="property">argument</span>.<span class="property">start</span>, _location.<span class="property">Errors</span>.<span class="property">UnexpectedTokenUnaryExponentiation</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> op = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">type</span>;</span><br><span class="line">      <span class="keyword">const</span> logical = op === _types.<span class="property">types</span>.<span class="property">logicalOR</span> || op === _types.<span class="property">types</span>.<span class="property">logicalAND</span>;</span><br><span class="line">      <span class="keyword">const</span> coalesce = op === _types.<span class="property">types</span>.<span class="property">nullishCoalescing</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (op === _types.<span class="property">types</span>.<span class="property">pipeline</span>) &#123;</span><br><span class="line">        <span class="comment">// 这里判断存在不存在处理 |&gt; 的插件, 不存在就抛出错误, 到这里就截止了</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">expectPlugin</span>(<span class="string">&quot;pipelineOperator&quot;</span>);</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">inPipeline</span> = <span class="literal">true</span>;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">checkPipelineAtInfixOperator</span>(left, leftStartPos);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (coalesce) &#123;</span><br><span class="line">        prec = _types.<span class="property">types</span>.<span class="property">logicalAND</span>.<span class="property">binop</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/babel/" rel="tag"># babel</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/23/babel%20plugin/" rel="prev" title="babel plugin">
+                  <i class="fa fa-angle-left"></i> babel plugin
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/07/04/NGINX/" rel="next" title="Nginx">
+                  Nginx <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">H</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

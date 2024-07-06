@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"github.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Router4 参考至精读 Router4  入门学习的时候，本着学新不学旧的原则，啃了 Router4，这里感谢大佬将官网翻译了一下。(有幸还和参与翻译的大佬聊了两句。)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Router4">
+<meta property="og:url" content="https://github.com/iosh/H.git/2017/11/27/Router4/index.html">
+<meta property="og:site_name" content="胡先生">
+<meta property="og:description" content="Router4 参考至精读 Router4  入门学习的时候，本着学新不学旧的原则，啃了 Router4，这里感谢大佬将官网翻译了一下。(有幸还和参与翻译的大佬聊了两句。)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-11-27T19:57:58.000Z">
+<meta property="article:modified_time" content="2024-07-06T12:26:18.045Z">
+<meta property="article:author" content="H">
+<meta property="article:tag" content="Router">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/iosh/H.git/2017/11/27/Router4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://github.com/iosh/H.git/2017/11/27/Router4/","path":"2017/11/27/Router4/","title":"Router4"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Router4 | 胡先生</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">胡先生</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Router4"><span class="nav-number">1.</span> <span class="nav-text">Router4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%87%B3%E7%B2%BE%E8%AF%BB-Router4"><span class="nav-number"></span> <span class="nav-text">参考至精读 Router4</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E5%89%B2"><span class="nav-number">0.1.</span> <span class="nav-text">代码分割</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB"><span class="nav-number">0.2.</span> <span class="nav-text">转场动画</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BB%9A%E5%8A%A8%E6%9D%A1%E5%A4%8D%E4%BD%8D"><span class="nav-number">0.3.</span> <span class="nav-text">滚动条复位</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97"><span class="nav-number">0.4.</span> <span class="nav-text">嵌套</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93"><span class="nav-number">0.5.</span> <span class="nav-text">服务端渲染</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">H</p>
+  <div class="site-description" itemprop="description">个人学习笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/iosh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;iosh" rel="noopener me"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/iosh/H.git/2017/11/27/Router4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="H">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡先生">
+      <meta itemprop="description" content="个人学习笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Router4 | 胡先生">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Router4
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-11-27 19:57:58" itemprop="dateCreated datePublished" datetime="2017-11-27T19:57:58+00:00">2017-11-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-06 12:26:18" itemprop="dateModified" datetime="2024-07-06T12:26:18+00:00">2024-07-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="Router4">Router4</h3>
+<h2 id="参考至精读-Router4">参考至<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31178105">精读 Router4</a></h2>
+<blockquote>
+<p>入门学习的时候，本着学新不学旧的原则，啃了 Router4，这里感谢大佬将官网翻译了一下。(有幸还和参与翻译的大佬聊了两句。)</p>
+</blockquote>
+<span id="more"></span>
+<h4 id="代码分割">代码分割</h4>
+<p>在 Router3 中有函数钩子，可以做到代码分割，而 Router4 中的 Router 本身只是一个普通组件，没有钩子，这里我们用到<code>react-loadable</code>，可以做到路由甚至组件化的动态加载(按需加载)。</p>
+<blockquote>
+<p>npm i react-loadable</p>
+</blockquote>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">Loadable</span> <span class="keyword">from</span> <span class="string">&quot;react-loadable&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新建一个组件,这里用Loadable包装一下Home组件</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">AsyncHome</span> = <span class="title class_">Loadable</span>(&#123;</span><br><span class="line">  <span class="attr">loader</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;./Home&quot;</span>),</span><br><span class="line">  <span class="attr">loading</span>: <span class="function">() =&gt;</span> <span class="literal">null</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">AsyncHome</span>;</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://webpack.js.org/api/module-methods/#import-">import()介绍</a></p>
+<p>Loadable 接收一个对象作为参数，第一个参数是 loader 要按需加载的组件，第二个是 loadeing 过场动画，上面的例子上是返回一个空值。然后包装后的组件，就可以这样用</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">AsyncHome</span> <span class="keyword">from</span> <span class="string">&quot;./AsyncHome&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/&quot;</span> <span class="attr">component</span>=<span class="string">&#123;AsyncHome&#125;</span> /&gt;</span></span>;</span><br></pre></td></tr></table></figure>
+<h4 id="转场动画">转场动画</h4>
+<p>这个我没用过用过之后回来补上<a target="_blank" rel="noopener" href="https://motion.ant.design/">AntM</a></p>
+<h4 id="滚动条复位">滚动条复位</h4>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">Router</span> history=&#123;history&#125;&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">ScrollToTop</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Switch</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">Route</span> <span class="attr">exact</span> <span class="attr">path</span>=<span class="string">&quot;/&quot;</span> <span class="attr">component</span>=<span class="string">&#123;Home&#125;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/about&quot;</span> <span class="attr">component</span>=<span class="string">&#123;About&#125;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;*&quot;</span> <span class="attr">component</span>=<span class="string">&#123;NotFound&#125;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">Switch</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">ScrollToTop</span>&gt;</span></span></span><br><span class="line">&lt;/<span class="title class_">Router</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ScrollToTop</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">  <span class="title function_">componentDidUpdate</span>(<span class="params">prevProps</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">location</span> !== prevProps.<span class="property">location</span>) &#123;</span><br><span class="line">      <span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">children</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">withRouter</span>(<span class="title class_">ScrollToTop</span>);</span><br></pre></td></tr></table></figure>
+<p>这段代码，应该挺好理解的，我没有这么用过，不过后面一定会用。</p>
+<h4 id="嵌套">嵌套</h4>
+<p>简单的看了一点 Router3，发现 3 和 4 的嵌套是大不相同的<br>
+3 里面你可以这样写</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">Route</span> path=<span class="string">&quot;/&quot;</span> component=&#123;<span class="title class_">App</span>&#125;&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/hoem&quot;</span> <span class="attr">component</span>=<span class="string">&#123;Home&#125;</span> /&gt;</span></span></span><br><span class="line">&lt;/<span class="title class_">Route</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>Route 标签套 Route 标签，对于一些人还是很好理解的，ps 我当初学的时候也深受其毒害（看不懂 4 的文档，借鉴了一下 3 然后就。。）</p>
+<p>前面说了 Router4 本质上就是普通的 React 组件所以 Router4 应该这样写</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Router</span>.<span class="property">js</span></span><br><span class="line">&lt;<span class="title class_">Router</span>&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&#x27;/&#x27;</span> <span class="attr">component</span>=<span class="string">&#123;App&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">&lt;/<span class="attr">Router</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="title class_">App</span>.<span class="property">js</span></span><br><span class="line">&lt;<span class="title class_">App</span>&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&#x27;/home&#x27;</span> <span class="attr">component</span>=<span class="string">&#123;Home&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">&lt;/<span class="attr">App</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>这样把 Route 写到组件里面，当成普通的组件使用，但是有人不喜欢这样。那好吧，还有另一种方案。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">Router</span>&gt;</span><br><span class="line">    &lt;<span class="title class_">Switch</span>&gt;</span><br><span class="line">        <span class="language-xml"><span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&#x27;/&#x27;</span> <span class="attr">component</span>=<span class="string">&#123;App&#125;</span> /&gt;</span></span></span><br><span class="line">        <span class="language-xml"><span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&#x27;/home&#x27;</span> <span class="attr">render</span>=<span class="string">&#123;props</span> =&gt;</span> <span class="tag">&lt;<span class="name">App</span>&gt;</span><span class="tag">&lt;<span class="name">Home</span> &#123;<span class="attr">...props</span>&#125; /&gt;</span><span class="tag">&lt;/<span class="name">App</span>&gt;</span>&#125;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">Switch</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">Router</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>这里 Switch 标签的目的是只匹配一个路由，如果不加的话访问/会渲染两个，加了只会渲染 App 路由，第二个就是 render，render 接受一个函数，函数会被附加一个参数，参数是 Router 的所有方法和信息，所以我们把这个附加给 Home 组件传给他。</p>
+<p>Router 的 render 还可以用来处理一些逻辑，比如函数里面可以判断一些东西，然后选择重定向或者渲染组件。</p>
+<h4 id="服务端渲染">服务端渲染</h4>
+<p>这部分我还不会，有兴趣的大佬可以看原文章，等我学会了我再补充哈。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Router/" rel="tag"># Router</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/11/19/vueScss/" rel="prev" title="Vue CLI使用scss">
+                  <i class="fa fa-angle-left"></i> Vue CLI使用scss
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/11/28/Eslint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5/" rel="next" title="Eslint代码检查">
+                  Eslint代码检查 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">H</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

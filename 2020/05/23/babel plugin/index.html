@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"github.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="learn how to create babel plugin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="babel plugin">
+<meta property="og:url" content="https://github.com/iosh/H.git/2020/05/23/babel%20plugin/index.html">
+<meta property="og:site_name" content="胡先生">
+<meta property="og:description" content="learn how to create babel plugin">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-23T19:56:17.000Z">
+<meta property="article:modified_time" content="2024-07-06T12:26:18.045Z">
+<meta property="article:author" content="H">
+<meta property="article:tag" content="babel">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/iosh/H.git/2020/05/23/babel%20plugin/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://github.com/iosh/H.git/2020/05/23/babel%20plugin/","path":"2020/05/23/babel plugin/","title":"babel plugin"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>babel plugin | 胡先生</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">胡先生</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">施工 🚧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90-JavaScript-%E5%AD%97%E7%AC%A6"><span class="nav-number">3.1.</span> <span class="nav-text">解析 JavaScript 字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9"><span class="nav-number">3.2.</span> <span class="nav-text">修改</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">插件制作</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">H</p>
+  <div class="site-description" itemprop="description">个人学习笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/iosh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;iosh" rel="noopener me"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/iosh/H.git/2020/05/23/babel%20plugin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="H">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡先生">
+      <meta itemprop="description" content="个人学习笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="babel plugin | 胡先生">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          babel plugin
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-23 19:56:17" itemprop="dateCreated datePublished" datetime="2020-05-23T19:56:17+00:00">2020-05-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-06 12:26:18" itemprop="dateModified" datetime="2024-07-06T12:26:18+00:00">2024-07-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>learn how to create babel plugin</p>
+<span id="more"></span>
+<p>babel 主要处理流程分为三步:</p>
+<p><code>解析 parse</code> -&gt; <code>转换 transform</code> -&gt; <code>生成 generate</code></p>
+<p>目前 babel 的三个步骤工作分别由:</p>
+<p><code>@babel/parser</code> -&gt; <code>@babel-plugin</code> -&gt; <code>@babel/generator</code></p>
+<h1>目标</h1>
+<p>编写一个将 const 和 let 转化为 var 的 babel-plugin</p>
+<h1>准备工作</h1>
+<p>安装 <code>@babel/parser</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add @babel/parser @babel/traverse @babel/types</span><br></pre></td></tr></table></figure>
+<h1>施工 🚧</h1>
+<h2 id="解析-JavaScript-字符">解析 JavaScript 字符</h2>
+<p>首先需要将 JavaScript 字符串转化为 AST(<code>Abstract Syntax Tree</code>)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> parse = <span class="built_in">require</span>(<span class="string">&quot;@babel/parser&quot;</span>).<span class="property">parse</span>;</span><br><span class="line"><span class="keyword">const</span> tree = <span class="title function_">parse</span>(<span class="string">&quot;const a = () =&gt; &#123; return b&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>这样就可以得到一颗 <code>Abstract Syntax Tree</code>, parse 有很多 option , 有详细的文档供介绍.</p>
+<p>得到的结果可以在本地打印,或者在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer.net</a>进行查看.</p>
+<p>通过观察树,可以发现 <code>const a</code> 这部分被定义为一个 <code>variableDeclaration</code> Node.</p>
+<p>而 <code>const</code> <code>let</code> <code>var</code> 之间的差距,就仅仅是 Node 的 <code>kind</code> 值的不同</p>
+<h2 id="修改">修改</h2>
+<p>那么就是使用 <code>@babel/traverse</code> 插件匹配 <code>variableDeclaration</code>, 然后修改 <code>kind</code> 的值就可以了.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ast = <span class="title function_">parse</span>(<span class="string">&quot;const a = () =&gt; &#123; return b&#125;&quot;</span>);</span><br><span class="line"><span class="title function_">traverse</span>(ast, &#123;</span><br><span class="line">  <span class="title function_">enter</span>(<span class="params">path</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (t.<span class="title function_">isVariableDeclaration</span>(path.<span class="property">node</span>)) &#123;</span><br><span class="line">      <span class="keyword">if</span> (path.<span class="property">node</span>.<span class="property">kind</span> !== <span class="string">&quot;var&quot;</span>) &#123;</span><br><span class="line">        path.<span class="property">node</span>.<span class="property">kind</span> = <span class="string">&quot;var&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生成 JavaScript 代码字符串</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> code = <span class="title function_">generate</span>(ast);</span><br></pre></td></tr></table></figure>
+<h1>插件制作</h1>
+<p>新建一个文件 <code>transform-to-var.js</code></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">function</span> (<span class="params">&#123; types: t &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">visitor</span>: &#123;</span><br><span class="line">      <span class="title class_">VariableDeclaration</span>(path) &#123;</span><br><span class="line">        <span class="keyword">if</span> (path.<span class="property">node</span>.<span class="property">kind</span> !== <span class="string">&quot;var&quot;</span>) &#123;</span><br><span class="line">          path.<span class="property">node</span>.<span class="property">kind</span> = <span class="string">&quot;var&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>安装 babel plugin 测试程序和测试框架</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add babel-plugin-tester jest</span><br></pre></td></tr></table></figure>
+<p>新建一个 <code>transform-to-var.test.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pluginTester = <span class="built_in">require</span>(<span class="string">&quot;babel-plugin-tester&quot;</span>).<span class="property">default</span>;</span><br><span class="line"><span class="keyword">const</span> myPlugin = <span class="built_in">require</span>(<span class="string">&quot;./transform-to-var&quot;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(myPlugin);</span><br><span class="line"><span class="title function_">pluginTester</span>(&#123;</span><br><span class="line">  <span class="attr">plugin</span>: myPlugin,</span><br><span class="line">  <span class="attr">pluginName</span>: <span class="string">&quot;transform to var&quot;</span>,</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&quot;trabsforn const let to var&quot;</span>,</span><br><span class="line">  <span class="attr">tests</span>: &#123;</span><br><span class="line">    <span class="string">&quot;const a = 10: var a = 10&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">code</span>: <span class="string">&quot;const a = 10;&quot;</span>,</span><br><span class="line">      <span class="attr">output</span>: <span class="string">&quot;var a = 10;&quot;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;let a = 10: var a = 10&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">code</span>: <span class="string">&quot;let a = 10;&quot;</span>,</span><br><span class="line">      <span class="attr">output</span>: <span class="string">&quot;var a = 10;&quot;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;not change code&quot;</span>: <span class="string">&quot;var a = 10;&quot;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>运行测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn jest</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/babel/" rel="tag"># babel</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/19/React%20Hooks/" rel="prev" title="React Hooks">
+                  <i class="fa fa-angle-left"></i> React Hooks
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/25/babel%20parser/" rel="next" title="babel parse">
+                  babel parse <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">H</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

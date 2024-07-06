@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"github.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="React 中 PureComponent 的使用和介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React中PureComponent使用">
+<meta property="og:url" content="https://github.com/iosh/H.git/2018/04/19/React%E4%B8%ADPureComponent%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="胡先生">
+<meta property="og:description" content="React 中 PureComponent 的使用和介绍">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-04-19T20:44:47.000Z">
+<meta property="article:modified_time" content="2024-07-06T12:26:18.045Z">
+<meta property="article:author" content="H">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/iosh/H.git/2018/04/19/React%E4%B8%ADPureComponent%E4%BD%BF%E7%94%A8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://github.com/iosh/H.git/2018/04/19/React%E4%B8%ADPureComponent%E4%BD%BF%E7%94%A8/","path":"2018/04/19/React中PureComponent使用/","title":"React中PureComponent使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>React中PureComponent使用 | 胡先生</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">胡先生</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">介绍 PureComponent</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">使用 PureComponent</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">H</p>
+  <div class="site-description" itemprop="description">个人学习笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/iosh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;iosh" rel="noopener me"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/iosh/H.git/2018/04/19/React%E4%B8%ADPureComponent%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="H">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡先生">
+      <meta itemprop="description" content="个人学习笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="React中PureComponent使用 | 胡先生">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React中PureComponent使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-04-19 20:44:47" itemprop="dateCreated datePublished" datetime="2018-04-19T20:44:47+00:00">2018-04-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-06 12:26:18" itemprop="dateModified" datetime="2024-07-06T12:26:18+00:00">2024-07-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>React 中 PureComponent 的使用和介绍</p>
+<span id="more"></span>
+<h1>介绍 PureComponent</h1>
+<p>在官方文档中是这样介绍 PureComponent 的：</p>
+<blockquote>
+<p><code>React.PureComponent</code> 与 <a target="_blank" rel="noopener" href="https://doc.react-china.org/docs/react-api.html#react.component"><code>React.Component</code></a> 几乎完全相同，但 <code>React.PureComponent</code>通过 prop 和 state 的浅对比来实现 <a target="_blank" rel="noopener" href="https://doc.react-china.org/docs/react-component.html#shouldcomponentupdate"><code>shouldComponentUpate()</code></a>。</p>
+<p>如果 React 组件的 <code>render()</code> 函数在给定相同的 props 和 state 下渲染为相同的结果，在某些场景下你可以使用 <code>React.PureComponent</code> 来提升性能。</p>
+</blockquote>
+<p>这段话中，有两个重点：</p>
+<ol>
+<li>PureComponent 是通过 Props 和 state 浅对比来实现 shouldComponentUpate()，shouldComponentUpate() 生命周期中返回 false 就可以阻止组件重新渲染。</li>
+<li>在某些场景下可以提升性能</li>
+</ol>
+<p>要理解第一点，首先要明白 JavaScript 中的浅对比和深对比：</p>
+<p>首先，这个浅和深只存在于 JavaScript 的 数组和对象， 从字面意思上来说，浅对比只对比前后是否是同一个对象，而深对比则会递归对比对象/数组中的每一个值是否相等。比如一个数组 items ，随后向 items 中 push 一个 字符串，那么浅对比发现前后都是同一个 items，所以不重新渲染，而深对比发现前后里面的值并不相等，从而引发重新渲染。</p>
+<p>具体可以看看<a target="_blank" rel="noopener" href="http://imweb.io/topic/598973c2c72aa8db35d2e291">这篇文章介绍</a></p>
+<p>PureComponent 方法改变了 shouldComponentUpate， 并且他会自动检查是否重新渲染，只有检测到 state 或者 props 发生变化时候，才会重新调用 render 方法，而在 Component 中父组件的 render 方法调用后如果不在 shouldComponentUpate 中返回 false 那么子组件也会重新渲染，不管数据是否发生变化。因此，PureComponent 不需要手动写额外的检查</p>
+<p>在 React 源码中，PureComponent 是这样进行对比的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">_compositeType</span> === <span class="title class_">CompositeTypes</span>.<span class="property">PureClass</span>) &#123;</span><br><span class="line">  shouldUpdate = !<span class="title function_">shallowEqual</span>(prevProps, nextProps) || ! <span class="title function_">shallowEqual</span>(inst.<span class="property">state</span>, nextState);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这其中 shadowEqual 会 浅 检查组件中 props 和 state ，这意味这被嵌套的对象和数组不会进行比较（这就是浅对比）</p>
+<p>那么第二点就很好理解了，因为减少了不必要的渲染，所以可以提升性能。</p>
+<h1>使用 PureComponent</h1>
+<p>那么如何使用 PureComponent 呢，因为 PureComponent 如果使用不当，那么他将没什么作用，首先一点是，如果改变组件内部的 props 和 state，那么它将无法发挥作用，下面举个例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">ReactDOM</span> <span class="keyword">from</span> <span class="string">&#x27;react-dom&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">ItemList</span> (props) &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    &#123;props.items.map((item,index) =&gt; (</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">key</span>=<span class="string">&#123;index&#125;</span>&gt;</span>&#123;item&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    ))&#125;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">App</span> <span class="keyword">extends</span> <span class="title class_ inherited__">React.PureComponent</span> &#123; <span class="comment">// 如果这里是 React.Component 那么这个组件会正常渲染</span></span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">super</span>()</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">state</span>=&#123;</span><br><span class="line">      <span class="attr">items</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  handleClick = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 声明一个变量，储存state</span></span><br><span class="line">    <span class="keyword">let</span> &#123; items &#125; = <span class="variable language_">this</span>.<span class="property">state</span></span><br><span class="line">    <span class="comment">// 向items 中 push 一个变量</span></span><br><span class="line">    items.<span class="title function_">push</span>(<span class="string">&#x27;new-item&#x27;</span>)</span><br><span class="line">    <span class="comment">// 调用 this.setState</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setState</span>(&#123; items &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;this.handleClick&#125;</span>&gt;</span>我是按钮啦<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">ItemList</span> <span class="attr">items</span>=<span class="string">&#123;this.state.items&#125;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title class_">ReactDOM</span>.<span class="title function_">render</span>(<span class="language-xml"><span class="tag">&lt;<span class="name">App</span> /&gt;</span></span>, <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;root&#x27;</span>));</span><br></pre></td></tr></table></figure>
+<p>如果这个组件继承 React.Component 那么它没有什么问题，但是如果它继承于 React.PureComponent 那么点击按钮它是不会重新渲染的，因为 items 前后都是指向同一个对象</p>
+<p>需要对代码进行如下修改方可正常重新渲染</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">handleClick = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">   <span class="variable language_">this</span>.<span class="title function_">setState</span>(<span class="function"><span class="params">prevState</span> =&gt;</span> (&#123;</span><br><span class="line">     <span class="attr">items</span>: prevState.<span class="property">items</span>.<span class="title function_">concat</span>([<span class="string">&#x27;new-item&#x27;</span>])</span><br><span class="line">   &#125;))</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这样，给 items 返回一个全新的对象</p>
+<p>那么同时有另外一个问题，如果给 PureComponent 的 state 或者 props 引用了一个新的对象，那么这个组件就会被重新渲染（render）。这意味着如果不想损失它的优点，那么应该避免一下结构</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">ItemList</span> items=&#123;<span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">items</span> || []&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<p>这样的结构就导致了 ItemList 不管接受的是一个 Items 还是空数组，都会使组件重新渲染</p>
+<h1>总结</h1>
+<p>事实上，理解之后使用 PureComponent 是非常简单的，只需要将 Component 换成 PureComponent 即可，这样不但可以平滑过度，提升性能，所以可以在追求性能的时候不妨考虑一下 PureComponent 。</p>
+<p>那么说了这么多是不是迫不及待使用 PureComponent 了呢，那么别忘了最重要一点，PureComponent 还会阻止 this.context 改变时候引起的子组件重新渲染，除非在 PureComponent 中声明 contextTypes。（没写过，大概是说，会阻止 redux 引起的重新渲染）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/React/" rel="tag"># React</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/04/16/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E8%80%85%E6%8C%87%E5%8D%972018/" rel="prev" title="前端开发者指南2018">
+                  <i class="fa fa-angle-left"></i> 前端开发者指南2018
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9E%84%E9%80%A0%E5%92%8C%E8%A7%A3%E9%87%8A/" rel="next" title="计算机程序的构造和解释">
+                  计算机程序的构造和解释 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">H</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

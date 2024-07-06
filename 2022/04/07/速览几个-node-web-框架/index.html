@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"github.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="看了 koajs 的源码,意犹未尽,再看看几个其他的框架或者库.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="速览几个 node web 框架">
+<meta property="og:url" content="https://github.com/iosh/H.git/2022/04/07/%E9%80%9F%E8%A7%88%E5%87%A0%E4%B8%AA-node-web-%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="胡先生">
+<meta property="og:description" content="看了 koajs 的源码,意犹未尽,再看看几个其他的框架或者库.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-07T16:48:22.000Z">
+<meta property="article:modified_time" content="2024-07-06T12:26:18.049Z">
+<meta property="article:author" content="H">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/iosh/H.git/2022/04/07/%E9%80%9F%E8%A7%88%E5%87%A0%E4%B8%AA-node-web-%E6%A1%86%E6%9E%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://github.com/iosh/H.git/2022/04/07/%E9%80%9F%E8%A7%88%E5%87%A0%E4%B8%AA-node-web-%E6%A1%86%E6%9E%B6/","path":"2022/04/07/速览几个-node-web-框架/","title":"速览几个 node web 框架"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>速览几个 node web 框架 | 胡先生</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">胡先生</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">polkadot</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">Polka</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">0http</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">H</p>
+  <div class="site-description" itemprop="description">个人学习笔记</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/iosh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;iosh" rel="noopener me"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/iosh/H.git/2022/04/07/%E9%80%9F%E8%A7%88%E5%87%A0%E4%B8%AA-node-web-%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="H">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡先生">
+      <meta itemprop="description" content="个人学习笔记">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="速览几个 node web 框架 | 胡先生">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          速览几个 node web 框架
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-07 16:48:22" itemprop="dateCreated datePublished" datetime="2022-04-07T16:48:22+00:00">2022-04-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-06 12:26:18" itemprop="dateModified" datetime="2024-07-06T12:26:18+00:00">2024-07-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>看了 koajs 的源码,意犹未尽,再看看几个其他的框架或者库.</p>
+<span id="more"></span>
+<h1>简介</h1>
+<p>看了 koajs 的源码之后, 惊叹代码之少, 设计有趣. 看看其他几个框架. 看到了 fastify 有一个 benchmarks <a href="https://github.com/fastify/benchmarks">https://github.com/fastify/benchmarks</a>, 那么就从这个 benchmarks 开始看吧.</p>
+<p>从 npm 上看下载量如果下载量太少,说明没有人用, 就不看了.</p>
+<h1>polkadot</h1>
+<p><a href="https://github.com/lukeed/polkadot/">polkadot</a></p>
+<pre><code>The tiny HTTP server that gets out of your way! ・
+</code></pre>
+<p>七天下载量不到 1000, 但是和 Polka 是同门师兄弟, 所以看看.</p>
+<p>在上面的 benchmarks 中, polkadot 排名第一. 自我描述是一个 thiny HTTP server. 源代码也很精简.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; createServer &#125; = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; parse &#125; = <span class="built_in">require</span>(<span class="string">&#x27;querystring&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> send = <span class="built_in">require</span>(<span class="string">&#x27;@polka/send-type&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> url = <span class="built_in">require</span>(<span class="string">&#x27;@polka/url&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">loop</span>(<span class="params">res, out</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> (res.<span class="property">finished</span>) <span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">return</span> out &amp;&amp; out.<span class="property">then</span> !== <span class="keyword">void</span> <span class="number">0</span></span><br><span class="line">		? out.<span class="title function_">then</span>(<span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">loop</span>(res, d)) : <span class="title function_">send</span>(res, res.<span class="property">statusCode</span> || <span class="number">200</span>, out);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">function</span> (<span class="params">handler</span>) &#123;</span><br><span class="line">	<span class="keyword">const</span> $ = &#123;</span><br><span class="line">		<span class="attr">server</span>: <span class="literal">null</span>,</span><br><span class="line"></span><br><span class="line">		<span class="title function_">handler</span>(<span class="params">req, res</span>) &#123;</span><br><span class="line">			<span class="keyword">const</span> info = <span class="title function_">url</span>(req);</span><br><span class="line">			req.<span class="property">path</span> = info.<span class="property">pathname</span>;</span><br><span class="line">			req.<span class="property">query</span> = info.<span class="property">query</span> ? <span class="title function_">parse</span>(info.<span class="property">query</span>) : &#123;&#125;;</span><br><span class="line">			req.<span class="property">search</span> = info.<span class="property">search</span>;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">return</span> <span class="title function_">loop</span>(res, <span class="title function_">handler</span>(req, res));</span><br><span class="line">		&#125;,</span><br><span class="line"></span><br><span class="line">		<span class="title function_">listen</span>(<span class="params"></span>) &#123;</span><br><span class="line">			<span class="keyword">const</span> <span class="title function_">handler</span> = (<span class="params">r1, r2</span>) =&gt; <span class="title function_">setImmediate</span>($.handler, r1, r2);</span><br><span class="line">			($.server = $.server || <span class="title function_">createServer</span>()).<span class="title function_">on</span>(<span class="string">&#x27;request&#x27;</span>, handler);</span><br><span class="line">			<span class="keyword">return</span> $.server.<span class="property">listen</span>.<span class="title function_">apply</span>($.server, <span class="variable language_">arguments</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> $;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>短短几十行代码, 一个简单的封装, 并且实现了一个递归函数 loop 来处理 Promise. 不支持路由, 不支持中间件.</p>
+<p>他这里使用 <code>setTmmediate</code> 看不出来有什么意义, (找到了作者解释 <a href="https://github.com/lukeed/polkadot/issues/5">https://github.com/lukeed/polkadot/issues/5</a>), 因为这里没有什么耗时操作, 或者会执行的东西.</p>
+<h1>Polka</h1>
+<p><a href="https://github.com/lukeed/polka">Polka</a></p>
+<pre><code>A micro web server so fast, it'll make you dance! 👯
+</code></pre>
+<p>npm 七天下载量 8w 左右, 和上面 polkadot 是一个作者. 并且积极更新.</p>
+<pre><code>Essentially, Polka is just a native HTTP server with added support for routing, middleware, and sub-applications. That's it! 🎉
+</code></pre>
+<p>从描述看 polka 实现了中间件和 router</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> polka = <span class="built_in">require</span>(<span class="string">&#x27;polka&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">one</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">  req.<span class="property">hello</span> = <span class="string">&#x27;world&#x27;</span>;</span><br><span class="line">  <span class="title function_">next</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">two</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">  req.<span class="property">foo</span> = <span class="string">&#x27;...needs better demo 😔&#x27;</span>;</span><br><span class="line">  <span class="title function_">next</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">polka</span>()</span><br><span class="line">  .<span class="title function_">use</span>(one, two)</span><br><span class="line">  .<span class="title function_">get</span>(<span class="string">&#x27;/users/:id&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`~&gt; Hello, <span class="subst">$&#123;req.hello&#125;</span>`</span>);</span><br><span class="line">    res.<span class="title function_">end</span>(<span class="string">`User: <span class="subst">$&#123;req.params.id&#125;</span>`</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">listen</span>(<span class="number">3000</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`&gt; Running on localhost:3000`</span>);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<p>核心源代码也比较简单</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Router</span> = <span class="built_in">require</span>(<span class="string">&#x27;trouter&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; parse &#125; = <span class="built_in">require</span>(<span class="string">&#x27;querystring&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> parser = <span class="built_in">require</span>(<span class="string">&#x27;@polka/url&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">lead</span>(<span class="params">x</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> x.<span class="title function_">charCodeAt</span>(<span class="number">0</span>) === <span class="number">47</span> ? x : (<span class="string">&#x27;/&#x27;</span> + x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">value</span>(<span class="params">x</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> y = x.<span class="title function_">indexOf</span>(<span class="string">&#x27;/&#x27;</span>, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> y &gt; <span class="number">1</span> ? x.<span class="title function_">substring</span>(<span class="number">0</span>, y) : x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">mutate</span>(<span class="params">str, req</span>) &#123;</span><br><span class="line">	req.<span class="property">url</span> = req.<span class="property">url</span>.<span class="title function_">substring</span>(str.<span class="property">length</span>) || <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line">	req.<span class="property">path</span> = req.<span class="property">path</span>.<span class="title function_">substring</span>(str.<span class="property">length</span>) || <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">onError</span>(<span class="params">err, req, res, next</span>) &#123;</span><br><span class="line">	<span class="keyword">let</span> code = (res.<span class="property">statusCode</span> = err.<span class="property">code</span> || err.<span class="property">status</span> || <span class="number">500</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">typeof</span> err === <span class="string">&#x27;string&#x27;</span> || <span class="title class_">Buffer</span>.<span class="title function_">isBuffer</span>(err)) res.<span class="title function_">end</span>(err);</span><br><span class="line">	<span class="keyword">else</span> res.<span class="title function_">end</span>(err.<span class="property">message</span> || http.<span class="property">STATUS_CODES</span>[code]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Polka</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Router</span> &#123;</span><br><span class="line">	<span class="title function_">constructor</span>(<span class="params">opts=&#123;&#125;</span>) &#123;</span><br><span class="line">		<span class="variable language_">super</span>(opts);</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">apps</span> = &#123;&#125;;</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">wares</span> = [];</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">bwares</span> = &#123;&#125;;</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">parse</span> = parser;</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">server</span> = opts.<span class="property">server</span>;</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">handler</span> = <span class="variable language_">this</span>.<span class="property">handler</span>.<span class="title function_">bind</span>(<span class="variable language_">this</span>);</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">onError</span> = opts.<span class="property">onError</span> || onError; <span class="comment">// catch-all handler</span></span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">onNoMatch</span> = opts.<span class="property">onNoMatch</span> || <span class="variable language_">this</span>.<span class="property">onError</span>.<span class="title function_">bind</span>(<span class="literal">null</span>, &#123; <span class="attr">code</span>:<span class="number">404</span> &#125;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">add</span>(<span class="params">method, pattern, ...fns</span>) &#123;</span><br><span class="line">		<span class="keyword">let</span> base = <span class="title function_">lead</span>(<span class="title function_">value</span>(pattern));</span><br><span class="line">		<span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">apps</span>[base] !== <span class="keyword">void</span> <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">`Cannot mount &quot;.<span class="subst">$&#123;method.toLowerCase()&#125;</span>(&#x27;<span class="subst">$&#123;lead(pattern)&#125;</span>&#x27;)&quot; because a Polka application at &quot;.use(&#x27;<span class="subst">$&#123;base&#125;</span>&#x27;)&quot; already exists! You should move this handler into your Polka application instead.`</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="variable language_">super</span>.<span class="title function_">add</span>(method, pattern, ...fns);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">use</span>(<span class="params">base, ...fns</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">typeof</span> base === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">wares</span> = <span class="variable language_">this</span>.<span class="property">wares</span>.<span class="title function_">concat</span>(base, fns);</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (base === <span class="string">&#x27;/&#x27;</span>) &#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">wares</span> = <span class="variable language_">this</span>.<span class="property">wares</span>.<span class="title function_">concat</span>(fns);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			base = <span class="title function_">lead</span>(base);</span><br><span class="line">			fns.<span class="title function_">forEach</span>(<span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">				<span class="keyword">if</span> (fn <span class="keyword">instanceof</span> <span class="title class_">Polka</span>) &#123;</span><br><span class="line">					<span class="variable language_">this</span>.<span class="property">apps</span>[base] = fn;</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="keyword">let</span> arr = <span class="variable language_">this</span>.<span class="property">bwares</span>[base] || [];</span><br><span class="line">					arr.<span class="property">length</span> &gt; <span class="number">0</span> || arr.<span class="title function_">push</span>(<span class="function">(<span class="params">r, _, nxt</span>) =&gt;</span> (<span class="title function_">mutate</span>(base, r),<span class="title function_">nxt</span>()));</span><br><span class="line">					<span class="variable language_">this</span>.<span class="property">bwares</span>[base] = arr.<span class="title function_">concat</span>(fn);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="variable language_">this</span>; <span class="comment">// chainable</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">listen</span>(<span class="params"></span>) &#123;</span><br><span class="line">		(<span class="variable language_">this</span>.<span class="property">server</span> = <span class="variable language_">this</span>.<span class="property">server</span> || http.<span class="title function_">createServer</span>()).<span class="title function_">on</span>(<span class="string">&#x27;request&#x27;</span>, <span class="variable language_">this</span>.<span class="property">handler</span>);</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">server</span>.<span class="property">listen</span>.<span class="title function_">apply</span>(<span class="variable language_">this</span>.<span class="property">server</span>, <span class="variable language_">arguments</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">handler</span>(<span class="params">req, res, info</span>) &#123;</span><br><span class="line">		info = info || <span class="variable language_">this</span>.<span class="title function_">parse</span>(req);</span><br><span class="line">		<span class="keyword">let</span> fns=[], arr=<span class="variable language_">this</span>.<span class="property">wares</span>, obj=<span class="variable language_">this</span>.<span class="title function_">find</span>(req.<span class="property">method</span>, info.<span class="property">pathname</span>);</span><br><span class="line">		req.<span class="property">originalUrl</span> = req.<span class="property">originalUrl</span> || req.<span class="property">url</span>;</span><br><span class="line">		<span class="keyword">let</span> base = <span class="title function_">value</span>(req.<span class="property">path</span> = info.<span class="property">pathname</span>);</span><br><span class="line">		<span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">bwares</span>[base] !== <span class="keyword">void</span> <span class="number">0</span>) &#123;</span><br><span class="line">			arr = arr.<span class="title function_">concat</span>(<span class="variable language_">this</span>.<span class="property">bwares</span>[base]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (obj) &#123;</span><br><span class="line">			fns = obj.<span class="property">handlers</span>;</span><br><span class="line">			req.<span class="property">params</span> = obj.<span class="property">params</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">apps</span>[base] !== <span class="keyword">void</span> <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="title function_">mutate</span>(base, req); info.<span class="property">pathname</span>=req.<span class="property">path</span>; <span class="comment">//=&gt; updates</span></span><br><span class="line">			fns.<span class="title function_">push</span>(<span class="variable language_">this</span>.<span class="property">apps</span>[base].<span class="property">handler</span>.<span class="title function_">bind</span>(<span class="literal">null</span>, req, res, info));</span><br><span class="line">		&#125;</span><br><span class="line">		fns.<span class="title function_">push</span>(<span class="variable language_">this</span>.<span class="property">onNoMatch</span>);</span><br><span class="line">		<span class="comment">// Grab addl values from `info`</span></span><br><span class="line">		req.<span class="property">search</span> = info.<span class="property">search</span>;</span><br><span class="line">		req.<span class="property">query</span> = <span class="title function_">parse</span>(info.<span class="property">query</span>);</span><br><span class="line">		<span class="comment">// Exit if only a single function</span></span><br><span class="line">		<span class="keyword">let</span> i=<span class="number">0</span>, len=arr.<span class="property">length</span>, num=fns.<span class="property">length</span>;</span><br><span class="line">		<span class="keyword">if</span> (len === i &amp;&amp; num === <span class="number">1</span>) <span class="keyword">return</span> fns[<span class="number">0</span>](req, res);</span><br><span class="line">		<span class="comment">// Otherwise loop thru all middlware</span></span><br><span class="line">		<span class="keyword">let</span> <span class="title function_">next</span> = err =&gt; err ? <span class="variable language_">this</span>.<span class="title function_">onError</span>(err, req, res, next) : <span class="title function_">loop</span>();</span><br><span class="line">		<span class="keyword">let</span> <span class="title function_">loop</span> = _ =&gt; res.<span class="property">finished</span> || (i &lt; len) &amp;&amp; arr[i++](req, res, next);</span><br><span class="line">		arr = arr.<span class="title function_">concat</span>(fns);</span><br><span class="line">		len += num;</span><br><span class="line">		<span class="title function_">loop</span>(); <span class="comment">// init</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到, router 部分是使用 trouter 这个包来解析和匹配 path, 中间件的话, 使用了递归来处理这些中间件, 代码不如 koajs 的优美.</p>
+<h1>0http</h1>
+<p><a href="https://github.com/BackendStack21/0http">0http</a></p>
+<pre><code>Cero friction HTTP requests router. The need for speed!
+</code></pre>
+<p>npm 下载量在 5000 左右</p>
+<p>从 readme 的描述来看, 0http 也是使用 trouter 来解析和匹配 path 的, 但是他使用了 LRU (最近最少使用) 缓存 来缓存查询结果, 所以性能会好一些.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Trouter</span> = <span class="built_in">require</span>(<span class="string">&#x27;trouter&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> next = <span class="built_in">require</span>(<span class="string">&#x27;./../next&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">LRU</span> = <span class="built_in">require</span>(<span class="string">&#x27;lru-cache&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; parse &#125; = <span class="built_in">require</span>(<span class="string">&#x27;regexparam&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> queryparams = <span class="built_in">require</span>(<span class="string">&#x27;../utils/queryparams&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="function">(<span class="params">config = &#123;&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (config.<span class="property">defaultRoute</span> === <span class="literal">undefined</span>) &#123;</span><br><span class="line">    config.<span class="property">defaultRoute</span> = <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">      res.<span class="property">statusCode</span> = <span class="number">404</span></span><br><span class="line">      res.<span class="title function_">end</span>()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (config.<span class="property">errorHandler</span> === <span class="literal">undefined</span>) &#123;</span><br><span class="line">    config.<span class="property">errorHandler</span> = <span class="function">(<span class="params">err, req, res</span>) =&gt;</span> &#123;</span><br><span class="line">      res.<span class="property">statusCode</span> = <span class="number">500</span></span><br><span class="line">      res.<span class="title function_">end</span>(err.<span class="property">message</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (config.<span class="property">cacheSize</span> === <span class="literal">undefined</span>) &#123;</span><br><span class="line">    config.<span class="property">cacheSize</span> = <span class="number">1000</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (config.<span class="property">id</span> === <span class="literal">undefined</span>) &#123;</span><br><span class="line">    config.<span class="property">id</span> = (<span class="title class_">Date</span>.<span class="title function_">now</span>().<span class="title function_">toString</span>(<span class="number">36</span>) + <span class="title class_">Math</span>.<span class="title function_">random</span>().<span class="title function_">toString</span>(<span class="number">36</span>).<span class="title function_">substr</span>(<span class="number">2</span>, <span class="number">5</span>)).<span class="title function_">toUpperCase</span>()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> routers = &#123;&#125;</span><br><span class="line">  <span class="keyword">const</span> isCacheEnabled = config.<span class="property">cacheSize</span> &gt; <span class="number">0</span></span><br><span class="line">  <span class="keyword">const</span> cache = isCacheEnabled ? <span class="keyword">new</span> <span class="title function_">LRU</span>(config.<span class="property">cacheSize</span>) : <span class="literal">null</span></span><br><span class="line">  <span class="keyword">const</span> router = <span class="keyword">new</span> <span class="title class_">Trouter</span>()</span><br><span class="line">  router.<span class="property">id</span> = config.<span class="property">id</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> _use = router.<span class="property">use</span></span><br><span class="line"></span><br><span class="line">  router.<span class="property">use</span> = <span class="function">(<span class="params">prefix, ...middlewares</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> prefix === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">      middlewares = [prefix]</span><br><span class="line">      prefix = <span class="string">&#x27;/&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    _use.<span class="title function_">call</span>(router, prefix, middlewares)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (middlewares[<span class="number">0</span>].<span class="property">id</span>) &#123;</span><br><span class="line">      <span class="comment">// caching router -&gt; pattern relation for urls pattern replacement</span></span><br><span class="line">      <span class="keyword">const</span> &#123; pattern &#125; = <span class="title function_">parse</span>(prefix, <span class="literal">true</span>)</span><br><span class="line">      routers[middlewares[<span class="number">0</span>].<span class="property">id</span>] = pattern</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  router.<span class="property">lookup</span> = <span class="function">(<span class="params">req, res, step</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!req.<span class="property">url</span>) &#123;</span><br><span class="line">      req.<span class="property">url</span> = <span class="string">&#x27;/&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!req.<span class="property">originalUrl</span>) &#123;</span><br><span class="line">      req.<span class="property">originalUrl</span> = req.<span class="property">url</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">queryparams</span>(req, req.<span class="property">url</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> match</span><br><span class="line">    <span class="keyword">if</span> (isCacheEnabled) &#123;</span><br><span class="line">      <span class="keyword">const</span> reqCacheKey = req.<span class="property">method</span> + req.<span class="property">path</span></span><br><span class="line">      match = cache.<span class="title function_">get</span>(reqCacheKey)</span><br><span class="line">      <span class="keyword">if</span> (!match) &#123;</span><br><span class="line">        match = router.<span class="title function_">find</span>(req.<span class="property">method</span>, req.<span class="property">path</span>)</span><br><span class="line">        cache.<span class="title function_">set</span>(reqCacheKey, match)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      match = router.<span class="title function_">find</span>(req.<span class="property">method</span>, req.<span class="property">path</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (match.<span class="property">handlers</span>.<span class="property">length</span> !== <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> middlewares = [...match.<span class="property">handlers</span>]</span><br><span class="line">      <span class="keyword">if</span> (step !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">        <span class="comment">// router is being used as a nested router</span></span><br><span class="line">        middlewares.<span class="title function_">push</span>(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">          req.<span class="property">url</span> = req.<span class="property">preRouterUrl</span></span><br><span class="line">          req.<span class="property">path</span> = req.<span class="property">preRouterPath</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">delete</span> req.<span class="property">preRouterUrl</span></span><br><span class="line">          <span class="keyword">delete</span> req.<span class="property">preRouterPath</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">return</span> <span class="title function_">step</span>()</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (!req.<span class="property">params</span>) &#123;</span><br><span class="line">        req.<span class="property">params</span> = &#123;&#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title class_">Object</span>.<span class="title function_">assign</span>(req.<span class="property">params</span>, match.<span class="property">params</span>)</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">next</span>(middlewares, req, res, <span class="number">0</span>, routers, config.<span class="property">defaultRoute</span>, config.<span class="property">errorHandler</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      config.<span class="title function_">defaultRoute</span>(req, res)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  router.<span class="property">on</span> = <span class="function">(<span class="params">method, pattern, ...handlers</span>) =&gt;</span> router.<span class="title function_">add</span>(method, pattern, handlers)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> router</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>核心就是 router 这部分代码. 和前面看的差不太多, 做了一个优化处理, 挺好的.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/06/koa-%E6%BA%90%E7%A0%81/" rel="prev" title="koa 源码">
+                  <i class="fa fa-angle-left"></i> koa 源码
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/14/javascript-async-await-%E7%9A%84%E8%83%8C%E5%90%8E/" rel="next" title="javascript async await 的背后">
+                  javascript async await 的背后 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">H</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
