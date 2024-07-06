@@ -5,48 +5,46 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - main # default branch
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: ['16']
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-
-
-    - name: set environment
-      env:
-        hexo_deploy_key: ${{secrets.hexo_deploy_key}}
-      run: |
-        mkdir -p ~/.ssh/
-        echo "$hexo_deploy_key" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-        git config --global user.name "iosh"
-        git config --global user.email "454053152@qq.com"
-    - name: install dependencies
-      run: npm install
-    
-    - name: build hexo
-      run: npm run build
-    
-    - name: push to github
-      run: |
-        cd ./public
-        git init
-        git remote add origin git@github.com:iosh/H.git
-        git add --all .
-        git commit -m "自动生成 于 `date +"%Y-%m-%d %H:%M"`"
-        git push --force --quiet  origin master:gh-pages 
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: recursive
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Cache NPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-npm-cache
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache
+      - name: Install Dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
